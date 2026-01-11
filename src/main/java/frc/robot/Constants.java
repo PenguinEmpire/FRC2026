@@ -16,4 +16,16 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
+
+  public static class ShooterConstants {
+    public static final int kShooterVelocity = 0; //Change to the output velocity of the shooter when known
+  }
+
+  public static class IntakeConstants {
+    public static final int kIntakeMotorID = 0; //Change with actual motor IDs and change name (add more once # of motors is known)
+  }
+
+  public static class ClimbConstants {
+    public static final int kShooterMotorID = 0;//Change with actual motor IDs and change name (add more once # of motors is known)
+  }
 }
