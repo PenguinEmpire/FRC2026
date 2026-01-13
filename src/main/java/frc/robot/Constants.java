@@ -18,6 +18,7 @@ public final class Constants {
   }
 
   public static class ShooterConstants {
+    public static final int kShooterMotorID = 0; //Change with actual motor IDs and change name (add more once # of motors is known)
     public static final int kShooterVelocity = 0; //Change to the output velocity of the shooter when known
   }
 
@@ -26,6 +27,6 @@ public final class Constants {
   }
 
   public static class ClimbConstants {
-    public static final int kShooterMotorID = 0;//Change with actual motor IDs and change name (add more once # of motors is known)
+    public static final int kClimbMotorID = 0;//Change with actual motor IDs and change name (add more once # of motors is known)
   }
 }
