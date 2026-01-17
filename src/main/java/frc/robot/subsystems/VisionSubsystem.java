@@ -47,7 +47,7 @@ public class VisionSubsystem extends SubsystemBase {
     return LimelightHelpers.getTY("");
   }
 
-  public void ChangeFiducial3DOffset(int[] offset) {
+  public void ChangeFiducial3DOffset(double[] offset) {
     LimelightHelpers.setFiducial3DOffset("", offset[0], offset[1], offset[2]);
   }
 

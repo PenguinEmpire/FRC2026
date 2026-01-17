@@ -31,8 +31,8 @@ public final class Constants {
   }
 
   public static class VisionConstants {
-    public static final int[] kID1Offset = {0,0,0}; //The position relative to april tag the vision will be targeting: {x, y, z}
-    public static final int[] kID2Offset = {0,0,0};
-    public static final int[] kID3Offset = {0,0,0};
+    public static final double[] kAprilTagID1Offset = {0.0, 0.0, 0.0}; //The position relative to april tag the vision will be targeting: {x, y, z}
+    public static final double[] kAprilTagID2Offset = {0.0, 0.0, 0.0};
+    public static final double[] kAprilTagID3Offset = {0.0, 0.0, 0.0};
   }
 }
