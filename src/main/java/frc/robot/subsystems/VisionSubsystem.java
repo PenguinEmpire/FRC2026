@@ -9,8 +9,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
 
 public class VisionSubsystem extends SubsystemBase {
+  private int[] ValidIds = {1, 2, 3, 4};
+
   /** Creates a new ExampleSubsystem. */
-  public VisionSubsystem() {}
+  public VisionSubsystem() {
+    LimelightHelpers.setFiducial3DOffset("", 0.0, 0.0, 0.0);
+    LimelightHelpers.SetFiducialIDFiltersOverride("", ValidIds);
+  }
 
   /**
    * Example command factory method.
@@ -24,6 +29,26 @@ public class VisionSubsystem extends SubsystemBase {
         () -> {
           /* one-time action goes here */
         });
+  }
+
+  public boolean HasTarget() {
+    return LimelightHelpers.getTV("");
+  }
+
+  public double TargetID() {
+    return LimelightHelpers.getFiducialID("");
+  }
+
+  public double GetX() {
+    return LimelightHelpers.getTX("");
+  }
+
+  public double GetY() {
+    return LimelightHelpers.getTY("");
+  }
+
+  public void ChangeFiducial3DOffset(double x, double y, double z) {
+    LimelightHelpers.setFiducial3DOffset("", x, y, z);
   }
 
   /**
