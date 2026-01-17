@@ -7,9 +7,14 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
+import frc.robot.Constants;
 
 public class VisionSubsystem extends SubsystemBase {
   private int[] ValidIds = {1, 2, 3, 4};
+
+  public double Fiducial3DOffsetX = 0;
+  public double Fiducial3DOffsetY = 0;
+  public double Fiducial3DOffsetZ = 0;
 
   /** Creates a new ExampleSubsystem. */
   public VisionSubsystem() {
@@ -49,6 +54,19 @@ public class VisionSubsystem extends SubsystemBase {
 
   public void ChangeFiducial3DOffset(double[] offset) {
     LimelightHelpers.setFiducial3DOffset("", offset[0], offset[1], offset[2]);
+    Fiducial3DOffsetX = offset[0];
+    Fiducial3DOffsetY = offset[1];
+    Fiducial3DOffsetZ = offset[2];
+  }
+
+  public double GetDistanceX() {//Derived from tan(a1+a2)=(h2-h1)/D (assumes you are already facing and in front of the april tag)
+    double targetHeight = 0.0;
+
+    double angleToGoalRadians = (GetYAngle() + Constants.VisionConstants.kLimelightMountAngleDegrees)*(3.14159/180.0);
+
+    double distanceToGoal = (targetHeight-Constants.VisionConstants.kLimelightLensHeightInches) / Math.tan(angleToGoalRadians);
+    
+    return distanceToGoal;
   }
 
   /**
