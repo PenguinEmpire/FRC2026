@@ -29,4 +29,10 @@ public final class Constants {
   public static class ClimbConstants {
     public static final int kClimbMotorID = 0;//Change with actual motor IDs and change name (add more once # of motors is known)
   }
+
+  public static class VisionConstants {
+    public static final int[] kID1Offset = {0,0,0}; //The position relative to april tag the vision will be targeting: {x, y, z}
+    public static final int[] kID2Offset = {0,0,0};
+    public static final int[] kID3Offset = {0,0,0};
+  }
 }
