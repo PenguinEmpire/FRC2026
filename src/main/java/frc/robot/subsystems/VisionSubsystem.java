@@ -11,6 +11,7 @@ import frc.robot.Constants;
 
 public class VisionSubsystem extends SubsystemBase {
   private int[] ValidIds = {1, 2, 3, 4};
+  private double currentID = -1;
 
   public double Fiducial3DOffsetX = 0;
   public double Fiducial3DOffsetY = 0;
@@ -59,14 +60,25 @@ public class VisionSubsystem extends SubsystemBase {
     Fiducial3DOffsetZ = offset[2];
   }
 
-  public double GetDistanceX() {//Derived from tan(a1+a2)=(h2-h1)/D (assumes you are already facing and in front of the april tag)
-    double targetHeight = 0.0;
+  //TO DO: set up bot localization and then make this command
+  public double GetDistanceX() {
+    return 0.0;
+  }
 
-    double angleToGoalRadians = (GetYAngle() + Constants.VisionConstants.kLimelightMountAngleDegrees)*(3.14159/180.0);
+  public double GetDistanceY() {
+    return 0.0;
+  }
 
-    double distanceToGoal = (targetHeight-Constants.VisionConstants.kLimelightLensHeightInches) / Math.tan(angleToGoalRadians);
-    
-    return distanceToGoal;
+  public double GetDistanceZ() {
+    return 0.0;
+  }
+
+  public double GetDistance() {
+    double a=GetDistanceX();
+    double b=GetDistanceY();
+    double c=GetDistanceZ();
+
+    return Math.sqrt(a*a+b*b+c*c);
   }
 
   /**
@@ -82,6 +94,16 @@ public class VisionSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    if (TargetID()!=currentID) {
+      if (HasTarget()) {
+        currentID = TargetID();
+        int Id = (int) Math.round(currentID);
+        ChangeFiducial3DOffset(Constants.AprilTagConstants.kAprilTagOffsets[Id]);
+      } else {
+        currentID = -1;
+        ChangeFiducial3DOffset(Constants.AprilTagConstants.kUndefinedOffset);
+      }
+    }
   }
 
   @Override

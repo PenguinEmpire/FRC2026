@@ -36,9 +36,23 @@ public final class Constants {
   }
 
   public static class AprilTagConstants { 
+    //April Tag Localized Positions:
+    public static final double[] kAprilTagID0Position = {0.0, 0.0, 0.0}; //The position relative to field of the april tag
+    public static final double[] kAprilTagID1Position = {0.0, 0.0, 0.0}; //The position relative to field of the april tag
+    public static final double[] kAprilTagID2Position = {0.0, 0.0, 0.0};
+    public static final double[] kAprilTagID3Position = {0.0, 0.0, 0.0};
+
+    public static final double[][] kAprilTagPositions = {kAprilTagID0Position, kAprilTagID1Position, kAprilTagID2Position, kAprilTagID3Position};
+
+
     //OffsetConstants:
+    public static final double[] kUndefinedOffset = {0,0,0};
+
+    public static final double[] kAprilTagID0Offset = {0.0, 0.0, 0.0};
     public static final double[] kAprilTagID1Offset = {0.0, 0.0, 0.0}; //The position relative to april tag the vision will be targeting: {x, y, z}
     public static final double[] kAprilTagID2Offset = {0.0, 0.0, 0.0};
     public static final double[] kAprilTagID3Offset = {0.0, 0.0, 0.0};
+
+    public static final double[][] kAprilTagOffsets = {kAprilTagID0Offset, kAprilTagID1Offset, kAprilTagID2Offset, kAprilTagID3Offset};
   }
 }
