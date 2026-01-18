@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
@@ -60,17 +61,53 @@ public class VisionSubsystem extends SubsystemBase {
     Fiducial3DOffsetZ = offset[2];
   }
 
-  //TO DO: set up bot localization and then make this command
+  
   public double GetDistanceX() {
-    return 0.0;
+    Pose3d position = LimelightHelpers.getBotPose3d("");
+
+    if (HasTarget()) {
+      currentID = TargetID();
+      int Id = (int) Math.round(currentID);
+
+      double idXPosition = Constants.AprilTagConstants.kAprilTagPositions[Id][0];
+      double xDistance = (idXPosition+Fiducial3DOffsetX)-position.getX();
+
+      return xDistance;
+    } else {
+      return -1;
+    }
   }
 
   public double GetDistanceY() {
-    return 0.0;
+    Pose3d position = LimelightHelpers.getBotPose3d("");
+
+    if (HasTarget()) {
+      currentID = TargetID();
+      int Id = (int) Math.round(currentID);
+
+      double idYPosition = Constants.AprilTagConstants.kAprilTagPositions[Id][1];
+      double yDistance = (idYPosition+Fiducial3DOffsetY)-position.getY();
+
+      return yDistance;
+    } else {
+      return -1;
+    }
   }
 
   public double GetDistanceZ() {
-    return 0.0;
+    Pose3d position = LimelightHelpers.getBotPose3d("");
+
+    if (HasTarget()) {
+      currentID = TargetID();
+      int Id = (int) Math.round(currentID);
+
+      double idZPosition = Constants.AprilTagConstants.kAprilTagPositions[Id][2];
+      double zDistance = (idZPosition+Fiducial3DOffsetZ)-position.getZ();
+
+      return zDistance;
+    } else {
+      return -1;
+    }
   }
 
   public double GetDistance() {
