@@ -61,63 +61,6 @@ public class VisionSubsystem extends SubsystemBase {
     Fiducial3DOffsetZ = offset[2];
   }
 
-  
-  public double GetDistanceX() {
-    Pose3d position = LimelightHelpers.getBotPose3d("");
-
-    if (HasTarget()) {
-      currentID = TargetID();
-      int Id = (int) Math.round(currentID);
-
-      double idXPosition = Constants.AprilTagConstants.kAprilTagPositions[Id][0];
-      double xDistance = (idXPosition+Fiducial3DOffsetX)-position.getX();
-
-      return xDistance;
-    } else {
-      return -1;
-    }
-  }
-
-  public double GetDistanceY() {
-    Pose3d position = LimelightHelpers.getBotPose3d("");
-
-    if (HasTarget()) {
-      currentID = TargetID();
-      int Id = (int) Math.round(currentID);
-
-      double idYPosition = Constants.AprilTagConstants.kAprilTagPositions[Id][1];
-      double yDistance = (idYPosition+Fiducial3DOffsetY)-position.getY();
-
-      return yDistance;
-    } else {
-      return -1;
-    }
-  }
-
-  public double GetDistanceZ() {
-    Pose3d position = LimelightHelpers.getBotPose3d("");
-
-    if (HasTarget()) {
-      currentID = TargetID();
-      int Id = (int) Math.round(currentID);
-
-      double idZPosition = Constants.AprilTagConstants.kAprilTagPositions[Id][2];
-      double zDistance = (idZPosition+Fiducial3DOffsetZ)-position.getZ();
-
-      return zDistance;
-    } else {
-      return -1;
-    }
-  }
-
-  public double GetDistance() {
-    double a=GetDistanceX();
-    double b=GetDistanceY();
-    double c=GetDistanceZ();
-
-    return Math.sqrt(a*a+b*b+c*c);
-  }
-
   /**
    * An example method querying a boolean state of the subsystem (for example, a digital sensor).
    *
