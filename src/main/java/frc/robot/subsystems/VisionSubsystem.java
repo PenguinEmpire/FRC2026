@@ -4,10 +4,15 @@
 
 package frc.robot.subsystems;
 
+import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonUtils;
+import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
+
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.LimelightHelpers;
 import frc.robot.Constants;
 
 public class VisionSubsystem extends SubsystemBase {
@@ -18,10 +23,12 @@ public class VisionSubsystem extends SubsystemBase {
   public double Fiducial3DOffsetY = 0;
   public double Fiducial3DOffsetZ = 0;
 
+  PhotonCamera camera = new PhotonCamera("photonvision");
+
   /** Creates a new ExampleSubsystem. */
   public VisionSubsystem() {
-    LimelightHelpers.setFiducial3DOffset("", 0.0, 0.0, 0.0);
-    LimelightHelpers.SetFiducialIDFiltersOverride("", ValidIds);
+    //LimelightHelpers.setFiducial3DOffset("", 0.0, 0.0, 0.0);
+    //LimelightHelpers.SetFiducialIDFiltersOverride("", ValidIds);
   }
 
   /**
@@ -38,28 +45,38 @@ public class VisionSubsystem extends SubsystemBase {
         });
   }
 
+  public PhotonPipelineResult getResult() {
+    return camera.getLatestResult();
+  }
+
   public boolean HasTarget() {
-    return LimelightHelpers.getTV("");
+    return getResult().hasTargets();
+  }
+
+  public PhotonTrackedTarget getBestTarget() {
+    return getResult().getBestTarget();
   }
 
   public double TargetID() {
-    return LimelightHelpers.getFiducialID("");
+    return getBestTarget().fiducialId;
   }
 
   public double GetXAngle() {
-    return LimelightHelpers.getTX("");
+    /*Transform3d pose = getBestTarget().getBestCameraToTarget();
+    if (aprilTagFieldLayout.getTagPose(getBestTarget().getFiducialId()).isPresent()) {
+      Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(getBestTarget().getBestCameraToTarget(), aprilTagFieldLayout.getTagPose(getBestTarget().getFiducialId()).get(), cameraToRobot);
+
+    return PhotonUtils.getYawToPose(robotPose, targetPose);*/
+
+    return getBestTarget().getYaw();
   }
 
-  public double GetYAngle() {
-    return LimelightHelpers.getTY("");
-  }
-
-  public void ChangeFiducial3DOffset(double[] offset) {
+  /*public void ChangeFiducial3DOffset(double[] offset) {
     LimelightHelpers.setFiducial3DOffset("", offset[0], offset[1], offset[2]);
     Fiducial3DOffsetX = offset[0];
     Fiducial3DOffsetY = offset[1];
     Fiducial3DOffsetZ = offset[2];
-  }
+  }*/
 
   /**
    * An example method querying a boolean state of the subsystem (for example, a digital sensor).
@@ -78,10 +95,10 @@ public class VisionSubsystem extends SubsystemBase {
       if (HasTarget()) {
         currentID = TargetID();
         int Id = (int) Math.round(currentID);
-        ChangeFiducial3DOffset(Constants.AprilTagConstants.kAprilTagOffsets[Id]);
+        //ChangeFiducial3DOffset(Constants.AprilTagConstants.kAprilTagOffsets[Id]);
       } else {
         currentID = -1;
-        ChangeFiducial3DOffset(Constants.AprilTagConstants.kUndefinedOffset);
+        //ChangeFiducial3DOffset(Constants.AprilTagConstants.kUndefinedOffset);
       }
     }
   }
