@@ -1,4 +1,4 @@
-package frc.robot.Motors.MotorControllers;
+package frc.robot.Motors.MotorClasses;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import frc.robot.Motors.MotorInterface;
 
