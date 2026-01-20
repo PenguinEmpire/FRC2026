@@ -1,17 +1,17 @@
 package frc.robot.Motors.MotorClasses;
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import com.revrobotics.spark.SparkMax;
 import frc.robot.Motors.MotorInterface;
 
 public class SparkMaxMotor implements MotorInterface {
     boolean isInverted;
     int motorID;
-    Spark m_Motor;
+    SparkMax m_Motor;
 
     public SparkMaxMotor(int id, boolean inverted) {
         this.isInverted = inverted;
         this.motorID = id;
 
-        this.m_Motor = new Spark(motorID);
+        this.m_Motor = new SparkMax(id, null);
     }
 
     public void rotate(double speed) {
