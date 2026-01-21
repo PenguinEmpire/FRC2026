@@ -11,7 +11,7 @@ public class TalonMotor implements MotorInterface {
         this.isInverted = inverted;
         this.motorID = id;
 
-        this.m_Motor = new Talon(id);
+        this.m_Motor = new Talon(this.motorID);
     }
 
     public void rotate(double speed) {

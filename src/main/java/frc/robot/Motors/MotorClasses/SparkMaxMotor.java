@@ -1,5 +1,7 @@
 package frc.robot.Motors.MotorClasses;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+
 import frc.robot.Motors.MotorInterface;
 
 public class SparkMaxMotor implements MotorInterface {
@@ -11,7 +13,7 @@ public class SparkMaxMotor implements MotorInterface {
         this.isInverted = inverted;
         this.motorID = id;
 
-        this.m_Motor = new SparkMax(id, null);
+        this.m_Motor = new SparkMax(this.motorID, null);
     }
 
     public void rotate(double speed) {
