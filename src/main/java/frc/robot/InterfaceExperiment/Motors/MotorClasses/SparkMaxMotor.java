@@ -1,8 +1,8 @@
-package frc.robot.Motors.MotorClasses;
+package frc.robot.InterfaceExperiment.Motors.MotorClasses;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
-import frc.robot.Motors.MotorInterface;
+import frc.robot.InterfaceExperiment.Motors.MotorInterface;
 
 public class SparkMaxMotor implements MotorInterface {
     boolean isInverted;

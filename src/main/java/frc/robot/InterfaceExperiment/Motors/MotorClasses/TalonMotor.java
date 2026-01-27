@@ -1,6 +1,6 @@
-package frc.robot.Motors.MotorClasses;
+package frc.robot.InterfaceExperiment.Motors.MotorClasses;
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
-import frc.robot.Motors.MotorInterface;
+import frc.robot.InterfaceExperiment.Motors.MotorInterface;
 
 public class TalonMotor implements MotorInterface {
     boolean isInverted;
