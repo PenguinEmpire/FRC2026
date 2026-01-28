@@ -13,7 +13,7 @@ public class SparkMaxMotor implements MotorInterface {
         this.isInverted = inverted;
         this.motorID = id;
 
-        this.m_Motor = new SparkMax(this.motorID, null);
+        this.m_Motor = new SparkMax(this.motorID, MotorType.kBrushless);
     }
 
     public void rotate(double speed) {

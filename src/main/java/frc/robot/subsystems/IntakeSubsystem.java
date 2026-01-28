@@ -6,12 +6,18 @@ package frc.robot.subsystems;
 
 import java.util.logging.LogManager;
 
+import com.revrobotics.spark.SparkMax;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Modules.JointModule;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 public class IntakeSubsystem extends SubsystemBase {
-  private final JointModule m_JointRotation = new JointModule("IntakeJoint", 0);
+  private final JointModule m_JointRotation = new JointModule("IntakeJoint", Constants.IntakeConstants.kIntakeJointMotorID);
+
+  private final SparkMax m_RollerMotor = new SparkMax(Constants.IntakeConstants.kIntakeRollerMotorID, MotorType.kBrushless);
   /** Creates a new ExampleSubsystem. */
   public IntakeSubsystem() {}
 
@@ -52,4 +58,10 @@ public class IntakeSubsystem extends SubsystemBase {
   public void setRotationPosition(double position) {
         m_JointRotation.setPosition(position); //  Move intake to a target position
     }
+
+  public void spinRollers(boolean active) {
+    if (active) {
+      m_RollerMotor.set(Constants.IntakeConstants.kRollerMotorPower);
+    }
+  }
 }

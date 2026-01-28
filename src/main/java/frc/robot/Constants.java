@@ -23,7 +23,10 @@ public final class Constants {
   }
 
   public static class IntakeConstants {
-    public static final int kIntakeMotorID = 0; //Change with actual motor IDs and change name (add more once # of motors is known)
+    public static final int kIntakeRollerMotorID = 0; //Change with actual motor IDs and change name (add more once # of motors is known)
+    public static final int kIntakeJointMotorID = 0;
+    
+    public static final int kRollerMotorPower = 0;
   }
 
   public static class ClimbConstants {
