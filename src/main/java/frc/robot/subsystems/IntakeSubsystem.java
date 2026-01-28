@@ -4,10 +4,14 @@
 
 package frc.robot.subsystems;
 
+import java.util.logging.LogManager;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Modules.JointModule;
 
 public class IntakeSubsystem extends SubsystemBase {
+  private final JointModule m_JointRotation = new JointModule("IntakeJoint", 0);
   /** Creates a new ExampleSubsystem. */
   public IntakeSubsystem() {}
 
@@ -44,4 +48,8 @@ public class IntakeSubsystem extends SubsystemBase {
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
   }
+
+  public void setRotationPosition(double position) {
+        m_JointRotation.setPosition(position); //  Move intake to a target position
+    }
 }

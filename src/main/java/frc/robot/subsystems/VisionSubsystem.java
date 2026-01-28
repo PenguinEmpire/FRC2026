@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
@@ -58,27 +59,6 @@ public class VisionSubsystem extends SubsystemBase {
     Fiducial3DOffsetX = offset[0];
     Fiducial3DOffsetY = offset[1];
     Fiducial3DOffsetZ = offset[2];
-  }
-
-  //TO DO: set up bot localization and then make this command
-  public double GetDistanceX() {
-    return 0.0;
-  }
-
-  public double GetDistanceY() {
-    return 0.0;
-  }
-
-  public double GetDistanceZ() {
-    return 0.0;
-  }
-
-  public double GetDistance() {
-    double a=GetDistanceX();
-    double b=GetDistanceY();
-    double c=GetDistanceZ();
-
-    return Math.sqrt(a*a+b*b+c*c);
   }
 
   /**

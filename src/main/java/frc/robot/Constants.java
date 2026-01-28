@@ -36,15 +36,6 @@ public final class Constants {
   }
 
   public static class AprilTagConstants { 
-    //April Tag Localized Positions:
-    public static final double[] kAprilTagID0Position = {0.0, 0.0, 0.0}; //The position relative to field of the april tag
-    public static final double[] kAprilTagID1Position = {0.0, 0.0, 0.0}; //The position relative to field of the april tag
-    public static final double[] kAprilTagID2Position = {0.0, 0.0, 0.0};
-    public static final double[] kAprilTagID3Position = {0.0, 0.0, 0.0};
-
-    public static final double[][] kAprilTagPositions = {kAprilTagID0Position, kAprilTagID1Position, kAprilTagID2Position, kAprilTagID3Position};
-
-
     //OffsetConstants:
     public static final double[] kUndefinedOffset = {0,0,0};
 
