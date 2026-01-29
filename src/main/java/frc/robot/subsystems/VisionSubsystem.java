@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
@@ -59,6 +60,10 @@ public class VisionSubsystem extends SubsystemBase {
     Fiducial3DOffsetX = offset[0];
     Fiducial3DOffsetY = offset[1];
     Fiducial3DOffsetZ = offset[2];
+
+    SmartDashboard.putNumber("X_Fiducial", offset[0]);
+    SmartDashboard.putNumber("Y_Fiducial", offset[1]);
+    SmartDashboard.putNumber("Z_Fiducial", offset[2]);
   }
 
   /**

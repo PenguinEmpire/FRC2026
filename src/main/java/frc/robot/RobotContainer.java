@@ -11,6 +11,8 @@ import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
@@ -21,6 +23,7 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class RobotContainer {
+    //Smart dashboard configuration
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
@@ -39,6 +42,14 @@ public class RobotContainer {
 
     public RobotContainer() {
         configureBindings();
+
+        SmartDashboard.putNumber("P_Orientate", 0);
+        SmartDashboard.putNumber("I_Orientate", 0);
+        SmartDashboard.putNumber("D_Orientate", 0);
+
+        SmartDashboard.putNumber("X_Fiducial", 0);
+        SmartDashboard.putNumber("Y_Fiducial", 0);
+        SmartDashboard.putNumber("Z_Fiducial", 0);
     }
 
     private void configureBindings() {
