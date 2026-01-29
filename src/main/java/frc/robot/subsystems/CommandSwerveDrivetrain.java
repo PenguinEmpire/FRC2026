@@ -17,6 +17,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -47,7 +48,16 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     private PS5Controller joystick = new PS5Controller(0);
 
-    private PIDController rotPID = new PIDController(0.05,0,0);
+    private PIDController rotPID = new PIDController(0.015,0,0.0001);
+
+     private final TrapezoidProfile m_profile =
+      new TrapezoidProfile(new TrapezoidProfile.Constraints(RotationsPerSecond.of(0.75).in(RadiansPerSecond), 7.5));
+    private TrapezoidProfile.State m_goal = new TrapezoidProfile.State(0,0);
+    private TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State();
+    
+    private double targetPosition;
+
+    private double kDt = 0.2;
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -233,6 +243,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     @Override
     public void periodic() {
+
+        m_setpoint = m_profile.calculate(kDt, new TrapezoidProfile.State(m_VisionSubsystem.GetXAngle(), m_setpoint.velocity), m_goal);
         /*
          * Periodically try to apply the operator perspective.
          * If we haven't applied the operator perspective before, then we should apply it regardless of DS state.
@@ -316,19 +328,14 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return super.samplePoseAt(Utils.fpgaToCurrentTime(timestampSeconds));
     }
 
-    public double getRotationalRate() {
+     public double getRotationalRate() {
         double maxAngularSpeed = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
         
         if (m_VisionSubsystem.HasTarget() && joystick.getR1Button()) {
-            double pidSpeed = rotPID.calculate(m_VisionSubsystem.GetXAngle(),0);
-            if (pidSpeed<maxAngularSpeed && pidSpeed>-maxAngularSpeed) {
-                return pidSpeed;
-            } else if (0<maxAngularSpeed) {
-                return maxAngularSpeed;
-            } else {
-                return -maxAngularSpeed;
-            }
+            double pidSpeed = rotPID.calculate(m_VisionSubsystem.GetXAngle(), 0);
+            return pidSpeed*maxAngularSpeed;
         } else {
+            rotPID.reset();
             return -joystick.getRightX() * maxAngularSpeed;
         }
     }
