@@ -47,7 +47,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     private PS5Controller joystick = new PS5Controller(0);
 
-    private PIDController rotPID = new PIDController(0,0,0);
+    private PIDController rotPID = new PIDController(0.05,0,0);
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -240,9 +240,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
          * Otherwise, only check and apply the operator perspective if the DS is disabled.
          * This ensures driving behavior doesn't change until an explicit disable event occurs during testing.
          */
-        rotPID.setP(SmartDashboard.getNumber("P_Orientate", 0));
-        rotPID.setI(SmartDashboard.getNumber("I_Orientate", 0));
-        rotPID.setD(SmartDashboard.getNumber("D_Orientate", 0));
+        //rotPID.setP(SmartDashboard.getNumber("P_Orientate", 0));
+        //rotPID.setI(SmartDashboard.getNumber("I_Orientate", 0));
+        //rotPID.setD(SmartDashboard.getNumber("D_Orientate", 0));
 
         if (!m_hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
             DriverStation.getAlliance().ifPresent(allianceColor -> {
@@ -318,7 +318,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     public double getRotationalRate() {
         double maxAngularSpeed = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
-        if (m_VisionSubsystem.HasTarget() && joystick.getL1Button()) {
+        
+        if (m_VisionSubsystem.HasTarget() && joystick.getR1Button()) {
             double pidSpeed = rotPID.calculate(m_VisionSubsystem.GetXAngle(),0);
             if (pidSpeed<maxAngularSpeed && pidSpeed>-maxAngularSpeed) {
                 return pidSpeed;
