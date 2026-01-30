@@ -27,7 +27,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-
+import frc.robot.Constants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 
 import frc.robot.subsystems.VisionSubsystem;
@@ -329,14 +329,22 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
      public double getRotationalRate() {
-        double maxAngularSpeed = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
-        
         if (m_VisionSubsystem.HasTarget() && joystick.getR1Button()) {
             double pidSpeed = rotPID.calculate(m_VisionSubsystem.GetXAngle(), 0);
-            return pidSpeed*maxAngularSpeed;
+            return clamp(pidSpeed)*Constants.SwerveConstants.kMaxAngularSpeed;
         } else {
             rotPID.reset();
-            return -joystick.getRightX() * maxAngularSpeed;
+            return -joystick.getRightX() * Constants.SwerveConstants.kMaxAngularSpeed;
+        }
+    }
+
+    private double clamp(double speed) {
+        if (speed<1 && speed>-1) {
+            return speed;
+        } else if (speed<0) {
+            return -1;
+        } else {
+            return 1;
         }
     }
 }
