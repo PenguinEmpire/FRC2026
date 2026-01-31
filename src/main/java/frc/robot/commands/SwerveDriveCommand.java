@@ -39,7 +39,7 @@ public class SwerveDriveCommand extends Command {
   public void execute() {
     if (m_visionSubsystem.HasTarget()) {
       double tx = m_visionSubsystem.GetXAngle();
-      rotationalSpeed = rotationalPID.calculate(tx, 0);
+      //rotationalSpeed = rotationalPID.calculate(tx, 0);
     }
   }
 

@@ -83,7 +83,9 @@ public class VisionSubsystem extends SubsystemBase {
       if (HasTarget()) {
         currentID = TargetID();
         int Id = (int) Math.round(currentID);
-        ChangeFiducial3DOffset(Constants.AprilTagConstants.kAprilTagOffsets[Id]);
+        if (Id>=0) {
+          ChangeFiducial3DOffset(Constants.AprilTagConstants.kAprilTagOffsets[Id]);
+        }
       } else {
         currentID = -1;
         ChangeFiducial3DOffset(Constants.AprilTagConstants.kUndefinedOffset);

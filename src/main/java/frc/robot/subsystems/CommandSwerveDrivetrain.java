@@ -48,7 +48,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     private PS5Controller joystick = new PS5Controller(0);
 
-    private PIDController rotPID = new PIDController(0.015,0,0.0001);
+    private PIDController rotPID = new PIDController(0.000135,0,0.00002); 
+        private double kS = 0.099;
+
+    private double currentPercentSpeed;
+
 
      private final TrapezoidProfile m_profile =
       new TrapezoidProfile(new TrapezoidProfile.Constraints(RotationsPerSecond.of(0.75).in(RadiansPerSecond), 7.5));
@@ -331,9 +335,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
      public double getRotationalRate() {
         if (m_VisionSubsystem.HasTarget() && joystick.getR1Button()) {
             double pidSpeed = rotPID.calculate(m_VisionSubsystem.GetXAngle(), 0);
+            pidSpeed += Math.copySign(kS, pidSpeed);
+            currentPercentSpeed = pidSpeed;
             return clamp(pidSpeed)*Constants.SwerveConstants.kMaxAngularSpeed;
         } else {
-            rotPID.reset();
             return -joystick.getRightX() * Constants.SwerveConstants.kMaxAngularSpeed;
         }
     }
