@@ -15,6 +15,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -25,6 +26,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private SparkMax m_rightShooterMotor = new SparkMax(Constants.ShooterConstants.kRightShooterMotorID, MotorType.kBrushless);
 
   private SparkMax m_jointMotor = new SparkMax(Constants.ShooterConstants.kJointMotorID, MotorType.kBrushless);
+  private PS5Controller joystick = new PS5Controller(0);
 
   private final SparkClosedLoopController pidController;
 
@@ -94,11 +96,15 @@ public class ShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    if (m_VisionSubsystem.HasTarget()) {
+    if (m_VisionSubsystem.HasTarget() && joystick.getR1Button()) {
       m_goal = new TrapezoidProfile.State(getTargetAngle(), 0);
       m_setpoint = m_profile.calculate(kDt, m_setpoint, m_goal);
       pidController.setSetpoint(m_setpoint.position, SparkBase.ControlType.kPosition);
     }
+  }
+
+  public void MoveHood(double speed) {
+    m_jointMotor.set(speed);
   }
 
   @Override

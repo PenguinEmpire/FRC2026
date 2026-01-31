@@ -14,11 +14,14 @@ import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.PS5Controller;
 
 public class JointModule {
     private final String name;
     private final SparkMax motor;
     private final SparkClosedLoopController pidController;
+
+    private PS5Controller joystick = new PS5Controller(0);
 
     private final TrapezoidProfile m_profile =
       new TrapezoidProfile(new TrapezoidProfile.Constraints(20, 7.5));
@@ -68,6 +71,11 @@ public class JointModule {
         //double currentPos = getPosition();
         //double outputFF = feedforward.calculate(m_setpoint.position, m_setpoint.velocity);
         m_setpoint = m_profile.calculate(kDt, m_setpoint, m_goal);
+        if (!joystick.getCircleButton() && !joystick.getCrossButton())
         pidController.setSetpoint(m_setpoint.position, SparkBase.ControlType.kPosition);
+    }
+
+    public void ManualMove(double speed) {
+        motor.set(speed);
     }
 }

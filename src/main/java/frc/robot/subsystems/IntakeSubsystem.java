@@ -59,9 +59,15 @@ public class IntakeSubsystem extends SubsystemBase {
         m_JointRotation.setPosition(position); //  Move intake to a target position
     }
 
+
+
   public void spinRollers(boolean active) {
     if (active) {
       m_RollerMotor.set(Constants.IntakeConstants.kRollerMotorPower);
     }
+  }
+
+  public void manualMove(double speed) {
+    m_JointRotation.ManualMove(speed);
   }
 }
