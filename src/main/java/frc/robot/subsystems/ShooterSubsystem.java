@@ -18,7 +18,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import frc.robot.Constants;  
 
 public class ShooterSubsystem extends SubsystemBase {
   private SparkMax m_leftShooterMotor = new SparkMax(Constants.ShooterConstants.kLeftShooterMotorID, MotorType.kBrushless);
