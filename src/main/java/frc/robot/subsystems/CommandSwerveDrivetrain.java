@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
+import frc.robot.generated.TunerConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 
 import frc.robot.subsystems.VisionSubsystem;
@@ -48,20 +49,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     private PS5Controller joystick = new PS5Controller(0);
 
-    private PIDController rotPID = new PIDController(0.000135,0,0.00002); 
-        private double kS = 0.099;
-
-    private double currentPercentSpeed;
-
-
-     private final TrapezoidProfile m_profile =
-      new TrapezoidProfile(new TrapezoidProfile.Constraints(RotationsPerSecond.of(0.75).in(RadiansPerSecond), 7.5));
-    private TrapezoidProfile.State m_goal = new TrapezoidProfile.State(0,0);
-    private TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State();
+    private PIDController rotPID = new PIDController(0.02,0,0.005);
     
-    private double targetPosition;
-
-    private double kDt = 0.2;
+    private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -247,8 +237,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     @Override
     public void periodic() {
-
-        m_setpoint = m_profile.calculate(kDt, new TrapezoidProfile.State(m_VisionSubsystem.GetXAngle(), m_setpoint.velocity), m_goal);
         /*
          * Periodically try to apply the operator perspective.
          * If we haven't applied the operator perspective before, then we should apply it regardless of DS state.
@@ -332,14 +320,14 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return super.samplePoseAt(Utils.fpgaToCurrentTime(timestampSeconds));
     }
 
-     public double getRotationalRate() {
+     public double[] getDriveRates() {
         if (m_VisionSubsystem.HasTarget() && joystick.getR1Button()) {
             double pidSpeed = rotPID.calculate(m_VisionSubsystem.GetXAngle(), 0);
-            pidSpeed += Math.copySign(kS, pidSpeed);
-            currentPercentSpeed = pidSpeed;
-            return clamp(pidSpeed)*Constants.SwerveConstants.kMaxAngularSpeed;
-        } else {
-            return -joystick.getRightX() * Constants.SwerveConstants.kMaxAngularSpeed;
+            double[] driveRates = {-joystick.getLeftY() * MaxSpeed*0.5, -joystick.getLeftX()*0.5 * MaxSpeed, clamp(pidSpeed)*RotationsPerSecond.of(0.5).in(RadiansPerSecond)};
+            return driveRates;
+        } else { 
+            double[] driveRates = {-joystick.getLeftY() * MaxSpeed, -joystick.getLeftX() * MaxSpeed, -joystick.getRightX() * Constants.SwerveConstants.kMaxAngularSpeed};
+            return driveRates;
         }
     }
 

@@ -22,11 +22,15 @@ public final class Constants {
   }
 
   public static class SwerveConstants {
-    public static final double kMaxAngularSpeed = RotationsPerSecond.of(0.75).in(RadiansPerSecond);;
+    public static final double kMaxAngularSpeed = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
   }
 
   public static class ShooterConstants {
-    public static final int kShooterMotorID = 0; //Change with actual motor IDs and change name (add more once # of motors is known)
+    public static final int kShooter1MotorID = 0; //Change with actual motor IDs and change name (add more once # of motors is known)
+    public static final int kShooter2MotorID = 0;
+    public static final int kShooter3MotorID = 0;
+
+    public static final int kJointMotorID = 0;
     public static final int kShooterVelocity = 0; //Change to the output velocity of the shooter when known
   }
 

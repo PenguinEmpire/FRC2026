@@ -11,6 +11,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.ResetMode;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.PersistMode;
+import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
@@ -57,10 +58,10 @@ public class JointModule {
     }
 
     public double getPosition() {
-        AbsoluteEncoder absEncoder = motor.getAbsoluteEncoder();
+        RelativeEncoder relativeEncoder = motor.getEncoder();
 
        
-        return absEncoder.getPosition();
+        return relativeEncoder.getPosition();
     }
 
     public void periodic() {

@@ -58,7 +58,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        SignalLogger.start();
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().cancel(m_autonomousCommand);
         }
@@ -69,7 +68,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopExit() {
-        SignalLogger.stop();
     }
 
     @Override
