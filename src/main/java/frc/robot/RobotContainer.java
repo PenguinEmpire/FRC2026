@@ -42,14 +42,6 @@ public class RobotContainer {
 
     public RobotContainer() {
         configureBindings();
-
-        SmartDashboard.putNumber("P_Orientate", 0);
-        SmartDashboard.putNumber("I_Orientate", 0);
-        SmartDashboard.putNumber("D_Orientate", 0);
-
-        SmartDashboard.putNumber("X_Fiducial", 0);
-        SmartDashboard.putNumber("Y_Fiducial", 0);
-        SmartDashboard.putNumber("Z_Fiducial", 0);
     }
 
     private void configureBindings() {
