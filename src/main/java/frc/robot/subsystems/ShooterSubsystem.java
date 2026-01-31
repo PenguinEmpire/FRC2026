@@ -14,16 +14,15 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class ShooterSubsystem extends SubsystemBase {
-  private SparkMax m_shooterMotor1 = new SparkMax(Constants.ShooterConstants.kShooter1MotorID, MotorType.kBrushless);
-  private SparkMax m_shooterMotor2 = new SparkMax(Constants.ShooterConstants.kShooter2MotorID, MotorType.kBrushless);
-  private SparkMax m_shooterMotor3 = new SparkMax(Constants.ShooterConstants.kShooter3MotorID, MotorType.kBrushless);
+  private SparkMax m_leftShooterMotor = new SparkMax(Constants.ShooterConstants.kLeftShooterMotorID, MotorType.kBrushless);
+  private SparkMax m_middleShooterMotor = new SparkMax(Constants.ShooterConstants.kMiddleShooterMotorID, MotorType.kBrushless);
+  private SparkMax m_rightShooterMotor = new SparkMax(Constants.ShooterConstants.kRightShooterMotorID, MotorType.kBrushless);
 
   private SparkMax m_jointMotor = new SparkMax(Constants.ShooterConstants.kJointMotorID, MotorType.kBrushless);
 
@@ -35,8 +34,6 @@ public class ShooterSubsystem extends SubsystemBase {
       new TrapezoidProfile(new TrapezoidProfile.Constraints(20, 7.5));
     private TrapezoidProfile.State m_goal = new TrapezoidProfile.State();
     private TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State();
-    
-    private double targetPosition;
 
     private double kDt = 0.2;
 
@@ -111,9 +108,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void enableShooter(boolean active) {
     if (active) {
-      m_shooterMotor1.set(Constants.ShooterConstants.kShooterVelocity);
-      m_shooterMotor2.set(Constants.ShooterConstants.kShooterVelocity);
-      m_shooterMotor3.set(Constants.ShooterConstants.kShooterVelocity);
+      m_leftShooterMotor.set(Constants.ShooterConstants.kShooterVelocity);
+      m_middleShooterMotor.set(Constants.ShooterConstants.kShooterVelocity);
+      m_rightShooterMotor.set(Constants.ShooterConstants.kShooterVelocity);
     }
   }
 }
