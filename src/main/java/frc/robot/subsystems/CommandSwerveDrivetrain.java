@@ -145,6 +145,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (Utils.isSimulation()) {
             startSimThread();
         }
+        SmartDashboard.putNumber("AlignmentP", 0.02);
+        SmartDashboard.putNumber("AlignmentI", 0);
+        SmartDashboard.putNumber("AlignmentD", 0.005);
+        SmartDashboard.putNumber("AlignmentPercentSpeed", 0.5);
+        SmartDashboard.putNumber("AlignmentAngularSpeed", 0.5);
     }
 
     /**

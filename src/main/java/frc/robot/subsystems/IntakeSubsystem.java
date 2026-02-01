@@ -43,6 +43,13 @@ public class IntakeSubsystem extends SubsystemBase {
   private final SparkMax m_RollerMotor = new SparkMax(Constants.IntakeConstants.kIntakeRollerMotorID, MotorType.kBrushless);
   /** Creates a new ExampleSubsystem. */
   public IntakeSubsystem() {
+    SmartDashboard.putNumber("IntakekDT", 0.2);
+    SmartDashboard.putNumber("IntakeJointMaxVelocity", 20);
+    SmartDashboard.putNumber("IntakeJointMaxAcceleration", 7.5);
+    SmartDashboard.putNumber("IntakeJointP", 0);
+    SmartDashboard.putNumber("IntakeJointI", 0);
+    SmartDashboard.putNumber("IntakeJointD", 0);
+
     SparkMaxConfig motorConfig = new SparkMaxConfig();
         motorConfig
             .inverted(true)

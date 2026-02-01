@@ -42,6 +42,12 @@ public class ShooterSubsystem extends SubsystemBase {
 
   /** Creates a new ExampleSubsystem. */
   public ShooterSubsystem() {
+    SmartDashboard.putNumber("ShooterkDT", 0.2);
+    SmartDashboard.putNumber("ShooterJointMaxVelocity", 20);
+    SmartDashboard.putNumber("ShooterJointMaxAcceleration", 7.5);
+    SmartDashboard.putNumber("ShooterJointP", 0);
+    SmartDashboard.putNumber("ShooterJointI", 0);
+    SmartDashboard.putNumber("ShooterJointD", 0);
     SparkMaxConfig motorConfig = new SparkMaxConfig();
         motorConfig
             .inverted(true)
