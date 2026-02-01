@@ -12,6 +12,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.PS5Controller;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -91,29 +92,34 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void setPosition(double newTargetPosition) {
-        this.targetPosition = newTargetPosition;
-        m_goal = new TrapezoidProfile.State(targetPosition, 0);
-    }
+      this.targetPosition = newTargetPosition;
+      m_goal = new TrapezoidProfile.State(targetPosition, 0);
+  }
 
-    public double getPosition() {
-        RelativeEncoder relativeEncoder = m_jointMotor.getEncoder();
+  public double getPosition() {
+      RelativeEncoder relativeEncoder = m_jointMotor.getEncoder();
 
        
-        return relativeEncoder.getPosition();
+      return relativeEncoder.getPosition();
+  }
+
+  @Override
+  public void periodic() {
+    //double currentPos = getPosition();
+    //double outputFF = feedforward.calculate(m_setpoint.position, m_setpoint.velocity);
+    m_setpoint = m_profile.calculate(kDt, m_setpoint, m_goal);
+    if (!joystick.getCircleButton() && !joystick.getCrossButton()) {
+       pidController.setSetpoint(m_setpoint.position, SparkBase.ControlType.kPosition);
     }
 
-    @Override
-    public void periodic() {
-        //double currentPos = getPosition();
-        //double outputFF = feedforward.calculate(m_setpoint.position, m_setpoint.velocity);
-        m_setpoint = m_profile.calculate(kDt, m_setpoint, m_goal);
-        if (!joystick.getCircleButton() && !joystick.getCrossButton())
-        pidController.setSetpoint(m_setpoint.position, SparkBase.ControlType.kPosition);
-    }
+    SmartDashboard.putNumber("IntakeTargetPosition", m_goal.position);
+    SmartDashboard.putNumber("IntakeCurrentPosition", m_setpoint.position);
+    //SmartDashboard.putNumber("IntakeTargetPosition", getPosition());
+  }
 
-    public void ManualMove(double speed) {
-        m_jointMotor.set(speed);
-    }
+  public void ManualMove(double speed) {
+      m_jointMotor.set(speed);
+  }
   public void spinRollers(boolean active) {
     if (active) {
       m_RollerMotor.set(Constants.IntakeConstants.kRollerMotorPower);

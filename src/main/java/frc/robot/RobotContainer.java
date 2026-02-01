@@ -53,6 +53,10 @@ public class RobotContainer {
         //Alignment Smart Dashboard (updated in CommandSwerveDrivetrain)
         SmartDashboard.putBoolean("AligningToAprilTag", false);
 
+        //Intake Smart Dashboard (in intake subsystem)
+        SmartDashboard.putNumber("IntakeTargetPosition", 0);
+    SmartDashboard.putNumber("IntakeCurrentPosition", 0);
+
         configureBindings();
     }
 
