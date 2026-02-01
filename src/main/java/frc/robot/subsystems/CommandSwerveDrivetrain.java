@@ -319,10 +319,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
      public double[] getDriveRates() {
         if (m_VisionSubsystem.HasTarget() && joystick.getR1Button()) {
+            SmartDashboard.putBoolean("AligningToAprilTag", true);
             double pidSpeed = rotPID.calculate(m_VisionSubsystem.GetXAngle(), 0);
             double[] driveRates = {-joystick.getLeftY() * MaxSpeed*0.5, -joystick.getLeftX()*0.5 * MaxSpeed, clamp(pidSpeed)*RotationsPerSecond.of(0.5).in(RadiansPerSecond)};
             return driveRates;
         } else { 
+            SmartDashboard.putBoolean("AligningToAprilTag", false);
             double[] driveRates = {-joystick.getLeftY() * MaxSpeed, -joystick.getLeftX() * MaxSpeed, -joystick.getRightX() * Constants.SwerveConstants.kMaxAngularSpeed};
             return driveRates;
         }

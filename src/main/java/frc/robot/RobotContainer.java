@@ -41,6 +41,18 @@ public class RobotContainer {
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     public RobotContainer() {
+        //Vision Smart Dashboard (updated in vision subsystem)
+        SmartDashboard.putNumber("VisionID", 0);
+        SmartDashboard.putNumber("tx", 0);
+        SmartDashboard.putNumber("ty", 0);
+
+        //Shooter angle Smart Dashboard (updated in Shooter Subsystem)
+        SmartDashboard.putNumber("HoodTargetPosition", 0);
+        SmartDashboard.putNumber("HoodCurrentPosition", 0);
+
+        //Alignment Smart Dashboard (updated in CommandSwerveDrivetrain)
+        SmartDashboard.putBoolean("AligningToAprilTag", false);
+
         configureBindings();
     }
 

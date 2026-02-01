@@ -16,6 +16,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.PS5Controller;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;  
@@ -101,6 +102,10 @@ public class ShooterSubsystem extends SubsystemBase {
       m_setpoint = m_profile.calculate(kDt, m_setpoint, m_goal);
       pidController.setSetpoint(m_setpoint.position, SparkBase.ControlType.kPosition);
     }
+
+    SmartDashboard.putNumber("HoodTargetPosition", m_goal.position);
+    SmartDashboard.putNumber("HoodCurrentPosition", m_setpoint.position);
+    //SmartDashboard.putNumber("HoodCurrentPosition", m_jointMotor.getEncoder().getPosition()); //Alternative way to get position
   }
 
   public void MoveHood(double speed) {

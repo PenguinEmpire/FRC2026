@@ -75,6 +75,11 @@ public class VisionSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    SmartDashboard.putNumber("VisionID", currentID);
+    SmartDashboard.putNumber("tx", GetXAngle());
+    SmartDashboard.putNumber("ty", GetYAngle());
+
     if (TargetID()!=currentID) {
       if (HasTarget()) {
         currentID = TargetID();
