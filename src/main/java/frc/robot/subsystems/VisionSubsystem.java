@@ -81,16 +81,15 @@ public class VisionSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("ty", GetYAngle());
 
     if (TargetID()!=currentID) {
+      int Id;
       if (HasTarget()) {
         currentID = TargetID();
-        int Id = (int) Math.round(currentID);
-        if (Id>=0) {
-          ChangeFiducial3DOffset(Constants.AprilTagConstants.kAprilTagOffsets.get(Id));
-        }
+        Id = (int) Math.round(currentID);
       } else {
         currentID = -1;
-        ChangeFiducial3DOffset(Constants.AprilTagConstants.kUndefinedOffset);
+        Id = -1;
       }
+      ChangeFiducial3DOffset(Constants.AprilTagConstants.kAprilTagOffsets.get(Id));
     }
   }
 

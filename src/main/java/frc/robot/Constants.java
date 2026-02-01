@@ -65,6 +65,7 @@ public final class Constants {
     public static final double[] kAprilTagID2Offset = {0.5, 1, 0.0};
     public static final double[] kAprilTagID3Offset = {0.0, 0.0, 0.0};
     public static final Map<Integer, double[]> kAprilTagOffsets = Map.of(
+            -1, kUndefinedOffset,
             1, kAprilTagID1Offset,
             2, kAprilTagID2Offset,
             3, kAprilTagID3Offset
