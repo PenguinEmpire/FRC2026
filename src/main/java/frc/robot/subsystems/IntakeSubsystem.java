@@ -32,13 +32,13 @@ public class IntakeSubsystem extends SubsystemBase {
   private PS5Controller joystick = new PS5Controller(0);
 
   private final TrapezoidProfile m_profile =
-    new TrapezoidProfile(new TrapezoidProfile.Constraints(20, 7.5));
+    new TrapezoidProfile(new TrapezoidProfile.Constraints(SmartDashboard.getNumber("IntakeJointMaxVelocity", 20), SmartDashboard.getNumber("IntakeJointMaxAcceleration", 7.5)));
   private TrapezoidProfile.State m_goal = new TrapezoidProfile.State();
   private TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State();
     
   private double targetPosition;
 
-  private double kDt = 0.2;
+  private double kDt = SmartDashboard.getNumber("IntakekDt", 0.2);
 
   private final SparkMax m_RollerMotor = new SparkMax(Constants.IntakeConstants.kIntakeRollerMotorID, MotorType.kBrushless);
   /** Creates a new ExampleSubsystem. */
@@ -49,7 +49,7 @@ public class IntakeSubsystem extends SubsystemBase {
             .idleMode(IdleMode.kBrake)
             .closedLoop
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-                .pid(0, 0, 0)
+                .pid(SmartDashboard.getNumber("IntakeJointP", 0), SmartDashboard.getNumber("IntakeJointI", 0), SmartDashboard.getNumber("IntakeJointD", 0))
                 .positionWrappingEnabled(true)
                 .positionWrappingMinInput(0)
                 .positionWrappingMaxInput(2 * Math.PI)

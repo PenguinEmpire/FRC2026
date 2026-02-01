@@ -49,7 +49,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     private PS5Controller joystick = new PS5Controller(0);
 
-    private PIDController rotPID = new PIDController(0.02,0,0.005);
+    private PIDController rotPID = new PIDController(SmartDashboard.getNumber("AlignmentP", 0.02),SmartDashboard.getNumber("AlignmentI", 0),SmartDashboard.getNumber("AlignmentD", 0.005));
     
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
 
@@ -320,8 +320,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
      public double[] getDriveRates() {
         if (m_VisionSubsystem.HasTarget() && joystick.getR1Button()) {
             SmartDashboard.putBoolean("AligningToAprilTag", true);
+            double percentSpeed = SmartDashboard.getNumber("AlignmentPercentSpeed", 0.5);
             double pidSpeed = rotPID.calculate(m_VisionSubsystem.GetXAngle(), 0);
-            double[] driveRates = {-joystick.getLeftY() * MaxSpeed*0.5, -joystick.getLeftX()*0.5 * MaxSpeed, clamp(pidSpeed)*RotationsPerSecond.of(0.5).in(RadiansPerSecond)};
+            double[] driveRates = {-joystick.getLeftY() * MaxSpeed*percentSpeed, -joystick.getLeftX()*percentSpeed * MaxSpeed, clamp(pidSpeed)*RotationsPerSecond.of(SmartDashboard.getNumber("AlignmentAngularSpeed", 0.5)).in(RadiansPerSecond)};
             return driveRates;
         } else { 
             SmartDashboard.putBoolean("AligningToAprilTag", false);
