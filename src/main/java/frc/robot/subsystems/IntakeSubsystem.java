@@ -7,19 +7,59 @@ package frc.robot.subsystems;
 import java.util.logging.LogManager;
 
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Modules.JointModule;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkBase;
+
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
+import com.revrobotics.spark.FeedbackSensor;
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 public class IntakeSubsystem extends SubsystemBase {
-  private final JointModule m_JointRotation = new JointModule("IntakeJoint", Constants.IntakeConstants.kIntakeJointMotorID);
+  private final SparkMax m_jointMotor = new SparkMax(Constants.IntakeConstants.kIntakeJointMotorID, MotorType.kBrushless);;
+  private final SparkClosedLoopController pidController;
+  
+  private PS5Controller joystick = new PS5Controller(0);
+
+  private final TrapezoidProfile m_profile =
+    new TrapezoidProfile(new TrapezoidProfile.Constraints(20, 7.5));
+  private TrapezoidProfile.State m_goal = new TrapezoidProfile.State();
+  private TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State();
+    
+  private double targetPosition;
+
+  private double kDt = 0.2;
 
   private final SparkMax m_RollerMotor = new SparkMax(Constants.IntakeConstants.kIntakeRollerMotorID, MotorType.kBrushless);
   /** Creates a new ExampleSubsystem. */
-  public IntakeSubsystem() {}
+  public IntakeSubsystem() {
+    SparkMaxConfig motorConfig = new SparkMaxConfig();
+        motorConfig
+            .inverted(true)
+            .idleMode(IdleMode.kBrake)
+            .closedLoop
+                .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+                .pid(0, 0, 0)
+                .positionWrappingEnabled(true)
+                .positionWrappingMinInput(0)
+                .positionWrappingMaxInput(2 * Math.PI)
+                .outputRange(-1, 1);
+
+        motorConfig.encoder.positionConversionFactor(2 * Math.PI);
+        // Apply the initial configuration
+        m_jointMotor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+        pidController = m_jointMotor.getClosedLoopController();
+  }
 
   /**
    * Example command factory method.
@@ -46,28 +86,37 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
-
-  @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
   }
 
-  public void setRotationPosition(double position) {
-        m_JointRotation.setPosition(position); //  Move intake to a target position
+  public void setPosition(double newTargetPosition) {
+        this.targetPosition = newTargetPosition;
+        m_goal = new TrapezoidProfile.State(targetPosition, 0);
     }
 
+    public double getPosition() {
+        RelativeEncoder relativeEncoder = m_jointMotor.getEncoder();
 
+       
+        return relativeEncoder.getPosition();
+    }
 
+    @Override
+    public void periodic() {
+        //double currentPos = getPosition();
+        //double outputFF = feedforward.calculate(m_setpoint.position, m_setpoint.velocity);
+        m_setpoint = m_profile.calculate(kDt, m_setpoint, m_goal);
+        if (!joystick.getCircleButton() && !joystick.getCrossButton())
+        pidController.setSetpoint(m_setpoint.position, SparkBase.ControlType.kPosition);
+    }
+
+    public void ManualMove(double speed) {
+        m_jointMotor.set(speed);
+    }
   public void spinRollers(boolean active) {
     if (active) {
       m_RollerMotor.set(Constants.IntakeConstants.kRollerMotorPower);
     }
-  }
-
-  public void manualMove(double speed) {
-    m_JointRotation.ManualMove(speed);
   }
 }
