@@ -4,13 +4,26 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
+import frc.robot.Constants;
 
 public class VisionSubsystem extends SubsystemBase {
+  private int[] ValidIds = {1, 2, 3, 4};
+  private double currentID = -1;
+
+  public double Fiducial3DOffsetX = 0;
+  public double Fiducial3DOffsetY = 0;
+  public double Fiducial3DOffsetZ = 0;
+
   /** Creates a new ExampleSubsystem. */
-  public VisionSubsystem() {}
+  public VisionSubsystem() {
+    LimelightHelpers.setFiducial3DOffset("", 0.0, 0.0, 0.0);
+    LimelightHelpers.SetFiducialIDFiltersOverride("", ValidIds);
+  }
 
   /**
    * Example command factory method.
@@ -26,6 +39,29 @@ public class VisionSubsystem extends SubsystemBase {
         });
   }
 
+  public boolean HasTarget() {
+    return LimelightHelpers.getTV("");
+  }
+
+  public double TargetID() {
+    return LimelightHelpers.getFiducialID("");
+  }
+
+  public double GetXAngle() {
+    return LimelightHelpers.getTX("");
+  }
+
+  public double GetYAngle() {
+    return LimelightHelpers.getTY("");
+  }
+
+  public void ChangeFiducial3DOffset(double[] offset) {
+    LimelightHelpers.setFiducial3DOffset("", offset[0], offset[1], offset[2]);
+    Fiducial3DOffsetX = offset[0];
+    Fiducial3DOffsetY = offset[1];
+    Fiducial3DOffsetZ = offset[2];
+  }
+
   /**
    * An example method querying a boolean state of the subsystem (for example, a digital sensor).
    *
@@ -39,6 +75,22 @@ public class VisionSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    SmartDashboard.putNumber("VisionID", currentID);
+    SmartDashboard.putNumber("tx", GetXAngle());
+    SmartDashboard.putNumber("ty", GetYAngle());
+
+    if (TargetID()!=currentID) {
+      int Id;
+      if (HasTarget()) {
+        currentID = TargetID();
+        Id = (int) Math.round(currentID);
+      } else {
+        currentID = -1;
+        Id = -1;
+      }
+      ChangeFiducial3DOffset(Constants.AprilTagConstants.kAprilTagOffsets.get(Id));
+    }
   }
 
   @Override
