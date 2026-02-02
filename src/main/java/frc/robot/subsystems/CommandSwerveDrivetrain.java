@@ -52,7 +52,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     private PIDController rotPID = new PIDController(SmartDashboard.getNumber("AlignmentP", 0.02),SmartDashboard.getNumber("AlignmentI", 0),SmartDashboard.getNumber("AlignmentD", 0.005));
     
-    private double kS = 0;
+    private double kS = 0.099;
 
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
 
