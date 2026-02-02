@@ -11,6 +11,7 @@ import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -51,6 +52,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     private PIDController rotPID = new PIDController(SmartDashboard.getNumber("AlignmentP", 0.02),SmartDashboard.getNumber("AlignmentI", 0),SmartDashboard.getNumber("AlignmentD", 0.005));
     
+    private double kS = 0;
+
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
@@ -325,24 +328,22 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
      public double[] getDriveRates() {
         if (m_VisionSubsystem.HasTarget() && joystick.getR1Button()) {
             SmartDashboard.putBoolean("AligningToAprilTag", true);
+            
             double percentSpeed = SmartDashboard.getNumber("AlignmentPercentSpeed", 0.5);
-            double pidSpeed = rotPID.calculate(m_VisionSubsystem.GetXAngle(), 0);
-            double[] driveRates = {-joystick.getLeftY() * MaxSpeed*percentSpeed, -joystick.getLeftX()*percentSpeed * MaxSpeed, clamp(pidSpeed)*RotationsPerSecond.of(SmartDashboard.getNumber("AlignmentAngularSpeed", 0.5)).in(RadiansPerSecond)};
+            double RadTx = m_VisionSubsystem.GetXAngle()*Math.PI/180.0;
+            double pidSpeed = rotPID.calculate(RadTx, 0);
+
+            pidSpeed+=Math.copySign(kS, pidSpeed);
+            
+            double[] driveRates = {-joystick.getLeftY() * MaxSpeed*percentSpeed, -joystick.getLeftX()*percentSpeed * MaxSpeed, MathUtil.clamp(pidSpeed, -RotationsPerSecond.of(SmartDashboard.getNumber("AlignmentAngularSpeed", 0.5)).in(RadiansPerSecond), RotationsPerSecond.of(SmartDashboard.getNumber("AlignmentAngularSpeed", 0.5)).in(RadiansPerSecond))};
+            
             return driveRates;
         } else { 
             SmartDashboard.putBoolean("AligningToAprilTag", false);
-            double[] driveRates = {-joystick.getLeftY() * MaxSpeed, -joystick.getLeftX() * MaxSpeed, -joystick.getRightX() * Constants.SwerveConstants.kMaxAngularSpeed};
-            return driveRates;
-        }
-    }
 
-    private double clamp(double speed) {
-        if (speed<1 && speed>-1) {
-            return speed;
-        } else if (speed<0) {
-            return -1;
-        } else {
-            return 1;
+            double[] driveRates = {-joystick.getLeftY() * MaxSpeed, -joystick.getLeftX() * MaxSpeed, -joystick.getRightX() * Constants.SwerveConstants.kMaxAngularSpeed};
+            
+            return driveRates;
         }
     }
 }
