@@ -11,7 +11,7 @@ import frc.robot.LimelightHelpers;
 import frc.robot.Constants;
 
 public class VisionSubsystem extends SubsystemBase {
-  private int[] ValidIds = {1, 2, 3, 4};
+  private int[] ValidIds = {1, 2, 3, 4, 10};
   private double currentID = -1;
 
   public double Fiducial3DOffsetX = 0;

@@ -46,10 +46,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private VisionSubsystem m_VisionSubsystem = new VisionSubsystem();
 
     private PS5Controller joystick = new PS5Controller(0);
-
-    private PIDController rotPID = new PIDController(SmartDashboard.getNumber("AlignmentP", 0.02),SmartDashboard.getNumber("AlignmentI", 0),SmartDashboard.getNumber("AlignmentD", 0.005));
+    //SmartDashboard.getNumber("AlignmentP", 0.02),SmartDashboard.getNumber("AlignmentI", 0),SmartDashboard.getNumber("AlignmentD", 0.005
+    private PIDController rotPID = new PIDController(0.025,0,0.01);
     
-    private double kS = 0.099;
+    private double kS = 0.47;
 
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
 
@@ -326,7 +326,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (m_VisionSubsystem.HasTarget() && joystick.getR1Button()) {
             SmartDashboard.putBoolean("AligningToAprilTag", true);
             
-            double percentSpeed = SmartDashboard.getNumber("AlignmentPercentSpeed", 0.5);
+            double percentSpeed = 0.25; //SmartDashboard.getNumber("AlignmentPercentSpeed", 0.25);
             double RadTx = m_VisionSubsystem.GetXAngle()*Math.PI/180.0;
             double pidSpeed = rotPID.calculate(RadTx, 0);
 
