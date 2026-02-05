@@ -9,6 +9,7 @@ import static edu.wpi.first.units.Units.*;
 import java.util.Map;
 
 import frc.robot.Constants;
+import frc.robot.generated.TunerConstants;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -25,6 +26,10 @@ public final class Constants {
 
   public static class SwerveConstants {
     public static final double kMaxAngularSpeed = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
+    public static final double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
+    public static final double AlignmentSpeedConstant = 0.5;
+
+    public static final double rotationalkS = 0.47;
   }
 
   public static class ShooterConstants {
