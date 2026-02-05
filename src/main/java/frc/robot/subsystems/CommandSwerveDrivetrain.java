@@ -332,7 +332,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
             pidSpeed+=Math.copySign(kS, pidSpeed);
             
-            double[] driveRates = {-joystick.getLeftY() * MaxSpeed*percentSpeed, -joystick.getLeftX()*percentSpeed * MaxSpeed, MathUtil.clamp(pidSpeed, -RotationsPerSecond.of(SmartDashboard.getNumber("AlignmentAngularSpeed", 0.5)).in(RadiansPerSecond), RotationsPerSecond.of(SmartDashboard.getNumber("AlignmentAngularSpeed", 0.5)).in(RadiansPerSecond))};
+            double[] driveRates = {-joystick.getLeftY() * MaxSpeed*percentSpeed, -joystick.getLeftX()*percentSpeed * MaxSpeed, pidSpeed}; // MathUtil.clamp(pidSpeed, -RotationsPerSecond.of(SmartDashboard.getNumber("AlignmentAngularSpeed", 0.5)).in(RadiansPerSecond), RotationsPerSecond.of(SmartDashboard.getNumber("AlignmentAngularSpeed", 0.5)).in(RadiansPerSecond))
             
             return driveRates;
         } else { 
