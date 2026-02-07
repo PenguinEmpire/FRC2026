@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class AlignToAngle extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
   private final SwerveSubsystem m_SwerveSubsystem;
-  double currentAngle = 0;
 
   double targetAngle = 0;
 
@@ -38,14 +37,12 @@ public class AlignToAngle extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    currentAngle = pigion.getYaw().getValueAsDouble();
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_SwerveSubsystem.setRotationalRate(pidRot.calculate(currentAngle,targetAngle));
+    m_SwerveSubsystem.setRotationalRate(pidRot.calculate(pigion.getYaw().getValueAsDouble() ,targetAngle));
   }
 
   // Called once the command ends or is interrupted.
@@ -55,7 +52,7 @@ public class AlignToAngle extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (currentAngle-targetAngle<0.5) {
+    if (pigion.getYaw().getValueAsDouble()-targetAngle<0.5) {
       return true;
     }
     return false;
