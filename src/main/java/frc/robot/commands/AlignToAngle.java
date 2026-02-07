@@ -9,6 +9,7 @@ import frc.robot.subsystems.SwerveSubsystem;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /** An example command that uses an example subsystem. */
@@ -20,6 +21,8 @@ public class AlignToAngle extends Command {
   double targetAngle = 0;
 
   Pigeon2 pigion = new Pigeon2(0);
+
+  PIDController pidRot = new PIDController(0.1, 0, 0);
 
   /**
    * Creates a new ExampleCommand.
@@ -36,11 +39,14 @@ public class AlignToAngle extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    currentAngle = pigion.getYaw().getValueAsDouble();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    m_SwerveSubsystem.setRotationalRate(pidRot.calculate(currentAngle,targetAngle));
+  }
 
   // Called once the command ends or is interrupted.
   @Override
@@ -49,6 +55,9 @@ public class AlignToAngle extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    if (currentAngle-targetAngle<0.5) {
+      return true;
+    }
     return false;
   }
 }
