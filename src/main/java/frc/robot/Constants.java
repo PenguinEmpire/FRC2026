@@ -9,6 +9,7 @@ import static edu.wpi.first.units.Units.*;
 import java.util.Map;
 
 import frc.robot.Constants;
+import frc.robot.generated.TunerConstants;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -25,6 +26,10 @@ public final class Constants {
 
   public static class SwerveConstants {
     public static final double kMaxAngularSpeed = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
+    public static final double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
+    public static final double AlignmentSpeedConstant = 0.5;
+
+    public static final double rotationalkS = 0.47;
   }
 
   public static class ShooterConstants {
@@ -59,11 +64,13 @@ public final class Constants {
     public static final double[] kAprilTagID1Offset = {-1, 0.0, -1}; //The position relative to april tag the vision will be targeting: {x, y, z}
     public static final double[] kAprilTagID2Offset = {-0.5, 1, 0.0};
     public static final double[] kAprilTagID3Offset = {0.0, 0.0, 0.0};
+    public static final double[] kAprilTagID10Offset = {-0.597, 0.0, 0.0}; //-0.597
     public static final Map<Integer, double[]> kAprilTagOffsets = Map.of(
             -1, kUndefinedOffset,
             1, kAprilTagID1Offset,
             2, kAprilTagID2Offset,
-            3, kAprilTagID3Offset
+            3, kAprilTagID3Offset,
+            10, kAprilTagID10Offset
         );
   }
 }
