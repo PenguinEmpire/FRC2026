@@ -58,6 +58,18 @@ public class SwerveSubsystem extends SubsystemBase {
     if (!overrideR) {
       rotationalRate = joystick.getRotationalRate();
     }
+
+    if (joystick.getVelocityX()>1) {
+      resetVelocityX();
+    }
+
+    if (joystick.getVelocityY()>1) {
+      resetVelocityY();
+    }
+
+    if (joystick.getRotationalRate()>1) {
+      resetRotationalRate();
+    }
   } 
 
   public double getVelocityX() {
