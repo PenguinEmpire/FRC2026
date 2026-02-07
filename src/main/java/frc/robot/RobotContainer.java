@@ -23,6 +23,7 @@ import frc.robot.InterfaceExperiment.Joysticks.JoystickInterface;
 import frc.robot.InterfaceExperiment.Joysticks.PS5Joystick;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
 public class RobotContainer {
@@ -44,6 +45,8 @@ public class RobotContainer {
     private final JoystickInterface joystick = new AimingJoystick(new PS5Joystick(new PS5Controller(0)), new VisionSubsystem());
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+
+    private SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
 
     public RobotContainer() {
         configureBindings();

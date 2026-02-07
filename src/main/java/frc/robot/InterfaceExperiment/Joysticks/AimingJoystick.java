@@ -48,6 +48,7 @@ public class AimingJoystick implements JoystickInterface{
             double pidSpeed = rotPID.calculate(RadTx, 0);
 
             pidSpeed+=Math.copySign(kS, pidSpeed);
+
             return pidSpeed;
         }else { 
             return rotationalRate;
