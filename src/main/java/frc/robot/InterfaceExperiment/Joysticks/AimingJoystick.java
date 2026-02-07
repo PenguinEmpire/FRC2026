@@ -13,7 +13,7 @@ public class AimingJoystick implements JoystickInterface{
     private final JoystickInterface joystick;
     private final VisionSubsystem m_VisionSubsystem;
 
-    private PIDController rotPID = new PIDController(0.026,0,0.01);
+    private PIDController rotPID = new PIDController(0.026,0,0);
         
     private double kS = Constants.SwerveConstants.rotationalkS;
     
