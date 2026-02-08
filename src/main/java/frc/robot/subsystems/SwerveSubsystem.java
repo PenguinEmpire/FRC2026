@@ -4,12 +4,15 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.hardware.Pigeon2;
+
 import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.InterfaceExperiment.Joysticks.AimingJoystick;
 import frc.robot.InterfaceExperiment.Joysticks.JoystickInterface;
 import frc.robot.InterfaceExperiment.Joysticks.PS5Joystick;
+import com.ctre.phoenix6.hardware.Pigeon2;
 
 public class SwerveSubsystem extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
@@ -20,6 +23,9 @@ public class SwerveSubsystem extends SubsystemBase {
   private boolean overrideX = false;
   private boolean overrideY = false;
   private boolean overrideR = false;
+
+  Pigeon2 pigeon = new Pigeon2(0);
+
   public SwerveSubsystem() {}
 
   /**
@@ -49,6 +55,7 @@ public class SwerveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    System.out.println(pigeon.getYaw().getValueAsDouble()%360.0);
     if (!overrideX) {
       velocityX = joystick.getVelocityX();
     }

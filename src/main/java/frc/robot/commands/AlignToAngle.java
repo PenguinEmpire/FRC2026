@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import frc.robot.Constants;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
@@ -17,11 +18,11 @@ public class AlignToAngle extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
   private final SwerveSubsystem m_SwerveSubsystem;
 
-  double targetAngle = 0;
+  double targetAngle = -Math.PI/2.0;
 
-  Pigeon2 pigion = new Pigeon2(0);
+  Pigeon2 pigeon = new Pigeon2(0);
 
-  PIDController pidRot = new PIDController(0.1, 0, 0);
+  PIDController pidRot = new PIDController(0.0002725, 0, 0);
 
   /**
    * Creates a new ExampleCommand.
@@ -42,17 +43,22 @@ public class AlignToAngle extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_SwerveSubsystem.setRotationalRate(pidRot.calculate(pigion.getYaw().getValueAsDouble() ,targetAngle));
+    double speed = pidRot.calculate(Math.toRadians(pigeon.getYaw().getValueAsDouble()%360.0) ,targetAngle);
+    speed+=Math.copySign(Constants.SwerveConstants.rotationalkS, speed);
+    
+    m_SwerveSubsystem.setRotationalRate(speed);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_SwerveSubsystem.resetRotationalRate();
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (pigion.getYaw().getValueAsDouble()-targetAngle<0.5) {
+    if (Math.abs((pigeon.getYaw().getValueAsDouble()%360.0)-targetAngle)==0.02) {
       return true;
     }
     return false;

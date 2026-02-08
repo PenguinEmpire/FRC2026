@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.InterfaceExperiment.Joysticks.AimingJoystick;
 import frc.robot.InterfaceExperiment.Joysticks.JoystickInterface;
 import frc.robot.InterfaceExperiment.Joysticks.PS5Joystick;
+import frc.robot.commands.AlignToAngle;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -48,6 +49,8 @@ public class RobotContainer {
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     private SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
+
+    public final AlignToAngle alignToAngle = new AlignToAngle(m_swerveSubsystem, -Math.PI/2.0);
 
     public RobotContainer() {
         configureBindings();
@@ -86,6 +89,8 @@ public class RobotContainer {
 
         // Reset the field-centric heading on left bumper press.
         controller.L1().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+
+        controller.R2().whileTrue(alignToAngle);
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
