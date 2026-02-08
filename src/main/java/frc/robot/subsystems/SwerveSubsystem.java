@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.InterfaceExperiment.Joysticks.AimingJoystick;
 import frc.robot.InterfaceExperiment.Joysticks.JoystickInterface;
 import frc.robot.InterfaceExperiment.Joysticks.PS5Joystick;
-import com.ctre.phoenix6.hardware.Pigeon2;
 
 public class SwerveSubsystem extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */

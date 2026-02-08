@@ -1,10 +1,8 @@
 package frc.robot.InterfaceExperiment.Joysticks;
-import static edu.wpi.first.units.Units.MetersPerSecond;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.PS5Controller;
 import frc.robot.Constants;
-import frc.robot.generated.TunerConstants;
 
 public class PS5Joystick implements JoystickInterface{
     private double MaxSpeed = Constants.SwerveConstants.MaxSpeed;
