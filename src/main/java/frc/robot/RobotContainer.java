@@ -23,6 +23,7 @@ import frc.robot.InterfaceExperiment.Joysticks.AimingJoystick;
 import frc.robot.InterfaceExperiment.Joysticks.JoystickInterface;
 import frc.robot.InterfaceExperiment.Joysticks.PS5Joystick;
 import frc.robot.commands.AlignToAngle;
+import frc.robot.commands.AlignToClimb;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -50,7 +51,8 @@ public class RobotContainer {
 
     private SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
 
-    public final AlignToAngle alignToAngle = new AlignToAngle(m_swerveSubsystem, -Math.PI/2.0);
+    //public final AlignToAngle alignToAngle = new AlignToAngle(m_swerveSubsystem, -Math.PI/2.0);
+    //public final AlignToClimb alignToClimb = new AlignToClimb(m_swerveSubsystem, 0, 0);
 
     public RobotContainer() {
         configureBindings();
@@ -90,7 +92,7 @@ public class RobotContainer {
         // Reset the field-centric heading on left bumper press.
         controller.L1().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
-        controller.R2().whileTrue(alignToAngle);
+        //controller.R2().whileTrue(alignToAngle);
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
@@ -99,8 +101,8 @@ public class RobotContainer {
         // Simple drive forward auton
         final var idle = new SwerveRequest.Idle();
 
-        return new PathPlannerAuto("Example Auto");
-        /*return Commands.sequence(
+        //return new PathPlannerAuto("Example Auto");
+        return Commands.sequence(
             // Reset our field centric heading to match the robot
             // facing away from our alliance station wall (0 deg).
             drivetrain.runOnce(() -> drivetrain.seedFieldCentric(Rotation2d.kZero)),
@@ -113,6 +115,6 @@ public class RobotContainer {
             .withTimeout(5.0),
             // Finally idle for the rest of auton
             drivetrain.applyRequest(() -> idle)
-        );*/
+        );
     }
 }

@@ -22,7 +22,7 @@ public class AlignToAngle extends Command {
 
   Pigeon2 pigeon = new Pigeon2(0);
 
-  PIDController pidRot = new PIDController(0.0002725, 0, 0);
+  PIDController pidRot = new PIDController(0.00001, 0, 0); //0.0002725
 
   /**
    * Creates a new ExampleCommand.
@@ -31,7 +31,7 @@ public class AlignToAngle extends Command {
    */
   public AlignToAngle(SwerveSubsystem subsystem, double target) {
     m_SwerveSubsystem = subsystem;
-    targetAngle = target;
+    targetAngle = (pigeon.getYaw().getValueAsDouble()%360.0)+Math.PI/2;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }
@@ -44,9 +44,10 @@ public class AlignToAngle extends Command {
   @Override
   public void execute() {
     double speed = pidRot.calculate(Math.toRadians(pigeon.getYaw().getValueAsDouble()%360.0) ,targetAngle);
-    speed+=Math.copySign(Constants.SwerveConstants.rotationalkS, speed);
+    double x= 0;
+    x+=Math.copySign(0.4712389, speed);
     
-    m_SwerveSubsystem.setRotationalRate(speed);
+    m_SwerveSubsystem.setRotationalRate(x);
   }
 
   // Called once the command ends or is interrupted.
@@ -58,7 +59,7 @@ public class AlignToAngle extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (Math.abs((pigeon.getYaw().getValueAsDouble()%360.0)-targetAngle)==0.02) {
+    if (Math.abs((pigeon.getYaw().getValueAsDouble()%360.0)-targetAngle)<0.1) {
       return true;
     }
     return false;

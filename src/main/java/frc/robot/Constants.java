@@ -29,7 +29,7 @@ public final class Constants {
     public static final double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
     public static final double AlignmentSpeedConstant = 0.5;
 
-    public static final double rotationalkS = 0.47123;
+    public static final double rotationalkS = 0.47; //0.47123
   }
 
   public static class ShooterConstants {
