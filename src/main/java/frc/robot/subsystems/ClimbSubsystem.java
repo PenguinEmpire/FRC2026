@@ -16,6 +16,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -31,7 +32,9 @@ public class ClimbSubsystem extends SubsystemBase {
   private Servo m_ServoMiddleMotor = new Servo(Constants.ClimbConstants.kServoMiddleID);
   private Servo m_ServoGuideMotor = new Servo(Constants.ClimbConstants.kServoGuideID);
 
-  private final SparkClosedLoopController pidController1;
+  private PS5Controller joystick = new PS5Controller(0);
+
+  private final SparkClosedLoopController pidController;
 
     private final TrapezoidProfile m_profile =
       new TrapezoidProfile(new TrapezoidProfile.Constraints(SmartDashboard.getNumber("ShooterJointMaxVelocity", 20), SmartDashboard.getNumber("ShooterJointMaxAcceleration", 7.5)));
@@ -43,7 +46,7 @@ public class ClimbSubsystem extends SubsystemBase {
   public ClimbSubsystem() {
     SparkMaxConfig motorConfig = new SparkMaxConfig();
         motorConfig
-            .inverted(true)
+            .inverted(false)
             .idleMode(IdleMode.kBrake)
             .closedLoop
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
@@ -58,9 +61,11 @@ public class ClimbSubsystem extends SubsystemBase {
         m_ClimbMotor1.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         SparkMaxConfig leftConfig = new SparkMaxConfig();
-        leftConfig.follow(Constants.ClimbConstants.kClimbMotor1ID);
+        leftConfig.follow(Constants.ClimbConstants.kClimbMotor1ID, true);
 
-        pidController1 = m_ClimbMotor1.getClosedLoopController();
+        m_ClimbMotor2.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+        pidController = m_ClimbMotor1.getClosedLoopController();
   }
 
   /**
@@ -91,7 +96,9 @@ public class ClimbSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     m_setpoint = m_profile.calculate(kDt, m_setpoint, m_goal);
-    pidController1.setSetpoint(m_setpoint.position, SparkBase.ControlType.kPosition);
+    if (!joystick.getTriangleButton() && !joystick.getSquareButton()) {
+       pidController.setSetpoint(m_setpoint.position, SparkBase.ControlType.kPosition);
+    }
   }
 
   @Override
@@ -122,5 +129,9 @@ public class ClimbSubsystem extends SubsystemBase {
 
        
       return relativeEncoder.getPosition();
+  }
+
+  public void manualMove(double speed) {
+      m_ClimbMotor1.set(speed);
   }
 }
