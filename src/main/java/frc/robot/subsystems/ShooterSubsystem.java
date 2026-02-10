@@ -40,6 +40,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
     private double kDt = SmartDashboard.getNumber("ShooterkDT", 0.2);
 
+    double kP = SmartDashboard.getNumber("ShooterJointP", 0);
+    double kI = SmartDashboard.getNumber("ShooterJointI", 0);
+    double kD = SmartDashboard.getNumber("ShooterJointD", 0);
+
   /** Creates a new ExampleSubsystem. */
   public ShooterSubsystem() {
     SmartDashboard.putNumber("ShooterkDT", 0.2);
@@ -54,7 +58,7 @@ public class ShooterSubsystem extends SubsystemBase {
             .idleMode(IdleMode.kBrake)
             .closedLoop
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-                .pid(SmartDashboard.getNumber("ShooterJointP", 0), SmartDashboard.getNumber("ShooterJointI", 0), SmartDashboard.getNumber("ShooterJointD", 0))
+                .pid(kP, kI, kD)
                 .positionWrappingEnabled(true)
                 .positionWrappingMinInput(0)
                 .positionWrappingMaxInput(2 * Math.PI)
@@ -112,6 +116,10 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("HoodTargetPosition", m_goal.position);
     SmartDashboard.putNumber("HoodCurrentPosition", m_setpoint.position);
     //SmartDashboard.putNumber("HoodCurrentPosition", m_jointMotor.getEncoder().getPosition()); //Alternative way to get position
+
+    kP = SmartDashboard.getNumber("ShooterJointP", 0);
+    kI = SmartDashboard.getNumber("ShooterJointI", 0);
+    kD = SmartDashboard.getNumber("ShooterJointD", 0);
   }
 
   public void MoveHood(double speed) {

@@ -1,15 +1,10 @@
 package frc.robot.InterfaceExperiment.Joysticks;
-import static edu.wpi.first.units.Units.*;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import frc.robot.Constants;
-import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.VisionSubsystem;
 
 public class AimingJoystick implements JoystickInterface{
-    private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
     private final JoystickInterface joystick;
     private final VisionSubsystem m_VisionSubsystem;
 

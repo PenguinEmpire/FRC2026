@@ -1,20 +1,21 @@
 package frc.robot.InterfaceExperiment.Joysticks;
-import static edu.wpi.first.units.Units.MetersPerSecond;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.PS5Controller;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
-import frc.robot.generated.TunerConstants;
 
 public class PS5Joystick implements JoystickInterface{
     private double MaxSpeed = Constants.SwerveConstants.MaxSpeed;
     private final PS5Controller joystick;
 
-    SlewRateLimiter limiterX = new SlewRateLimiter(3);
-    SlewRateLimiter limiterY = new SlewRateLimiter(3);
-    SlewRateLimiter limiterR = new SlewRateLimiter(2);
+    SlewRateLimiter limiterX = new SlewRateLimiter(SmartDashboard.getNumber("DriveSlewRateLimit", 3));
+    SlewRateLimiter limiterY = new SlewRateLimiter(SmartDashboard.getNumber("DriveSlewRateLimit", 3));
+    SlewRateLimiter limiterR = new SlewRateLimiter(SmartDashboard.getNumber("RotateSlewRateLimit", 3));
 
     public PS5Joystick(PS5Controller newJoystick) {
+        SmartDashboard.putNumber("DriveSlewRateLimit", 3);
+        SmartDashboard.putNumber("RotateSlewRateLimit", 2);
         this.joystick = newJoystick;
     }
 

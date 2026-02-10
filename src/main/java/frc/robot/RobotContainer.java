@@ -12,16 +12,15 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.PS5Controller;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.InterfaceExperiment.Joysticks.AimingJoystick;
 import frc.robot.InterfaceExperiment.Joysticks.JoystickInterface;
 import frc.robot.InterfaceExperiment.Joysticks.PS5Joystick;
+import frc.robot.commands.AlignToAngle;
+import frc.robot.commands.AlignToClimb;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -49,6 +48,9 @@ public class RobotContainer {
 
     private SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
 
+    //public final AlignToAngle alignToAngle = new AlignToAngle(m_swerveSubsystem, -Math.PI/2.0);
+    //public final AlignToClimb alignToClimb = new AlignToClimb(m_swerveSubsystem, 0, 0);
+
     public RobotContainer() {
         configureBindings();
     }
@@ -59,9 +61,9 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(joystick.getVelocityX()) // Drive forward with negative Y (forward)
-                    .withVelocityY(joystick.getVelocityY()) // Drive left with negative X (left)
-                    .withRotationalRate(joystick.getRotationalRate()) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(m_swerveSubsystem.getVelocityX()) // Drive forward with negative Y (forward)
+                    .withVelocityY(m_swerveSubsystem.getVelocityY()) // Drive left with negative X (left)
+                    .withRotationalRate(m_swerveSubsystem.getRotationalRate()) // Drive counterclockwise with negative X (left)
             )
         );
 
@@ -87,6 +89,8 @@ public class RobotContainer {
         // Reset the field-centric heading on left bumper press.
         controller.L1().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
+        //controller.R2().whileTrue(alignToAngle);
+
         drivetrain.registerTelemetry(logger::telemeterize);
     }
 
@@ -94,8 +98,8 @@ public class RobotContainer {
         // Simple drive forward auton
         final var idle = new SwerveRequest.Idle();
 
-        return new PathPlannerAuto("Example Auto");
-        /*return Commands.sequence(
+        //return new PathPlannerAuto("Example Auto");
+        return Commands.sequence(
             // Reset our field centric heading to match the robot
             // facing away from our alliance station wall (0 deg).
             drivetrain.runOnce(() -> drivetrain.seedFieldCentric(Rotation2d.kZero)),
@@ -108,6 +112,6 @@ public class RobotContainer {
             .withTimeout(5.0),
             // Finally idle for the rest of auton
             drivetrain.applyRequest(() -> idle)
-        );*/
+        );
     }
 }

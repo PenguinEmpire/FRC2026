@@ -29,7 +29,7 @@ public final class Constants {
     public static final double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
     public static final double AlignmentSpeedConstant = 0.5;
 
-    public static final double rotationalkS = 0.47;
+    public static final double rotationalkS = 0.47; //0.47123
   }
 
   public static class ShooterConstants {
@@ -49,7 +49,12 @@ public final class Constants {
   }
 
   public static class ClimbConstants {
-    public static final int kClimbMotorID = 0;//Change with actual motor IDs and change name (add more once # of motors is known)
+    public static final int kClimbMotor1ID = 0;//Change with actual motor IDs and change name (add more once # of motors is known)
+    public static final int kClimbMotor2ID = 0;
+    public static final int kServoLeftID = 0;
+    public static final int kServoRightID = 0;
+    public static final int kServoMiddleID = 0;
+    public static final int kServoGuideID = 0;
   }
 
   public static class VisionConstants {

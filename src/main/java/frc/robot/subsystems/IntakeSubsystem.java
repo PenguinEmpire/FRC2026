@@ -38,6 +38,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private double kDt = SmartDashboard.getNumber("IntakekDt", 0.2);
 
+  double kP = SmartDashboard.getNumber("IntakeJointP", 0);
+  double kI = SmartDashboard.getNumber("IntakeJointI", 0);
+  double kD = SmartDashboard.getNumber("IntakeJointD", 0);
+
   private final SparkMax m_RollerMotor = new SparkMax(Constants.IntakeConstants.kIntakeRollerMotorID, MotorType.kBrushless);
   /** Creates a new ExampleSubsystem. */
   public IntakeSubsystem() {
@@ -54,7 +58,7 @@ public class IntakeSubsystem extends SubsystemBase {
             .idleMode(IdleMode.kBrake)
             .closedLoop
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-                .pid(SmartDashboard.getNumber("IntakeJointP", 0), SmartDashboard.getNumber("IntakeJointI", 0), SmartDashboard.getNumber("IntakeJointD", 0))
+                .pid(kP, kI, kD)
                 .positionWrappingEnabled(true)
                 .positionWrappingMinInput(0)
                 .positionWrappingMaxInput(2 * Math.PI)
@@ -120,6 +124,10 @@ public class IntakeSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("IntakeTargetPosition", m_goal.position);
     SmartDashboard.putNumber("IntakeCurrentPosition", m_setpoint.position);
     //SmartDashboard.putNumber("IntakeTargetPosition", getPosition());
+
+  kP = SmartDashboard.getNumber("IntakeJointP", 0);
+  kI = SmartDashboard.getNumber("IntakeJointI", 0);
+  kD = SmartDashboard.getNumber("IntakeJointD", 0);
   }
 
   public void ManualMove(double speed) {
