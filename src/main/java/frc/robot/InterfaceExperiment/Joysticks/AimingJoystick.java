@@ -21,7 +21,9 @@ public class AimingJoystick implements JoystickInterface{
     private double getDampeningPercent() {
         if (m_VisionSubsystem.HasTarget() && joystick.getR1()) {
             return Constants.SwerveConstants.AlignmentSpeedConstant; //Put this in cons
-        }else { 
+        }else if (joystick.getL2()) { 
+            return 0.25;
+        } else {
             return 1.0;
         }
     }
@@ -52,5 +54,9 @@ public class AimingJoystick implements JoystickInterface{
 
     public boolean getR1() {
         return joystick.getR1();
+    }
+
+    public boolean getL2() {
+        return joystick.getL2();
     }
 }
