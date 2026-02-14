@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.signals.UpdateModeValue;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -44,6 +46,7 @@ public class VisionSubsystem extends SubsystemBase {
         });
   }
 
+
   public boolean HasTarget() {
     return limelightVision.getTV();
   }
@@ -77,6 +80,17 @@ public class VisionSubsystem extends SubsystemBase {
     return false;
   }
 
+  public void updateOffsets() {
+    if (TargetID()!=currentID) {
+      if (HasTarget()) {
+        currentID = Double.valueOf(TargetID());
+      } else {
+        currentID = -1;
+      }
+      ChangeFiducial3DOffset(Constants.AprilTagConstants.kAprilTagOffsets.get(currentID));
+    }
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -85,21 +99,15 @@ public class VisionSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("tx", GetXAngle());
     SmartDashboard.putNumber("ty", GetYAngle());
 
-    if (TargetID()!=currentID) {
-      int Id;
-      if (HasTarget()) {
-        currentID = TargetID();
-        Id = (int) Math.round(currentID);
-      } else {
-        currentID = -1;
-        Id = -1;
-      }
-      ChangeFiducial3DOffset(Constants.AprilTagConstants.kAprilTagOffsets.get(Id));
-    }
+    updateOffsets();
   }
 
   @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
+  }
+
+   public double getCurrentID() { //Only for testing, if not testing use targetID
+    return currentID;
   }
 }

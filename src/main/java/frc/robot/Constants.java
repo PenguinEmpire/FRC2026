@@ -72,12 +72,12 @@ public final class Constants {
     public static final SpacialPosition kAprilTagID2Offset = new SpacialPosition(0, 0, 0);
     public static final SpacialPosition kAprilTagID3Offset = new SpacialPosition(0, 0, 0);
     public static final SpacialPosition kAprilTagID10Offset = new SpacialPosition(-0.597, 0, 0); //-0.597
-    public static final Map<Integer, SpacialPosition> kAprilTagOffsets = Map.of(
-            -1, kUndefinedOffset,
-            1, kAprilTagID1Offset,
-            2, kAprilTagID2Offset,
-            3, kAprilTagID3Offset,
-            10, kAprilTagID10Offset
+    public static final Map<Double, SpacialPosition> kAprilTagOffsets = Map.of(
+            -1.0, kUndefinedOffset,
+            1.0, kAprilTagID1Offset,
+            2.0, kAprilTagID2Offset,
+            3.0, kAprilTagID3Offset,
+            10.0, kAprilTagID10Offset
         );
   }
 }
