@@ -9,6 +9,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -41,6 +42,8 @@ public class IntakeSubsystem extends SubsystemBase {
   double kP = SmartDashboard.getNumber("IntakeJointP", 0);
   double kI = SmartDashboard.getNumber("IntakeJointI", 0);
   double kD = SmartDashboard.getNumber("IntakeJointD", 0);
+
+  DigitalInput sensor = new DigitalInput(0);
 
   private final SparkMax m_RollerMotor = new SparkMax(Constants.IntakeConstants.kIntakeRollerMotorID, MotorType.kBrushless);
   /** Creates a new ExampleSubsystem. */
@@ -128,6 +131,12 @@ public class IntakeSubsystem extends SubsystemBase {
   kP = SmartDashboard.getNumber("IntakeJointP", 0);
   kI = SmartDashboard.getNumber("IntakeJointI", 0);
   kD = SmartDashboard.getNumber("IntakeJointD", 0);
+
+  if (sensor.get()) {
+    spinRollers(false);
+  }
+
+
   }
 
   public void ManualMove(double speed) {
@@ -136,6 +145,8 @@ public class IntakeSubsystem extends SubsystemBase {
   public void spinRollers(boolean active) {
     if (active) {
       m_RollerMotor.set(Constants.IntakeConstants.kRollerMotorPower);
+    } else {
+      m_RollerMotor.set(0);
     }
   }
 }

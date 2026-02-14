@@ -108,7 +108,7 @@ public class ShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    if (m_VisionSubsystem.HasTarget() && joystick.getR1Button()) {
+    if (m_VisionSubsystem.HasTarget()) {
       m_goal = new TrapezoidProfile.State(getTargetAngle(), 0);
       m_setpoint = m_profile.calculate(kDt, m_setpoint, m_goal);
       pidController.setSetpoint(m_setpoint.position, SparkBase.ControlType.kPosition);

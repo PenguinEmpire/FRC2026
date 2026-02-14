@@ -34,4 +34,8 @@ public class PS5Joystick implements JoystickInterface{
     public boolean getR1() {
         return joystick.getR1Button();
     }
+
+    public boolean getL2() {
+        return joystick.getL2Button();
+    }
 }

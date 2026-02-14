@@ -8,4 +8,6 @@ public interface JoystickInterface {
     public double getRotationalRate();
 
     public boolean getR1();
+
+    public boolean getL2();
 }
