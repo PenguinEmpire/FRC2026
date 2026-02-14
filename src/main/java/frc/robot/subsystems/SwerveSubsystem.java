@@ -12,10 +12,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.InterfaceExperiment.Joysticks.AimingJoystick;
 import frc.robot.InterfaceExperiment.Joysticks.JoystickInterface;
 import frc.robot.InterfaceExperiment.Joysticks.PS5Joystick;
+import frc.robot.subsystems.vision.LimelightVision;
 
 public class SwerveSubsystem extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
-  private final JoystickInterface joystick = new AimingJoystick(new PS5Joystick(new PS5Controller(0)), new VisionSubsystem());
+  private final JoystickInterface joystick = new AimingJoystick(new PS5Joystick(new PS5Controller(0)), new VisionSubsystem(new LimelightVision()));
   private double velocityX = 0;
   private double velocityY = 0;
   private double rotationalRate = 0;

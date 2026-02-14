@@ -8,6 +8,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
+import frc.robot.SpacialPosition;
+import frc.robot.subsystems.vision.LimelightVision;
+import frc.robot.subsystems.vision.VisionInterface;
 import frc.robot.Constants;
 
 public class VisionSubsystem extends SubsystemBase {
@@ -18,10 +21,13 @@ public class VisionSubsystem extends SubsystemBase {
   public double Fiducial3DOffsetY = 0;
   public double Fiducial3DOffsetZ = 0;
 
+  private VisionInterface limelightVision;
+
   /** Creates a new ExampleSubsystem. */
-  public VisionSubsystem() {
-    LimelightHelpers.setFiducial3DOffset("", 0.0, 0.0, 0.0);
-    LimelightHelpers.SetFiducialIDFiltersOverride("", ValidIds);
+  public VisionSubsystem(VisionInterface limeInterface) {
+    limelightVision = limeInterface;
+    limelightVision.setFiducial3DOffset(0.0, 0.0, 0.0);
+    limelightVision.SetFiducialIDFiltersOverride(ValidIds);
   }
 
   /**
@@ -39,26 +45,26 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public boolean HasTarget() {
-    return LimelightHelpers.getTV("");
+    return limelightVision.getTV();
   }
 
   public double TargetID() {
-    return LimelightHelpers.getFiducialID("");
+    return limelightVision.getFiducialID();
   }
 
   public double GetXAngle() {
-    return LimelightHelpers.getTX("");
+    return limelightVision.getTX();
   }
 
   public double GetYAngle() {
-    return LimelightHelpers.getTY("");
+    return limelightVision.getTY();
   }
 
-  public void ChangeFiducial3DOffset(double[] offset) {
-    LimelightHelpers.setFiducial3DOffset("", offset[0], offset[1], offset[2]);
-    Fiducial3DOffsetX = offset[0];
-    Fiducial3DOffsetY = offset[1];
-    Fiducial3DOffsetZ = offset[2];
+  public void ChangeFiducial3DOffset(SpacialPosition offset) {
+    limelightVision.setFiducial3DOffset(offset.getX(), offset.getY(), offset.getZ());
+    Fiducial3DOffsetX = offset.getX();
+    Fiducial3DOffsetY = offset.getY();
+    Fiducial3DOffsetZ = offset.getZ();
   }
 
   /**

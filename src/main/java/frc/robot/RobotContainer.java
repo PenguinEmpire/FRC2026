@@ -25,6 +25,7 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.vision.LimelightVision;
 
 public class RobotContainer {
     //Smart dashboard configuration
@@ -42,7 +43,7 @@ public class RobotContainer {
 
     private final CommandPS5Controller controller = new CommandPS5Controller(0);
 
-    private final JoystickInterface joystick = new AimingJoystick(new PS5Joystick(new PS5Controller(0)), new VisionSubsystem());
+    private final JoystickInterface joystick = new AimingJoystick(new PS5Joystick(new PS5Controller(0)), new VisionSubsystem(new LimelightVision()));
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 

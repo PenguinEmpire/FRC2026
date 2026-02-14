@@ -4,9 +4,10 @@
 
 package frc.robot.commands;
 
+import frc.robot.SpacialPosition;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
-
+import frc.robot.subsystems.vision.LimelightVision;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -18,7 +19,7 @@ public class AlignToClimb extends Command {
   double targetAngleX = -Math.PI/2.0;
   double targetAngleY = -Math.PI/2.0;
 
-  VisionSubsystem m_VisionSubsystem = new VisionSubsystem();
+  VisionSubsystem m_VisionSubsystem = new VisionSubsystem(new LimelightVision());
 
   PIDController pidx = new PIDController(0.002, 0, 0); //0.0002725
   PIDController pidy = new PIDController(0.002, 0, 0); //0.0002725
@@ -39,7 +40,7 @@ public class AlignToClimb extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    double[] offset = {0,2.943,0};
+    SpacialPosition offset = new SpacialPosition(0,0,0);
     m_VisionSubsystem.ChangeFiducial3DOffset(offset);
   }
 

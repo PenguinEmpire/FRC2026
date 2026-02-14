@@ -34,6 +34,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
+import frc.robot.subsystems.vision.LimelightVision;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
@@ -47,7 +48,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
 
-    private VisionSubsystem m_VisionSubsystem = new VisionSubsystem();
+    private VisionSubsystem m_VisionSubsystem = new VisionSubsystem(new LimelightVision());
 
     private PS5Controller joystick = new PS5Controller(0);
     //SmartDashboard.getNumber("AlignmentP", 0.02),SmartDashboard.getNumber("AlignmentI", 0),SmartDashboard.getNumber("AlignmentD", 0.005

@@ -19,7 +19,8 @@ import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;  
+import frc.robot.Constants;
+import frc.robot.subsystems.vision.LimelightVision;  
 
 public class ShooterSubsystem extends SubsystemBase {
   private SparkMax m_leftShooterMotor = new SparkMax(Constants.ShooterConstants.kLeftShooterMotorID, MotorType.kBrushless);
@@ -31,7 +32,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private final SparkClosedLoopController pidController;
 
-  private VisionSubsystem m_VisionSubsystem = new VisionSubsystem();
+  private VisionSubsystem m_VisionSubsystem = new VisionSubsystem(new LimelightVision());
 
     private final TrapezoidProfile m_profile =
       new TrapezoidProfile(new TrapezoidProfile.Constraints(SmartDashboard.getNumber("ShooterJointMaxVelocity", 20), SmartDashboard.getNumber("ShooterJointMaxAcceleration", 7.5)));

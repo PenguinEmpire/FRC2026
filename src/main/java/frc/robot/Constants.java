@@ -18,7 +18,9 @@ import frc.robot.generated.TunerConstants;
  *
  * <p>It is advised to statically import this class (or one of its inner classes) wherever the
  * constants are needed, to reduce verbosity.
+ 
  */
+
 public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
@@ -64,13 +66,13 @@ public final class Constants {
 
   public static class AprilTagConstants { 
     //OffsetConstants:
-    public static final double[] kUndefinedOffset = {0,0,0};
+    public static final SpacialPosition kUndefinedOffset = new SpacialPosition(0, 0, 0);
 
-    public static final double[] kAprilTagID1Offset = {-1, 0.0, -1}; //The position relative to april tag the vision will be targeting: {x, y, z}
-    public static final double[] kAprilTagID2Offset = {-0.5, 1, 0.0};
-    public static final double[] kAprilTagID3Offset = {0.0, 0.0, 0.0};
-    public static final double[] kAprilTagID10Offset = {-0.597, 0.0, 0.0}; //-0.597
-    public static final Map<Integer, double[]> kAprilTagOffsets = Map.of(
+    public static final SpacialPosition kAprilTagID1Offset = new SpacialPosition(0, 0, 0); //The position relative to april tag the vision will be targeting: {x, y, z}
+    public static final SpacialPosition kAprilTagID2Offset = new SpacialPosition(0, 0, 0);
+    public static final SpacialPosition kAprilTagID3Offset = new SpacialPosition(0, 0, 0);
+    public static final SpacialPosition kAprilTagID10Offset = new SpacialPosition(-0.597, 0, 0); //-0.597
+    public static final Map<Integer, SpacialPosition> kAprilTagOffsets = Map.of(
             -1, kUndefinedOffset,
             1, kAprilTagID1Offset,
             2, kAprilTagID2Offset,
