@@ -5,17 +5,19 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /** An example command that uses an example subsystem. */
 public class PositionCommand extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
-  private final ExampleSubsystem m_subsystem;
+  private final IntakeSubsystem m_intakeSubsystem;
 
   public enum Position {
         // Intake Positions
-        Example1(0.0),  // Fold intake inside frame
-        Example2(0.0); //figure this value out, originally 0.985
+        IntakeUp(0.0),  // Fold intake inside frame
+        IntakeDown(0.0); //figure this value out, originally 0.985
   
         
         private final double encoderPosition;
@@ -39,8 +41,8 @@ public class PositionCommand extends Command {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public PositionCommand(ExampleSubsystem subsystem, Position pos) {
-    m_subsystem = subsystem;
+  public PositionCommand(IntakeSubsystem subsystem, Position pos) {
+    m_intakeSubsystem = subsystem;
     //Initialize the declared subsystems above
     // Use addRequirements() here to declare subsystem dependencies.
     this.pos = pos;
@@ -55,8 +57,12 @@ public class PositionCommand extends Command {
   @Override
   public void execute() {
     switch (pos) {
-            case Example1:
+            case IntakeUp:
                 //exampleSubsystem.setPosition(Position.Example1.getEncoderPosition());
+                m_intakeSubsystem.setPosition(Position.IntakeUp.getEncoderPosition());
+                break;
+            case IntakeDown:
+                m_intakeSubsystem.setPosition(Position.IntakeDown.getEncoderPosition());
                 break;
               default:
                 break;

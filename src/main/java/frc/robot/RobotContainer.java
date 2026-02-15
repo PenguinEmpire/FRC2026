@@ -21,8 +21,11 @@ import frc.robot.InterfaceExperiment.Joysticks.JoystickInterface;
 import frc.robot.InterfaceExperiment.Joysticks.PS5Joystick;
 import frc.robot.commands.AlignToAngle;
 import frc.robot.commands.AlignToClimb;
+import frc.robot.commands.PositionCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.vision.LimelightVision;
@@ -43,11 +46,14 @@ public class RobotContainer {
 
     private final CommandPS5Controller controller = new CommandPS5Controller(0);
 
-    private final JoystickInterface joystick = new AimingJoystick(new PS5Joystick(new PS5Controller(0)), new VisionSubsystem(new LimelightVision()));
+    //private final JoystickInterface joystick = new AimingJoystick(new PS5Joystick(new PS5Controller(0)), new VisionSubsystem(new LimelightVision()));
+
+    private final PS5Controller joystick = new PS5Controller(0);
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     private SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
+    private IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
 
     //public final AlignToAngle alignToAngle = new AlignToAngle(m_swerveSubsystem, -Math.PI/2.0);
     //public final AlignToClimb alignToClimb = new AlignToClimb(m_swerveSubsystem, 0, 0);
@@ -93,7 +99,17 @@ public class RobotContainer {
         //controller.R2().whileTrue(alignToAngle);
 
         drivetrain.registerTelemetry(logger::telemeterize);
-    }
+
+        if (joystick.getCircleButton()) {
+            m_intakeSubsystem.ManualMove(0.1);   
+        } else if (joystick.getCrossButton()) {
+            m_intakeSubsystem.ManualMove(-0.1);
+        }
+
+        //controller.circle().onTrue(new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeUp));
+        //controller.cross().onTrue(new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeDown));
+
+    }   
 
     public Command getAutonomousCommand() {
         // Simple drive forward auton
