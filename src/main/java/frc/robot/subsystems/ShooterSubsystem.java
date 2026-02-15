@@ -20,14 +20,19 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.motors.SparkMaxInterface;
+import frc.robot.motors.SparkMaxMotor;
+import frc.robot.motors.TestMotor;
 import frc.robot.subsystems.vision.LimelightVision;  
 
 public class ShooterSubsystem extends SubsystemBase {
-  private SparkMax m_leftShooterMotor = new SparkMax(Constants.ShooterConstants.kLeftShooterMotorID, MotorType.kBrushless);
-  private SparkMax m_middleShooterMotor = new SparkMax(Constants.ShooterConstants.kMiddleShooterMotorID, MotorType.kBrushless);
-  private SparkMax m_rightShooterMotor = new SparkMax(Constants.ShooterConstants.kRightShooterMotorID, MotorType.kBrushless);
+  private SparkMaxInterface m_leftShooterMotor = new SparkMaxMotor(Constants.ShooterConstants.kLeftShooterMotorID, MotorType.kBrushless);
+  private SparkMaxInterface m_middleShooterMotor = new SparkMaxMotor(Constants.ShooterConstants.kMiddleShooterMotorID, MotorType.kBrushless);
+  private SparkMaxInterface m_rightShooterMotor = new SparkMaxMotor(Constants.ShooterConstants.kRightShooterMotorID, MotorType.kBrushless);
 
-  private SparkMax m_jointMotor = new SparkMax(Constants.ShooterConstants.kJointMotorID, MotorType.kBrushless);
+  private SparkMaxInterface m_jointMotor = new SparkMaxMotor(Constants.ShooterConstants.kJointMotorID, MotorType.kBrushless);
+
+  private SparkMaxInterface[] motorList = {m_leftShooterMotor, m_middleShooterMotor, m_rightShooterMotor, m_jointMotor};
   private PS5Controller joystick = new PS5Controller(0);
 
   private final SparkClosedLoopController pidController;
@@ -46,7 +51,13 @@ public class ShooterSubsystem extends SubsystemBase {
     double kD = SmartDashboard.getNumber("ShooterJointD", 0);
 
   /** Creates a new ExampleSubsystem. */
-  public ShooterSubsystem() {
+  public ShooterSubsystem(boolean testing) {
+    if (testing) {
+      //make the motors the test motors
+      for (int i = 0; i<motorList.length; i++) {
+        motorList[i] = new TestMotor(motorList[i].getDeviceId(), motorList[i].getMotorType());
+      }
+    }
     SmartDashboard.putNumber("ShooterkDT", 0.2);
     SmartDashboard.putNumber("ShooterJointMaxVelocity", 20);
     SmartDashboard.putNumber("ShooterJointMaxAcceleration", 7.5);
@@ -70,6 +81,10 @@ public class ShooterSubsystem extends SubsystemBase {
         m_jointMotor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         pidController = m_jointMotor.getClosedLoopController();
+  }
+
+  public ShooterSubsystem() {
+    this(false);
   }
 
   /**
