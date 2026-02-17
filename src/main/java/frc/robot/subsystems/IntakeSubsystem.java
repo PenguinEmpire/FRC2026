@@ -43,9 +43,9 @@ public class IntakeSubsystem extends SubsystemBase {
   double kI = SmartDashboard.getNumber("IntakeJointI", 0);
   double kD = SmartDashboard.getNumber("IntakeJointD", 0);
 
-  DigitalInput sensor = new DigitalInput(0);
+  //DigitalInput sensor = new DigitalInput(0);
 
-  private final SparkMax m_RollerMotor = new SparkMax(Constants.IntakeConstants.kIntakeRollerMotorID, MotorType.kBrushless);
+  //private final SparkMax m_RollerMotor = new SparkMax(Constants.IntakeConstants.kIntakeRollerMotorID, MotorType.kBrushless);
   /** Creates a new ExampleSubsystem. */
   public IntakeSubsystem() {
     SmartDashboard.putNumber("IntakekDT", 0.2);
@@ -121,20 +121,20 @@ public class IntakeSubsystem extends SubsystemBase {
     //double outputFF = feedforward.calculate(m_setpoint.position, m_setpoint.velocity);
     m_setpoint = m_profile.calculate(kDt, m_setpoint, m_goal);
     if (!joystick.getCircleButton() && !joystick.getCrossButton()) {
-       pidController.setSetpoint(m_setpoint.position, SparkBase.ControlType.kPosition);
+       //pidController.setSetpoint(m_setpoint.position, SparkBase.ControlType.kPosition);
     }
 
     SmartDashboard.putNumber("IntakeTargetPosition", m_goal.position);
-    SmartDashboard.putNumber("IntakeCurrentPosition", m_setpoint.position);
+    SmartDashboard.putNumber("IntakeCurrentPosition", getPosition());
     //SmartDashboard.putNumber("IntakeTargetPosition", getPosition());
 
   kP = SmartDashboard.getNumber("IntakeJointP", 0);
   kI = SmartDashboard.getNumber("IntakeJointI", 0);
   kD = SmartDashboard.getNumber("IntakeJointD", 0);
 
-  if (sensor.get()) {
+  /*if (sensor.get()) {
     spinRollers(false);
-  }
+  }*/
 
 
   }
@@ -144,9 +144,9 @@ public class IntakeSubsystem extends SubsystemBase {
   }
   public void spinRollers(boolean active) {
     if (active) {
-      m_RollerMotor.set(Constants.IntakeConstants.kRollerMotorPower);
+      //m_RollerMotor.set(Constants.IntakeConstants.kRollerMotorPower);
     } else {
-      m_RollerMotor.set(0);
+      //m_RollerMotor.set(0);
     }
   }
 }

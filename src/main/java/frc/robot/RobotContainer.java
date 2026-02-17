@@ -52,7 +52,6 @@ public class RobotContainer {
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
-    private SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
     private IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
 
     //public final AlignToAngle alignToAngle = new AlignToAngle(m_swerveSubsystem, -Math.PI/2.0);
@@ -62,17 +61,19 @@ public class RobotContainer {
         configureBindings();
     }
 
+    //private SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
+
     private void configureBindings() {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
-        drivetrain.setDefaultCommand(
+        /*drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
                 drive.withVelocityX(m_swerveSubsystem.getVelocityX()) // Drive forward with negative Y (forward)
                     .withVelocityY(m_swerveSubsystem.getVelocityY()) // Drive left with negative X (left)
                     .withRotationalRate(m_swerveSubsystem.getRotationalRate()) // Drive counterclockwise with negative X (left)
             )
-        );
+        );*/
 
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
