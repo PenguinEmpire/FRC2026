@@ -8,6 +8,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.PS5Controller;
@@ -45,7 +46,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
   //DigitalInput sensor = new DigitalInput(0);
 
-  //private final SparkMax m_RollerMotor = new SparkMax(Constants.IntakeConstants.kIntakeRollerMotorID, MotorType.kBrushless);
+  private final SparkMax m_RollerMotor = new SparkMax(Constants.IntakeConstants.kIntakeRollerMotorID, MotorType.kBrushless);
+
+  PIDController manuPID  = new PIDController(0.02, kI, kD);
+
   /** Creates a new ExampleSubsystem. */
   public IntakeSubsystem() {
     SmartDashboard.putNumber("IntakekDT", 0.2);
@@ -61,11 +65,11 @@ public class IntakeSubsystem extends SubsystemBase {
             .idleMode(IdleMode.kBrake)
             .closedLoop
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-                .pid(kP, kI, kD)
+                .pid(0.5,kI,kD)
                 .positionWrappingEnabled(true)
                 .positionWrappingMinInput(0)
                 .positionWrappingMaxInput(2 * Math.PI)
-                .outputRange(-1, 1);
+                .outputRange(-0.01,0.01);
 
         motorConfig.encoder.positionConversionFactor(2 * Math.PI);
         // Apply the initial configuration
@@ -120,9 +124,12 @@ public class IntakeSubsystem extends SubsystemBase {
     //double currentPos = getPosition();
     //double outputFF = feedforward.calculate(m_setpoint.position, m_setpoint.velocity);
     m_setpoint = m_profile.calculate(kDt, m_setpoint, m_goal);
-    if (!joystick.getCircleButton() && !joystick.getCrossButton()) {
-       //pidController.setSetpoint(m_setpoint.position, SparkBase.ControlType.kPosition);
+    //pidController.setSetpoint(m_setpoint.position, SparkBase.ControlType.kPosition);
+    if (!joystick.getL2Button() && !joystick.getL1Button() && Math.abs((getPosition()-targetPosition))<0.05) {
+          m_jointMotor.set(-manuPID.calculate(targetPosition, getPosition()));
     }
+    
+    System.out.println(-manuPID.calculate(targetPosition, getPosition()));
 
     SmartDashboard.putNumber("IntakeTargetPosition", m_goal.position);
     SmartDashboard.putNumber("IntakeCurrentPosition", getPosition());
@@ -144,9 +151,9 @@ public class IntakeSubsystem extends SubsystemBase {
   }
   public void spinRollers(boolean active) {
     if (active) {
-      //m_RollerMotor.set(Constants.IntakeConstants.kRollerMotorPower);
+      m_RollerMotor.set(Constants.IntakeConstants.kRollerMotorPower);
     } else {
-      //m_RollerMotor.set(0);
+      m_RollerMotor.set(0);
     }
   }
 }

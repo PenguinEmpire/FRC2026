@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.InterfaceExperiment.Joysticks.AimingJoystick;
@@ -36,13 +37,13 @@ public class RobotContainer {
     private double MaxAngularRate = Constants.SwerveConstants.kMaxAngularSpeed; // 3/4 of a rotation per second max angular velocity
 
     /* Setting up bindings for necessary control of the swerve drive platform */
-    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+    /*private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
-    private final Telemetry logger = new Telemetry(MaxSpeed);
+    private final Telemetry logger = new Telemetry(MaxSpeed);*/
 
     private final CommandPS5Controller controller = new CommandPS5Controller(0);
 
@@ -50,7 +51,7 @@ public class RobotContainer {
 
     private final PS5Controller joystick = new PS5Controller(0);
 
-    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    //public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     private IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
 
@@ -77,10 +78,10 @@ public class RobotContainer {
 
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
-        final var idle = new SwerveRequest.Idle();
+        /*final var idle = new SwerveRequest.Idle();
         RobotModeTriggers.disabled().whileTrue(
             drivetrain.applyRequest(() -> idle).ignoringDisable(true)
-        );
+        );*/
 
         /*joystick.cross().whileTrue(drivetrain.applyRequest(() -> brake));
         joystick.circle().whileTrue(drivetrain.applyRequest(() ->
@@ -95,20 +96,38 @@ public class RobotContainer {
         joystick.options().and(joystick.square()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));*/
 
         // Reset the field-centric heading on left bumper press.
-        controller.L1().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+        //controller.L1().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
         //controller.R2().whileTrue(alignToAngle);
 
-        drivetrain.registerTelemetry(logger::telemeterize);
+        //drivetrain.registerTelemetry(logger::telemeterize);
 
-        if (joystick.getCircleButton()) {
+        /*if (joystick.getCircleButton()) {
             m_intakeSubsystem.ManualMove(0.1);   
         } else if (joystick.getCrossButton()) {
             m_intakeSubsystem.ManualMove(-0.1);
-        }
+        }*/
 
-        //controller.circle().onTrue(new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeUp));
-        //controller.cross().onTrue(new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeDown));
+        /*if (joystick.getTriangleButton()) {
+            m_intakeSubsystem.spinRollers(true);   
+        } else {
+            m_intakeSubsystem.spinRollers(false);
+        }*/
+
+        controller.triangle()
+            .whileTrue(new RunCommand(()->m_intakeSubsystem.spinRollers(true), m_intakeSubsystem))
+            .onFalse(new RunCommand(()->m_intakeSubsystem.spinRollers(false), m_intakeSubsystem));
+
+        controller.L1()
+            .whileTrue(new RunCommand(()->m_intakeSubsystem.ManualMove(-0.1), m_intakeSubsystem)) //raise
+            .onFalse(new RunCommand(()->m_intakeSubsystem.ManualMove(0), m_intakeSubsystem));
+
+        controller.L2()
+            .whileTrue(new RunCommand(()->m_intakeSubsystem.ManualMove(0.1), m_intakeSubsystem)) //lower
+            .onFalse(new RunCommand(()->m_intakeSubsystem.ManualMove(0), m_intakeSubsystem));
+    
+        controller.circle().onTrue(new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeUp));
+        controller.cross().onTrue(new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeDown));
 
     }   
 
@@ -120,7 +139,7 @@ public class RobotContainer {
         return Commands.sequence(
             // Reset our field centric heading to match the robot
             // facing away from our alliance station wall (0 deg).
-            drivetrain.runOnce(() -> drivetrain.seedFieldCentric(Rotation2d.kZero)),
+            /*drivetrain.runOnce(() -> drivetrain.seedFieldCentric(Rotation2d.kZero)),
             // Then slowly drive forward (away from us) for 5 seconds.
             drivetrain.applyRequest(() ->
                 drive.withVelocityX(0.5)
@@ -130,6 +149,7 @@ public class RobotContainer {
             .withTimeout(5.0),
             // Finally idle for the rest of auton
             drivetrain.applyRequest(() -> idle)
+            */
         );
     }
 }
