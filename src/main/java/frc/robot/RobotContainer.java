@@ -12,6 +12,7 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.PS5Controller;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -33,10 +34,13 @@ import frc.robot.subsystems.vision.LimelightVision;
 
 public class RobotContainer {
     //Smart dashboard configuration
+    private final SendableChooser<String> autoChooser = new SendableChooser<>();
+
+    //Initialize variables
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = Constants.SwerveConstants.kMaxAngularSpeed; // 3/4 of a rotation per second max angular velocity
 
-    /* Setting up bindings for necessary control of the swerve drive platform */
+    //Setting up bindings for necessary control of the swerve drive platform
     /*private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
@@ -60,6 +64,9 @@ public class RobotContainer {
 
     public RobotContainer() {
         configureBindings();
+
+        //Setup smartdashboard
+        autoChooser.addOption("FRC Auto 1", "FRCAuto"); //Name is the name visible on S.D. object is what is returned by getSelected()
     }
 
     //private SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
@@ -135,7 +142,7 @@ public class RobotContainer {
         // Simple drive forward auton
         final var idle = new SwerveRequest.Idle();
 
-        //return new PathPlannerAuto("Example Auto");
+        //return new PathPlannerAuto(autoChooser.getSelected());
         return Commands.sequence(
             // Reset our field centric heading to match the robot
             // facing away from our alliance station wall (0 deg).
