@@ -30,15 +30,8 @@ public class IntakeSubsystem extends SubsystemBase {
   private final SparkClosedLoopController pidController;
   
   private PS5Controller joystick = new PS5Controller(0);
-
-  private final TrapezoidProfile m_profile =
-    new TrapezoidProfile(new TrapezoidProfile.Constraints(SmartDashboard.getNumber("IntakeJointMaxVelocity", 20), SmartDashboard.getNumber("IntakeJointMaxAcceleration", 7.5)));
-  private TrapezoidProfile.State m_goal = new TrapezoidProfile.State();
-  private TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State();
     
   private double targetPosition;
-
-  private double kDt = SmartDashboard.getNumber("IntakekDt", 0.2);
 
   double kP = SmartDashboard.getNumber("IntakeJointP", 0);
   double kI = SmartDashboard.getNumber("IntakeJointI", 0);
@@ -65,11 +58,23 @@ public class IntakeSubsystem extends SubsystemBase {
             .idleMode(IdleMode.kBrake)
             .closedLoop
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-                .pid(0.5,kI,kD)
                 .positionWrappingEnabled(true)
                 .positionWrappingMinInput(0)
                 .positionWrappingMaxInput(2 * Math.PI)
                 .outputRange(-0.01,0.01);
+
+        motorConfig.closedLoop.feedForward
+                  .kS(0)
+                  .kV(0)
+                  .kA(0)
+                  .kG(0)
+                  .kCos(0)
+                  .kCosRatio(0);
+        
+        motorConfig.closedLoop.maxMotion
+                  .cruiseVelocity(0)
+                  .maxAcceleration(0)
+                  .allowedProfileError(0);
 
         motorConfig.encoder.positionConversionFactor(2 * Math.PI);
         // Apply the initial configuration
@@ -109,7 +114,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void setPosition(double newTargetPosition) {
       this.targetPosition = newTargetPosition;
-      m_goal = new TrapezoidProfile.State(targetPosition, 0);
   }
 
   public double getPosition() {
@@ -121,17 +125,9 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    //double currentPos = getPosition();
-    //double outputFF = feedforward.calculate(m_setpoint.position, m_setpoint.velocity);
-    m_setpoint = m_profile.calculate(kDt, m_setpoint, m_goal);
-    //pidController.setSetpoint(m_setpoint.position, SparkBase.ControlType.kPosition);
-    if (!joystick.getL2Button() && !joystick.getL1Button() && Math.abs((getPosition()-targetPosition))<0.05) {
-          m_jointMotor.set(-manuPID.calculate(targetPosition, getPosition()));
-    }
-    
     System.out.println(-manuPID.calculate(targetPosition, getPosition()));
 
-    SmartDashboard.putNumber("IntakeTargetPosition", m_goal.position);
+    SmartDashboard.putNumber("IntakeTargetPosition", targetPosition);
     SmartDashboard.putNumber("IntakeCurrentPosition", getPosition());
     //SmartDashboard.putNumber("IntakeTargetPosition", getPosition());
 
