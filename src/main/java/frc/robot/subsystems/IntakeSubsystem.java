@@ -27,7 +27,8 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 public class IntakeSubsystem extends SubsystemBase {
-  private final SparkMax m_jointMotor = new SparkMax(Constants.IntakeConstants.kIntakeJointMotorID, MotorType.kBrushless);;
+  private final SparkMax m_jointMotor = new SparkMax(Constants.IntakeConstants.kIntakeJointMotorID, MotorType.kBrushless);
+  private final SparkMax m_conveyorMotor = new SparkMax(Constants.IntakeConstants.kConveyorMotorID, MotorType.kBrushless);
   private final SparkClosedLoopController pidController;
   
   private PS5Controller joystick = new PS5Controller(0);
@@ -162,8 +163,10 @@ public class IntakeSubsystem extends SubsystemBase {
   public void spinRollers(boolean active) {
     if (active) {
       m_RollerMotor.set(Constants.IntakeConstants.kRollerMotorPower);
+      m_conveyorMotor.set(Constants.IntakeConstants.kRollerMotorPower);
     } else {
       m_RollerMotor.set(0);
+      m_conveyorMotor.set(0);
     }
   }
 }

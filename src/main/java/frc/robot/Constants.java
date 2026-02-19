@@ -46,6 +46,7 @@ public final class Constants {
   public static class IntakeConstants {
     public static final int kIntakeRollerMotorID = 1; //Change with actual motor IDs and change name (add more once # of motors is known)
     public static final int kIntakeJointMotorID = 2;
+    public static final int kConveyorMotorID = 0;
     
     public static final double kRollerMotorPower = -0.75;
   }
