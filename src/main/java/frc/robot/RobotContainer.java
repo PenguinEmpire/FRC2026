@@ -148,8 +148,8 @@ public class RobotContainer {
         // Simple drive forward auton
         final var idle = new SwerveRequest.Idle();
 
-        //return new PathPlannerAuto(autoChooser.getSelected());
-        return Commands.sequence(
+        return new PathPlannerAuto(autoChooser.getSelected());
+        //return Commands.sequence(
             // Reset our field centric heading to match the robot
             // facing away from our alliance station wall (0 deg).
             /*drivetrain.runOnce(() -> drivetrain.seedFieldCentric(Rotation2d.kZero)),
@@ -163,6 +163,6 @@ public class RobotContainer {
             // Finally idle for the rest of auton
             drivetrain.applyRequest(() -> idle)
             */
-        );
+        //);
     }
 }
