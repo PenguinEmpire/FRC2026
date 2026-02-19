@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
@@ -125,7 +126,15 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+
+    
+    //pidController.setSetpoint(targetPosition, SparkBase.ControlType.kMAXMotionPositionControl);
+    
+    
+    
     System.out.println(-manuPID.calculate(targetPosition, getPosition()));
+
+    m_jointMotor.set(-manuPID.calculate(targetPosition, getPosition()));
 
     SmartDashboard.putNumber("IntakeTargetPosition", targetPosition);
     SmartDashboard.putNumber("IntakeCurrentPosition", getPosition());
