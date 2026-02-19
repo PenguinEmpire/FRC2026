@@ -34,13 +34,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private VisionSubsystem m_VisionSubsystem = new VisionSubsystem(new LimelightVision());
 
-    private final TrapezoidProfile m_profile =
-      new TrapezoidProfile(new TrapezoidProfile.Constraints(SmartDashboard.getNumber("ShooterJointMaxVelocity", 20), SmartDashboard.getNumber("ShooterJointMaxAcceleration", 7.5)));
-    private TrapezoidProfile.State m_goal = new TrapezoidProfile.State();
-    private TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State();
-
-    private double kDt = SmartDashboard.getNumber("ShooterkDT", 0.2);
-
     double kP = SmartDashboard.getNumber("ShooterJointP", 0);
     double kI = SmartDashboard.getNumber("ShooterJointI", 0);
     double kD = SmartDashboard.getNumber("ShooterJointD", 0);
@@ -64,6 +57,19 @@ public class ShooterSubsystem extends SubsystemBase {
                 .positionWrappingMinInput(0)
                 .positionWrappingMaxInput(2 * Math.PI)
                 .outputRange(-1, 1);
+
+        motorConfig.closedLoop.feedForward
+                  .kS(0)
+                  .kV(0)
+                  .kA(0)
+                  .kG(0)
+                  .kCos(0)
+                  .kCosRatio(0);
+        
+        motorConfig.closedLoop.maxMotion
+                  .cruiseVelocity(0)
+                  .maxAcceleration(0)
+                  .allowedProfileError(0);
 
         motorConfig.encoder.positionConversionFactor(2 * Math.PI);
         // Apply the initial configuration
@@ -109,13 +115,11 @@ public class ShooterSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     if (m_VisionSubsystem.HasTarget()) {
-      m_goal = new TrapezoidProfile.State(getTargetAngle(), 0);
-      m_setpoint = m_profile.calculate(kDt, m_setpoint, m_goal);
-      pidController.setSetpoint(m_setpoint.position, SparkBase.ControlType.kPosition);
+      pidController.setSetpoint(getTargetAngle(), SparkBase.ControlType.kPosition);
     }
 
-    SmartDashboard.putNumber("HoodTargetPosition", m_goal.position);
-    SmartDashboard.putNumber("HoodCurrentPosition", m_setpoint.position);
+    SmartDashboard.putNumber("HoodTargetPosition", getTargetAngle());
+    SmartDashboard.putNumber("HoodCurrentPosition", m_jointMotor.getEncoder().getPosition());
     //SmartDashboard.putNumber("HoodCurrentPosition", m_jointMotor.getEncoder().getPosition()); //Alternative way to get position
 
     kP = SmartDashboard.getNumber("ShooterJointP", 0);
