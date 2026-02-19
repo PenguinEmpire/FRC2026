@@ -77,6 +77,6 @@ public class PositionCommand extends Command {
   @Override
   public boolean isFinished() {
     //Return if the subsystems have reached target within tolerance (use a method inside the subsystem)
-    return false;
+    return m_intakeSubsystem.reachedPosition();
   }
 }

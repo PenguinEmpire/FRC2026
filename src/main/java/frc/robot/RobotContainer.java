@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.InterfaceExperiment.Joysticks.AimingJoystick;
@@ -125,16 +126,21 @@ public class RobotContainer {
             .whileTrue(new RunCommand(()->m_intakeSubsystem.spinRollers(true), m_intakeSubsystem))
             .onFalse(new RunCommand(()->m_intakeSubsystem.spinRollers(false), m_intakeSubsystem));
 
-        controller.L1()
+        /*controller.L1()
             .whileTrue(new RunCommand(()->m_intakeSubsystem.ManualMove(-0.1), m_intakeSubsystem)) //raise
             .onFalse(new RunCommand(()->m_intakeSubsystem.ManualMove(0), m_intakeSubsystem));
 
         controller.L2()
             .whileTrue(new RunCommand(()->m_intakeSubsystem.ManualMove(0.1), m_intakeSubsystem)) //lower
             .onFalse(new RunCommand(()->m_intakeSubsystem.ManualMove(0), m_intakeSubsystem));
-    
-        controller.circle().onTrue(new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeUp));
-        controller.cross().onTrue(new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeDown));
+    */
+        controller.circle().onTrue(
+            new SequentialCommandGroup(
+                new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeUp), 
+                new RunCommand(()->m_intakeSubsystem.spinRollers(true), m_intakeSubsystem)));
+        controller.cross().onTrue(new SequentialCommandGroup(
+                new RunCommand(()->m_intakeSubsystem.spinRollers(false), m_intakeSubsystem),
+                new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeDown)));
 
     }   
 

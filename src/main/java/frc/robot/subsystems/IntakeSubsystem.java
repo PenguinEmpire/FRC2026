@@ -59,6 +59,7 @@ public class IntakeSubsystem extends SubsystemBase {
             .idleMode(IdleMode.kBrake)
             .closedLoop
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+                .pid(0.01, kI, kD)
                 .positionWrappingEnabled(true)
                 .positionWrappingMinInput(0)
                 .positionWrappingMaxInput(2 * Math.PI)
@@ -124,10 +125,14 @@ public class IntakeSubsystem extends SubsystemBase {
       return relativeEncoder.getPosition();
   }
 
+  public boolean reachedPosition() {
+    return Math.abs(targetPosition - getPosition()) <= 0.05;
+  }
+
   @Override
   public void periodic() {
 
-    
+
     //pidController.setSetpoint(targetPosition, SparkBase.ControlType.kMAXMotionPositionControl);
     
     
