@@ -60,6 +60,8 @@ public class RobotContainer {
 
     private IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
 
+    private ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
+
     //public final AlignToAngle alignToAngle = new AlignToAngle(m_swerveSubsystem, -Math.PI/2.0);
     //public final AlignToClimb alignToClimb = new AlignToClimb(m_swerveSubsystem, 0, 0);
 
@@ -141,6 +143,17 @@ public class RobotContainer {
         controller.cross().onTrue(new SequentialCommandGroup(
                 new RunCommand(()->m_intakeSubsystem.spinRollers(false), m_intakeSubsystem),
                 new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeDown)));
+
+        controller.triangle()
+            .whileTrue(new RunCommand(()->m_shooterSubsystem.moveHood(0.1), m_shooterSubsystem)) //raise
+            .onFalse(new RunCommand(()->m_shooterSubsystem.moveHood(0), m_shooterSubsystem));
+        controller.square()
+            .whileTrue(new RunCommand(()->m_shooterSubsystem.moveHood(-0.1), m_shooterSubsystem)) //lower
+            .onFalse(new RunCommand(()->m_shooterSubsystem.moveHood(0), m_shooterSubsystem));
+
+        controller.R2()
+            .whileTrue(new RunCommand(()->m_shooterSubsystem.enableShooter(true), m_shooterSubsystem)) //lower
+            .onFalse(new RunCommand(()->m_shooterSubsystem.enableShooter(false), m_shooterSubsystem));
 
     }   
 

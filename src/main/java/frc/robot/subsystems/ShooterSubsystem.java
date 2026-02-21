@@ -14,6 +14,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -32,7 +33,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private final SparkClosedLoopController pidController;
 
-  private VisionSubsystem m_VisionSubsystem = new VisionSubsystem(new LimelightVision());
+  private PIDController manuPID = new PIDController(0.01, 0, 0);
+
+  //private VisionSubsystem m_VisionSubsystem = new VisionSubsystem(new LimelightVision());
 
     double kP = SmartDashboard.getNumber("ShooterJointP", 0);
     double kI = SmartDashboard.getNumber("ShooterJointI", 0);
@@ -102,23 +105,25 @@ public class ShooterSubsystem extends SubsystemBase {
     return false;
   }
 
-  private double getTargetAngle() {
+  /*private double getTargetAngle() {
     if (m_VisionSubsystem.HasTarget()) {
       double ty = m_VisionSubsystem.GetYAngle();
       return ty*ty+ty+1; //Whatever the line of best fit is
     } else {
       return 0; //Whatever the default position is
     }
-  }
+  }*/
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    if (m_VisionSubsystem.HasTarget()) {
+    /*if (m_VisionSubsystem.HasTarget()) {
       pidController.setSetpoint(getTargetAngle(), SparkBase.ControlType.kPosition);
-    }
+    }*/
 
-    SmartDashboard.putNumber("HoodTargetPosition", getTargetAngle());
+    //m_jointMotor.set(manuPID.calculate(getPosition(), getTargetAngle()));
+
+    //SmartDashboard.putNumber("HoodTargetPosition", getTargetAngle());
     SmartDashboard.putNumber("HoodCurrentPosition", m_jointMotor.getEncoder().getPosition());
     //SmartDashboard.putNumber("HoodCurrentPosition", m_jointMotor.getEncoder().getPosition()); //Alternative way to get position
 
@@ -127,8 +132,12 @@ public class ShooterSubsystem extends SubsystemBase {
     kD = SmartDashboard.getNumber("ShooterJointD", 0);
   }
 
-  public void MoveHood(double speed) {
+  public void moveHood(double speed) {
     m_jointMotor.set(speed);
+  }
+
+  public double getPosition() {
+    return m_jointMotor.getEncoder().getPosition();
   }
 
   @Override
