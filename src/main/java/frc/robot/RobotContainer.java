@@ -42,28 +42,29 @@ public class RobotContainer {
     private double MaxAngularRate = Constants.SwerveConstants.kMaxAngularSpeed; // 3/4 of a rotation per second max angular velocity
 
     //Setting up bindings for necessary control of the swerve drive platform
-    /*private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
-    private final Telemetry logger = new Telemetry(MaxSpeed);*/
+    private final Telemetry logger = new Telemetry(MaxSpeed);
 
     private final CommandPS5Controller controller = new CommandPS5Controller(0);
 
-    //private final JoystickInterface joystick = new AimingJoystick(new PS5Joystick(new PS5Controller(0)), new VisionSubsystem(new LimelightVision()));
-
     private final PS5Controller joystick = new PS5Controller(0);
 
-    //public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     private IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
 
     private ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
 
-    //public final AlignToAngle alignToAngle = new AlignToAngle(m_swerveSubsystem, -Math.PI/2.0);
-    //public final AlignToClimb alignToClimb = new AlignToClimb(m_swerveSubsystem, 0, 0);
+    private SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
+
+
+    public final AlignToAngle alignToAngle = new AlignToAngle(m_swerveSubsystem, -Math.PI/2.0);
+    public final AlignToClimb alignToClimb = new AlignToClimb(m_swerveSubsystem, 0, 0);
 
     public RobotContainer() {
         configureBindings();
@@ -72,82 +73,64 @@ public class RobotContainer {
         autoChooser.addOption("FRC Auto 1", "FRCAuto"); //Name is the name visible on S.D. object is what is returned by getSelected()
     }
 
-    //private SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
-
     private void configureBindings() {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
-        /*drivetrain.setDefaultCommand(
+        drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
                 drive.withVelocityX(m_swerveSubsystem.getVelocityX()) // Drive forward with negative Y (forward)
                     .withVelocityY(m_swerveSubsystem.getVelocityY()) // Drive left with negative X (left)
                     .withRotationalRate(m_swerveSubsystem.getRotationalRate()) // Drive counterclockwise with negative X (left)
             )
-        );*/
+        );
 
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
-        /*final var idle = new SwerveRequest.Idle();
+        final var idle = new SwerveRequest.Idle();
         RobotModeTriggers.disabled().whileTrue(
             drivetrain.applyRequest(() -> idle).ignoringDisable(true)
-        );*/
+        );
 
-        /*joystick.cross().whileTrue(drivetrain.applyRequest(() -> brake));
-        joystick.circle().whileTrue(drivetrain.applyRequest(() ->
+        controller.cross().whileTrue(drivetrain.applyRequest(() -> brake));
+        controller.circle().whileTrue(drivetrain.applyRequest(() ->
             point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
         ));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
-        joystick.create().and(joystick.triangle()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        joystick.create().and(joystick.square()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        joystick.options().and(joystick.triangle()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        joystick.options().and(joystick.square()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));*/
+        /*controller.create().and(controller.triangle()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+        controller.create().and(controller.square()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+        controller.options().and(controller.triangle()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+        controller.options().and(controller.square()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));*/
 
         // Reset the field-centric heading on left bumper press.
-        //controller.L1().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+        controller.L1().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
-        //controller.R2().whileTrue(alignToAngle);
+        drivetrain.registerTelemetry(logger::telemeterize);
 
-        //drivetrain.registerTelemetry(logger::telemeterize);
+        //controller.L2().whileTrue(alignToAngle); //Not in use right now
 
-        /*if (joystick.getCircleButton()) {
-            m_intakeSubsystem.ManualMove(0.1);   
-        } else if (joystick.getCrossButton()) {
-            m_intakeSubsystem.ManualMove(-0.1);
-        }*/
-
-        /*if (joystick.getTriangleButton()) {
-            m_intakeSubsystem.spinRollers(true);   
-        } else {
-            m_intakeSubsystem.spinRollers(false);
-        }*/
-
+        //Manual Rollers
         controller.triangle()
             .whileTrue(new RunCommand(()->m_intakeSubsystem.spinRollers(true), m_intakeSubsystem))
             .onFalse(new RunCommand(()->m_intakeSubsystem.spinRollers(false), m_intakeSubsystem));
 
-        /*controller.L1()
-            .whileTrue(new RunCommand(()->m_intakeSubsystem.ManualMove(-0.1), m_intakeSubsystem)) //raise
-            .onFalse(new RunCommand(()->m_intakeSubsystem.ManualMove(0), m_intakeSubsystem));
-
-        controller.L2()
-            .whileTrue(new RunCommand(()->m_intakeSubsystem.ManualMove(0.1), m_intakeSubsystem)) //lower
-            .onFalse(new RunCommand(()->m_intakeSubsystem.ManualMove(0), m_intakeSubsystem));
-    */
-        controller.circle().onTrue(
+        //Intake
+        controller.povUp().onTrue(
             new SequentialCommandGroup(
                 new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeUp), 
                 new RunCommand(()->m_intakeSubsystem.spinRollers(true), m_intakeSubsystem)));
-        controller.cross().onTrue(new SequentialCommandGroup(
+
+        controller.povDown().onTrue(new SequentialCommandGroup(
                 new RunCommand(()->m_intakeSubsystem.spinRollers(false), m_intakeSubsystem),
                 new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeDown)));
 
-        controller.triangle()
+        controller.povLeft()
             .whileTrue(new RunCommand(()->m_shooterSubsystem.moveHood(0.1), m_shooterSubsystem)) //raise
             .onFalse(new RunCommand(()->m_shooterSubsystem.moveHood(0), m_shooterSubsystem));
-        controller.square()
+
+        controller.povRight()
             .whileTrue(new RunCommand(()->m_shooterSubsystem.moveHood(-0.1), m_shooterSubsystem)) //lower
             .onFalse(new RunCommand(()->m_shooterSubsystem.moveHood(0), m_shooterSubsystem));
 
@@ -155,6 +138,9 @@ public class RobotContainer {
             .whileTrue(new RunCommand(()->m_shooterSubsystem.enableShooter(true), m_shooterSubsystem)) //lower
             .onFalse(new RunCommand(()->m_shooterSubsystem.enableShooter(false), m_shooterSubsystem));
 
+        //Option to climb
+
+        //Start to unclimb
     }   
 
     public Command getAutonomousCommand() {
