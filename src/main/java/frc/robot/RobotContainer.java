@@ -120,10 +120,10 @@ public class RobotContainer {
         controller.povUp().onTrue(
             new SequentialCommandGroup(
                 new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeUp), 
-                new RunCommand(()->m_intakeSubsystem.spinRollers(true), m_intakeSubsystem)));
+                new RunCommand(()->m_intakeSubsystem.spinRollers(false), m_intakeSubsystem)));
 
         controller.povDown().onTrue(new SequentialCommandGroup(
-                new RunCommand(()->m_intakeSubsystem.spinRollers(false), m_intakeSubsystem),
+                new RunCommand(()->m_intakeSubsystem.spinRollers(true), m_intakeSubsystem),
                 new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeDown)));
 
         controller.povLeft()
