@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
@@ -42,29 +44,29 @@ public class RobotContainer {
     private double MaxAngularRate = Constants.SwerveConstants.kMaxAngularSpeed; // 3/4 of a rotation per second max angular velocity
 
     //Setting up bindings for necessary control of the swerve drive platform
-    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+    /*private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
-
-    private final Telemetry logger = new Telemetry(MaxSpeed);
+    */
+    //private final Telemetry logger = new Telemetry(MaxSpeed);
 
     private final CommandPS5Controller controller = new CommandPS5Controller(0);
 
     private final PS5Controller joystick = new PS5Controller(0);
 
-    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    //public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     private IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
 
-    private ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
+    //private ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
 
-    private SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
+    //private SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
 
 
-    public final AlignToAngle alignToAngle = new AlignToAngle(m_swerveSubsystem, -Math.PI/2.0);
-    public final AlignToClimb alignToClimb = new AlignToClimb(m_swerveSubsystem, 0, 0);
+    //public final AlignToAngle alignToAngle = new AlignToAngle(m_swerveSubsystem, -Math.PI/2.0);
+    //public final AlignToClimb alignToClimb = new AlignToClimb(m_swerveSubsystem, 0, 0);
 
     public RobotContainer() {
         configureBindings();
@@ -76,7 +78,7 @@ public class RobotContainer {
     private void configureBindings() {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
-        drivetrain.setDefaultCommand(
+        /*drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
                 drive.withVelocityX(m_swerveSubsystem.getVelocityX()) // Drive forward with negative Y (forward)
@@ -95,7 +97,7 @@ public class RobotContainer {
         controller.cross().whileTrue(drivetrain.applyRequest(() -> brake));
         controller.circle().whileTrue(drivetrain.applyRequest(() ->
             point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
-        ));
+        )); */
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
@@ -105,9 +107,9 @@ public class RobotContainer {
         controller.options().and(controller.square()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));*/
 
         // Reset the field-centric heading on left bumper press.
-        controller.L1().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+        //controller.L1().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
-        drivetrain.registerTelemetry(logger::telemeterize);
+        //drivetrain.registerTelemetry(logger::telemeterize);
 
         //controller.L2().whileTrue(alignToAngle); //Not in use right now
 
@@ -119,14 +121,15 @@ public class RobotContainer {
         //Intake
         controller.povUp().onTrue(
             new SequentialCommandGroup(
-                new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeUp), 
-                new RunCommand(()->m_intakeSubsystem.spinRollers(false), m_intakeSubsystem)));
+                new InstantCommand(()->m_intakeSubsystem.spinRollers(false), m_intakeSubsystem),
+                new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeUp)));
 
-        controller.povDown().onTrue(new SequentialCommandGroup(
-                new RunCommand(()->m_intakeSubsystem.spinRollers(true), m_intakeSubsystem),
-                new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeDown)));
+        controller.povDown().onTrue(
+            new SequentialCommandGroup(
+                new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeDown),
+                new InstantCommand(()->m_intakeSubsystem.spinRollers(true), m_intakeSubsystem)));
 
-        controller.povLeft()
+        /*controller.povLeft()
             .whileTrue(new RunCommand(()->m_shooterSubsystem.moveHood(0.1), m_shooterSubsystem)) //raise
             .onFalse(new RunCommand(()->m_shooterSubsystem.moveHood(0), m_shooterSubsystem));
 
@@ -136,7 +139,7 @@ public class RobotContainer {
 
         controller.R2()
             .whileTrue(new RunCommand(()->m_shooterSubsystem.enableShooter(true), m_shooterSubsystem)) //lower
-            .onFalse(new RunCommand(()->m_shooterSubsystem.enableShooter(false), m_shooterSubsystem));
+            .onFalse(new RunCommand(()->m_shooterSubsystem.enableShooter(false), m_shooterSubsystem));*/
 
         //Option to climb
 

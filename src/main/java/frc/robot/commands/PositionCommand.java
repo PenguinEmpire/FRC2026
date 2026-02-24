@@ -17,7 +17,7 @@ public class PositionCommand extends Command {
   public enum Position {
         // Intake Positions
         IntakeUp(0.0),  // Fold intake inside frame
-        IntakeDown(38.2974967956543); //figure this value out, originally 0.985
+        IntakeDown(41.13992691040039); //figure this value out, originally 0.985
   
         
         private final double encoderPosition;

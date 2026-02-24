@@ -28,7 +28,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 public class IntakeSubsystem extends SubsystemBase {
   private final SparkMax m_jointMotor = new SparkMax(Constants.IntakeConstants.kIntakeJointMotorID, MotorType.kBrushless);
-  private final SparkMax m_conveyorMotor = new SparkMax(Constants.IntakeConstants.kConveyorMotorID, MotorType.kBrushless);
+  //private final SparkMax m_conveyorMotor = new SparkMax(Constants.IntakeConstants.kConveyorMotorID, MotorType.kBrushless);
   private final SparkClosedLoopController pidController;
   
   private PS5Controller joystick = new PS5Controller(0);
@@ -43,16 +43,16 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private final SparkMax m_RollerMotor = new SparkMax(Constants.IntakeConstants.kIntakeRollerMotorID, MotorType.kBrushless);
 
-  PIDController manuPID  = new PIDController(0.02, kI, kD);
+  PIDController manuPID  = new PIDController(0.01, kI, kD);
 
   /** Creates a new ExampleSubsystem. */
   public IntakeSubsystem() {
     SmartDashboard.putNumber("IntakekDT", 0.2);
     SmartDashboard.putNumber("IntakeJointMaxVelocity", 20);
     SmartDashboard.putNumber("IntakeJointMaxAcceleration", 7.5);
-    SmartDashboard.putNumber("IntakeJointP", 0);
-    SmartDashboard.putNumber("IntakeJointI", 0);
-    SmartDashboard.putNumber("IntakeJointD", 0);
+    SmartDashboard.putNumber("IntakeJointP", 0.0);
+    SmartDashboard.putNumber("IntakeJointI", 0.0);
+    SmartDashboard.putNumber("IntakeJointD", 0.0);
 
     SparkMaxConfig motorConfig = new SparkMaxConfig();
         motorConfig
@@ -64,20 +64,20 @@ public class IntakeSubsystem extends SubsystemBase {
                 .positionWrappingEnabled(true)
                 .positionWrappingMinInput(0)
                 .positionWrappingMaxInput(2 * Math.PI)
-                .outputRange(-0.01,0.01);
+                .outputRange(-0.1,0.1);
 
-        motorConfig.closedLoop.feedForward
-                  .kS(0)
-                  .kV(0)
-                  .kA(0)
-                  .kG(0)
-                  .kCos(0)
-                  .kCosRatio(0);
+        /*motorConfig.closedLoop.feedForward
+                  .kS(0.0)
+                  .kV(0.0)
+                  .kA(0.0)
+                  .kG(0.0)
+                  .kCos(0.0)
+                  .kCosRatio(0.0);*/
         
         motorConfig.closedLoop.maxMotion
-                  .cruiseVelocity(0)
-                  .maxAcceleration(0)
-                  .allowedProfileError(0);
+                  .cruiseVelocity(0.0)
+                  .maxAcceleration(0.0)
+                  .allowedProfileError(0.0);
 
         motorConfig.encoder.positionConversionFactor(2 * Math.PI);
         // Apply the initial configuration
@@ -127,7 +127,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public boolean reachedPosition() {
-    return Math.abs(targetPosition - getPosition()) <= 0.05;
+    return Math.abs(targetPosition - getPosition()) <= 1;
   }
 
   @Override
@@ -163,10 +163,10 @@ public class IntakeSubsystem extends SubsystemBase {
   public void spinRollers(boolean active) {
     if (active) {
       m_RollerMotor.set(Constants.IntakeConstants.kRollerMotorPower);
-      m_conveyorMotor.set(Constants.IntakeConstants.kRollerMotorPower);
+      //m_conveyorMotor.set(Constants.IntakeConstants.kRollerMotorPower);
     } else {
       m_RollerMotor.set(0);
-      m_conveyorMotor.set(0);
+      //m_conveyorMotor.set(0);
     }
   }
 }
