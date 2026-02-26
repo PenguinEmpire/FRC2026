@@ -35,18 +35,18 @@ public final class Constants {
   }
 
   public static class ShooterConstants {
-    public static final int kLeftShooterMotorID = 6; //Change with actual motor IDs and change name (add more once # of motors is known)
-    public static final int kMiddleShooterMotorID = 7;
-    public static final int kRightShooterMotorID = 8;
+    public static final int kLeftShooterMotorID = 26; //Change with actual motor IDs and change name (add more once # of motors is known)
+    public static final int kMiddleShooterMotorID = 27;
+    public static final int kRightShooterMotorID = 28;
 
-    public static final int kJointMotorID = 5;
+    public static final int kJointMotorID = 25;
     public static final int kShooterVelocity = 0; //Change to the output velocity of the shooter when known
   }
 
   public static class IntakeConstants {
-    public static final int kIntakeRollerMotorID = 3; //Change with actual motor IDs and change name (add more once # of motors is known)
-    public static final int kIntakeJointMotorID = 2;
-    public static final int kConveyorMotorID = 4;
+    public static final int kIntakeRollerMotorID = 23; //Change with actual motor IDs and change name (add more once # of motors is known)
+    public static final int kIntakeJointMotorID = 22;
+    public static final int kConveyorMotorID = 24;
     
     public static final double kRollerMotorPower = -0.75;
   }
