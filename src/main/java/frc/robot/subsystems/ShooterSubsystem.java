@@ -35,7 +35,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private PIDController manuPID = new PIDController(0.01, 0, 0);
 
-  //private VisionSubsystem m_VisionSubsystem = new VisionSubsystem(new LimelightVision());
+  private VisionSubsystem m_VisionSubsystem = new VisionSubsystem(new LimelightVision());
 
     double kP = SmartDashboard.getNumber("ShooterJointP", 0);
     double kI = SmartDashboard.getNumber("ShooterJointI", 0);
@@ -105,14 +105,14 @@ public class ShooterSubsystem extends SubsystemBase {
     return false;
   }
 
-  /*private double getTargetAngle() {
+  private double getTargetAngle() {
     if (m_VisionSubsystem.HasTarget()) {
       double ty = m_VisionSubsystem.GetYAngle();
       return ty*ty+ty+1; //Whatever the line of best fit is
     } else {
       return 0; //Whatever the default position is
     }
-  }*/
+  }
 
   @Override
   public void periodic() {
