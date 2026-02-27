@@ -80,5 +80,11 @@ public final class Constants {
             3.0, kAprilTagID3Offset,
             10.0, kAprilTagID10Offset
         );
+
+    public static final double kAprilTagID10Height = 0.0;
+    public static final Map<Double, Double> kAprilTagHeights = Map.of(
+      -1.0, 0.0,
+      10.0, kAprilTagID10Height
+    );
   }
 }
