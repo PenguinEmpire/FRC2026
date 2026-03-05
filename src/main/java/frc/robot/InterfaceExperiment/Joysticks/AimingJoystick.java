@@ -41,10 +41,15 @@ public class AimingJoystick implements JoystickInterface{
     public double getRotationalRate() {
         double rotationalRate = joystick.getRotationalRate();
         if (m_VisionSubsystem.HasTarget() && joystick.getR1()) {
+            double velocityY = getVelocityY();
+            double radius = m_VisionSubsystem.getDistanceEstimate();
+
+            double angularVelocity = velocityY/radius;
+
             double RadTx = m_VisionSubsystem.GetXAngle()*Math.PI/180.0;
             double pidSpeed = rotPID.calculate(RadTx, 0);
 
-            pidSpeed+=Math.copySign(kS, pidSpeed);
+            pidSpeed+=Math.copySign(kS, pidSpeed); //replace kS with angularVelocity if wanting to take physics approach
 
             return pidSpeed;
         }else { 

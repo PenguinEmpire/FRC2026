@@ -70,6 +70,16 @@ public class VisionSubsystem extends SubsystemBase {
     Fiducial3DOffsetZ = offset.getZ();
   }
 
+  public double getDistanceEstimate() {
+    double LimelightMountAngleDegrees = Constants.VisionConstants.kLimelightMountAngleDegrees;
+    double LimelightLensHeightInches = Constants.VisionConstants.kLimelightLensHeightInches;
+
+    double targetHeightFromGroundInches = Constants.AprilTagConstants.kAprilTagHeights.get(currentID);
+
+    double d = (targetHeightFromGroundInches-LimelightLensHeightInches) / Math.tan(LimelightMountAngleDegrees+GetYAngle());
+    return d;
+  }
+
   /**
    * An example method querying a boolean state of the subsystem (for example, a digital sensor).
    *
