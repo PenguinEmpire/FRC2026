@@ -15,6 +15,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -41,6 +42,8 @@ public class ShooterSubsystem extends SubsystemBase {
     double kI = SmartDashboard.getNumber("ShooterJointI", 0);
     double kD = SmartDashboard.getNumber("ShooterJointD", 0);
 
+    SlewRateLimiter shoooterLimiter = new SlewRateLimiter(3);
+
   /** Creates a new ExampleSubsystem. */
   public ShooterSubsystem() {
     SmartDashboard.putNumber("ShooterkDT", 0.2);
@@ -61,13 +64,13 @@ public class ShooterSubsystem extends SubsystemBase {
                 .positionWrappingMaxInput(2 * Math.PI)
                 .outputRange(-1, 1);
 
-        motorConfig.closedLoop.feedForward
+        /*motorConfig.closedLoop.feedForward
                   .kS(0)
                   .kV(0)
                   .kA(0)
                   .kG(0)
                   .kCos(0)
-                  .kCosRatio(0);
+                  .kCosRatio(0);*/
         
         motorConfig.closedLoop.maxMotion
                   .cruiseVelocity(0)
@@ -147,9 +150,16 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void enableShooter(boolean active) {
     if (active) {
-      m_leftShooterMotor.set(Constants.ShooterConstants.kShooterVelocity);
-      m_middleShooterMotor.set(Constants.ShooterConstants.kShooterVelocity);
-      m_rightShooterMotor.set(Constants.ShooterConstants.kShooterVelocity);
+      double calc1 = shoooterLimiter.calculate(Constants.ShooterConstants.kShooterVelocity);
+      m_leftShooterMotor.set(calc1);
+      m_rightShooterMotor.set(calc1);
+    } else {
+      m_leftShooterMotor.set(0);
+      m_rightShooterMotor.set(0);
     }
+  }
+
+  public void enableKicker(double speed) {
+    m_middleShooterMotor.set(speed);
   }
 }

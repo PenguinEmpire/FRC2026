@@ -7,6 +7,7 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
@@ -19,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.InterfaceExperiment.Joysticks.AimingJoystick;
@@ -34,6 +36,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.vision.LimelightVision;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 public class RobotContainer {
     //Smart dashboard configuration
@@ -101,10 +104,10 @@ public class RobotContainer {
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
-        /*controller.create().and(controller.triangle()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+        controller.create().and(controller.triangle()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
         controller.create().and(controller.square()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
         controller.options().and(controller.triangle()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        controller.options().and(controller.square()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));*/
+        controller.options().and(controller.square()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
         // Reset the field-centric heading on left bumper press.
         controller.L1().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
@@ -115,8 +118,10 @@ public class RobotContainer {
 
         //Manual Rollers
         controller.triangle()
-            .whileTrue(new RunCommand(()->m_intakeSubsystem.spinRollers(true), m_intakeSubsystem))
-            .onFalse(new RunCommand(()->m_intakeSubsystem.spinRollers(false), m_intakeSubsystem));
+            .onTrue(new RunCommand(()->drivetrain.sysIDEnable(true), drivetrain));
+
+        controller.square()
+            .onTrue(new RunCommand(()->drivetrain.sysIDEnable(false), drivetrain));
 
         //Intake
         controller.povUp().onTrue(
@@ -138,8 +143,29 @@ public class RobotContainer {
             .onFalse(new RunCommand(()->m_shooterSubsystem.moveHood(0), m_shooterSubsystem));
 
         controller.R2()
-            .whileTrue(new RunCommand(()->m_shooterSubsystem.enableShooter(true), m_shooterSubsystem)) //lower
-            .onFalse(new RunCommand(()->m_shooterSubsystem.enableShooter(false), m_shooterSubsystem));
+            .onTrue(
+                new SequentialCommandGroup(
+                    new InstantCommand(()->m_shooterSubsystem.enableShooter(true), m_shooterSubsystem),
+                    new WaitCommand(2),
+                    new InstantCommand(()->m_shooterSubsystem.enableKicker(Constants.ShooterConstants.kShooterKickerVelocity), m_intakeSubsystem),
+                    new InstantCommand(()->m_intakeSubsystem.spinConveyor(Constants.IntakeConstants.kConveyorMotorPower), m_intakeSubsystem)))
+
+            .onFalse(
+                new SequentialCommandGroup(
+                    new InstantCommand(()->m_shooterSubsystem.enableShooter(false), m_shooterSubsystem),
+                    new InstantCommand(()->m_shooterSubsystem.enableKicker(0), m_shooterSubsystem),
+                    new InstantCommand(()->m_intakeSubsystem.spinConveyor(0), m_intakeSubsystem)));
+
+        controller.L2()
+                    .onTrue(
+                        new SequentialCommandGroup(
+                            new InstantCommand(()->m_shooterSubsystem.enableKicker(-Constants.ShooterConstants.kShooterKickerVelocity), m_intakeSubsystem),
+                            new InstantCommand(()->m_intakeSubsystem.spinConveyor(-Constants.IntakeConstants.kConveyorMotorPower), m_intakeSubsystem)))
+        
+                    .onFalse(
+                        new SequentialCommandGroup(
+                            new InstantCommand(()->m_shooterSubsystem.enableKicker(0), m_shooterSubsystem),
+                            new InstantCommand(()->m_intakeSubsystem.spinConveyor(0), m_intakeSubsystem)));
 
         //Option to climb
 
