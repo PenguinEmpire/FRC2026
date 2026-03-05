@@ -7,7 +7,6 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
-import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
@@ -15,17 +14,12 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
-import frc.robot.InterfaceExperiment.Joysticks.AimingJoystick;
-import frc.robot.InterfaceExperiment.Joysticks.JoystickInterface;
-import frc.robot.InterfaceExperiment.Joysticks.PS5Joystick;
 import frc.robot.commands.AlignToAngle;
 import frc.robot.commands.AlignToClimb;
 import frc.robot.commands.PositionCommand;
@@ -117,32 +111,32 @@ public class RobotContainer {
         //controller.L2().whileTrue(alignToAngle); //Not in use right now
 
         //Manual Rollers
-        controller.triangle()
+        controller.triangle() //enable sysid
             .onTrue(new RunCommand(()->drivetrain.sysIDEnable(true), drivetrain));
 
-        controller.square()
+        controller.square() //disable sysid
             .onTrue(new RunCommand(()->drivetrain.sysIDEnable(false), drivetrain));
 
         //Intake
-        controller.povUp().onTrue(
+        controller.povUp().onTrue( //raise intake
             new SequentialCommandGroup(
                 new InstantCommand(()->m_intakeSubsystem.spinRollers(false), m_intakeSubsystem),
                 new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeUp)));
 
-        controller.povDown().onTrue(
+        controller.povDown().onTrue( //lower intake
             new SequentialCommandGroup(
                 new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeDown),
                 new InstantCommand(()->m_intakeSubsystem.spinRollers(true), m_intakeSubsystem)));
 
-        controller.povLeft()
+        controller.povLeft() //manual move hood down
             .whileTrue(new RunCommand(()->m_shooterSubsystem.moveHood(0.1), m_shooterSubsystem)) //raise
             .onFalse(new RunCommand(()->m_shooterSubsystem.moveHood(0), m_shooterSubsystem));
 
-        controller.povRight()
+        controller.povRight() //manual move hood up
             .whileTrue(new RunCommand(()->m_shooterSubsystem.moveHood(-0.1), m_shooterSubsystem)) //lower
             .onFalse(new RunCommand(()->m_shooterSubsystem.moveHood(0), m_shooterSubsystem));
 
-        controller.R2()
+        controller.R2() //activate shooter/indexer/conveyor
             .onTrue(
                 new SequentialCommandGroup(
                     new InstantCommand(()->m_shooterSubsystem.enableShooter(true), m_shooterSubsystem),
@@ -156,7 +150,7 @@ public class RobotContainer {
                     new InstantCommand(()->m_shooterSubsystem.enableKicker(0), m_shooterSubsystem),
                     new InstantCommand(()->m_intakeSubsystem.spinConveyor(0), m_intakeSubsystem)));
 
-        controller.L2()
+        controller.L2() //reverse indexer/conveyor
                     .onTrue(
                         new SequentialCommandGroup(
                             new InstantCommand(()->m_shooterSubsystem.enableKicker(-Constants.ShooterConstants.kShooterKickerVelocity), m_intakeSubsystem),
@@ -167,9 +161,9 @@ public class RobotContainer {
                             new InstantCommand(()->m_shooterSubsystem.enableKicker(0), m_shooterSubsystem),
                             new InstantCommand(()->m_intakeSubsystem.spinConveyor(0), m_intakeSubsystem)));
 
-        //Option to climb
+        //Option to climb (not implimented)
 
-        //Start to unclimb
+        //Start to unclimb (not implimented)
     }   
 
     public Command getAutonomousCommand() {
