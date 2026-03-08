@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.commands.AlignToAngle;
 import frc.robot.commands.AlignToClimb;
+import frc.robot.commands.EnableShooterCommand;
 import frc.robot.commands.PositionCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -61,6 +62,8 @@ public class RobotContainer {
     private ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
 
     private SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
+
+    private final EnableShooterCommand enableShooter = new EnableShooterCommand(m_shooterSubsystem);
 
 
     //public final AlignToAngle alignToAngle = new AlignToAngle(m_swerveSubsystem, -Math.PI/2.0);
@@ -140,10 +143,8 @@ public class RobotContainer {
         controller.R2() //activate shooter/indexer/conveyor
             .onTrue(
                 new SequentialCommandGroup(
-                    new InstantCommand(()->m_shooterSubsystem.enableShooter(true), m_shooterSubsystem),
-                    new WaitCommand(2),
+                    enableShooter,
                     new InstantCommand(()->m_intakeSubsystem.spinConveyor(Constants.IntakeConstants.kConveyorMotorPower), m_intakeSubsystem),
-                    //new WaitCommand(1.15),
                     new InstantCommand(()->m_shooterSubsystem.enableKicker(Constants.ShooterConstants.kShooterKickerVelocity), m_intakeSubsystem)))
 
             .onFalse(
