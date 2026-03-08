@@ -31,6 +31,7 @@ import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.vision.LimelightVision;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import com.ctre.phoenix6.SignalLogger;
 
 public class RobotContainer {
     //Smart dashboard configuration
@@ -79,7 +80,7 @@ public class RobotContainer {
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
                 drive.withVelocityX(m_swerveSubsystem.getVelocityX()) // Drive forward with negative Y (forward)
-                    .withVelocityY(m_swerveSubsystem.getVelocityY()) // Drive left with negative X (left)
+                    .withVelocityY(0) // Drive left with negative X (left) //m_swerveSubsystem.getVelocityY()
                     .withRotationalRate(m_swerveSubsystem.getRotationalRate()) // Drive counterclockwise with negative X (left)
             )
         );
@@ -141,8 +142,9 @@ public class RobotContainer {
                 new SequentialCommandGroup(
                     new InstantCommand(()->m_shooterSubsystem.enableShooter(true), m_shooterSubsystem),
                     new WaitCommand(2),
-                    new InstantCommand(()->m_shooterSubsystem.enableKicker(Constants.ShooterConstants.kShooterKickerVelocity), m_intakeSubsystem),
-                    new InstantCommand(()->m_intakeSubsystem.spinConveyor(Constants.IntakeConstants.kConveyorMotorPower), m_intakeSubsystem)))
+                    new InstantCommand(()->m_intakeSubsystem.spinConveyor(Constants.IntakeConstants.kConveyorMotorPower), m_intakeSubsystem),
+                    //new WaitCommand(1.15),
+                    new InstantCommand(()->m_shooterSubsystem.enableKicker(Constants.ShooterConstants.kShooterKickerVelocity), m_intakeSubsystem)))
 
             .onFalse(
                 new SequentialCommandGroup(
