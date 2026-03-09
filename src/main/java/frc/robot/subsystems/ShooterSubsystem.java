@@ -36,6 +36,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private PIDController manuPID = new PIDController(0.01, 0, 0);
 
+  private PIDController flywheelPID = new PIDController(0.01, 0, 0);
+
   private VisionSubsystem m_VisionSubsystem = new VisionSubsystem(new LimelightVision());
 
     double kP = SmartDashboard.getNumber("ShooterJointP", 0);
@@ -43,6 +45,8 @@ public class ShooterSubsystem extends SubsystemBase {
     double kD = SmartDashboard.getNumber("ShooterJointD", 0);
 
     SlewRateLimiter shoooterLimiter = new SlewRateLimiter(2);
+
+    double targetShooterVelocity = 0;
 
   /** Creates a new ExampleSubsystem. */
   public ShooterSubsystem() {
@@ -130,6 +134,13 @@ public class ShooterSubsystem extends SubsystemBase {
 
     //System.out.println(getShooterSpeed());
 
+    double error = getShooterSpeed() - targetShooterVelocity;
+
+    double pidSpeed = flywheelPID.calculate(error, 0);
+
+    /*m_leftShooterMotor.set(pidSpeed);
+    m_rightShooterMotor.set(pidSpeed);*/
+
     //m_jointMotor.set(manuPID.calculate(getPosition(), getTargetAngle()));
 
     //SmartDashboard.putNumber("HoodTargetPosition", getTargetAngle());
@@ -158,8 +169,10 @@ public class ShooterSubsystem extends SubsystemBase {
     double calc;
     if (active) {
       calc = shoooterLimiter.calculate(Constants.ShooterConstants.kShooterVelocity);
+      targetShooterVelocity = Constants.ShooterConstants.kTargetShooterRPM;
     } else {
      calc = shoooterLimiter.calculate(0);
+     targetShooterVelocity = 0;
     }
     m_leftShooterMotor.set(calc);
     m_rightShooterMotor.set(calc);
