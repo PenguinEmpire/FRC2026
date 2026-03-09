@@ -42,7 +42,7 @@ public class ShooterSubsystem extends SubsystemBase {
     double kI = SmartDashboard.getNumber("ShooterJointI", 0);
     double kD = SmartDashboard.getNumber("ShooterJointD", 0);
 
-    SlewRateLimiter shoooterLimiter = new SlewRateLimiter(3);
+    SlewRateLimiter shoooterLimiter = new SlewRateLimiter(2);
 
   /** Creates a new ExampleSubsystem. */
   public ShooterSubsystem() {
@@ -128,6 +128,8 @@ public class ShooterSubsystem extends SubsystemBase {
       pidController.setSetpoint(getTargetAngle(), SparkBase.ControlType.kPosition);
     }*/
 
+    //System.out.println(getShooterSpeed());
+
     //m_jointMotor.set(manuPID.calculate(getPosition(), getTargetAngle()));
 
     //SmartDashboard.putNumber("HoodTargetPosition", getTargetAngle());
@@ -153,14 +155,14 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void enableShooter(boolean active) {
+    double calc;
     if (active) {
-      double calc1 = shoooterLimiter.calculate(Constants.ShooterConstants.kShooterVelocity);
-      m_leftShooterMotor.set(calc1);
-      m_rightShooterMotor.set(calc1);
+      calc = shoooterLimiter.calculate(Constants.ShooterConstants.kShooterVelocity);
     } else {
-      m_leftShooterMotor.set(0);
-      m_rightShooterMotor.set(0);
+     calc = shoooterLimiter.calculate(0);
     }
+    m_leftShooterMotor.set(calc);
+    m_rightShooterMotor.set(calc);
   }
 
   public void enableKicker(double speed) {

@@ -40,8 +40,9 @@ public final class Constants {
     public static final int kRightShooterMotorID = 28;
 
     public static final int kJointMotorID = 25;
-    public static final double kShooterVelocity = -0.85; //Change to the output velocity of the shooter when known
-    public static final double kShooterKickerVelocity = 0.9;
+    public static final double kShooterVelocity = -0.75; //Change to the output velocity of the shooter when known
+    public static final double kShooterKickerVelocity = 0.3;
+    public static final double kTargetShooterRPM = -0;
   }
 
   public static class IntakeConstants {
@@ -49,8 +50,8 @@ public final class Constants {
     public static final int kIntakeJointMotorID = 22;
     public static final int kConveyorMotorID = 24;
     
-    public static final double kRollerMotorPower = -0.5;
-    public static final double kConveyorMotorPower = 0.9;
+    public static final double kRollerMotorPower = -0.6;
+    public static final double kConveyorMotorPower = 0.6;
   }
 
   public static class ClimbConstants {

@@ -41,6 +41,9 @@ public class EnableShooterCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_subsystem.getShooterSpeed() == Constants.ShooterConstants.kTargetShooterRPM;
+    if (Math.abs(m_subsystem.getShooterSpeed()) >= Math.abs(Constants.ShooterConstants.kTargetShooterRPM)) {
+      return true;
+      }
+      return false;
   }
 }

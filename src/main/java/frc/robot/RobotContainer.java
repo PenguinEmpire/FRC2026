@@ -83,7 +83,7 @@ public class RobotContainer {
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
                 drive.withVelocityX(m_swerveSubsystem.getVelocityX()) // Drive forward with negative Y (forward)
-                    .withVelocityY(0) // Drive left with negative X (left) //m_swerveSubsystem.getVelocityY()
+                    .withVelocityY(m_swerveSubsystem.getVelocityY()) // Drive left with negative X (left) //m_swerveSubsystem.getVelocityY()
                     .withRotationalRate(m_swerveSubsystem.getRotationalRate()) // Drive counterclockwise with negative X (left)
             )
         );
@@ -144,6 +144,7 @@ public class RobotContainer {
             .onTrue(
                 new SequentialCommandGroup(
                     enableShooter,
+                    new WaitCommand(2),
                     new InstantCommand(()->m_intakeSubsystem.spinConveyor(Constants.IntakeConstants.kConveyorMotorPower), m_intakeSubsystem),
                     new InstantCommand(()->m_shooterSubsystem.enableKicker(Constants.ShooterConstants.kShooterKickerVelocity), m_intakeSubsystem)))
 

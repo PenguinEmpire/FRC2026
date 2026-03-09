@@ -24,7 +24,7 @@ public class PS5Joystick implements JoystickInterface{
     }
 
     public double getVelocityY() {
-        return 0.48; //limiterY.calculate(-joystick.getLeftX()) * MaxSpeed
+        return limiterY.calculate(-joystick.getLeftX()) * MaxSpeed;
     }
 
     public double getRotationalRate() {

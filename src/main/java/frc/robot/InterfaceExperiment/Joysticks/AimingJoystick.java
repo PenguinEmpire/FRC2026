@@ -8,9 +8,11 @@ public class AimingJoystick implements JoystickInterface{
     private final JoystickInterface joystick;
     private final VisionSubsystem m_VisionSubsystem;
 
-    private PIDController rotPID = new PIDController(0.025,0,0.001);
+    private PIDController rotPID = new PIDController(0.026,0,0.001);
         
     private double kS = Constants.SwerveConstants.rotationalkS;
+
+    private double targetAngle = 5*(Math.PI)/180;
     
 
     public AimingJoystick(JoystickInterface newJoystick, VisionSubsystem vision) {
@@ -41,12 +43,12 @@ public class AimingJoystick implements JoystickInterface{
     public double getRotationalRate() {
         double rotationalRate = joystick.getRotationalRate();
         double RadTx = m_VisionSubsystem.GetXAngle()*Math.PI/180.0;
-        if (m_VisionSubsystem.HasTarget() && joystick.getR1()&& Math.abs(RadTx)>0.03) {
+        if (m_VisionSubsystem.HasTarget() && joystick.getR1()&& Math.abs(targetAngle) - Math.abs(RadTx)<0.1) {
             double velocityY = getVelocityY();
             double radius = m_VisionSubsystem.getDistanceEstimate();
 
             double angularVelocity = velocityY/radius;
-            double pidSpeed = rotPID.calculate(RadTx, 0);
+            double pidSpeed = rotPID.calculate(RadTx, targetAngle);
 
             pidSpeed+=Math.copySign(kS, pidSpeed); //replace kS with angularVelocity if wanting to take physics approach
 
