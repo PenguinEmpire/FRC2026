@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -17,7 +18,11 @@ public class PositionCommand extends Command {
   public enum Position {
         // Intake Positions
         IntakeUp(0.0),  // Fold intake inside frame
-        IntakeDown(41.13992691040039); //figure this value out, originally 0.985
+        IntakeDown(41.13992691040039), //figure this value out, originally 0.985
+
+        ClimbUp(0.0),
+
+        ClimbDown(0.0);
   
         
         private final double encoderPosition;
@@ -43,6 +48,7 @@ public class PositionCommand extends Command {
    */
   public PositionCommand(IntakeSubsystem subsystem, Position pos) {
     m_intakeSubsystem = subsystem;
+    //m_climbSubsystem = climb;
     //Initialize the declared subsystems above
     // Use addRequirements() here to declare subsystem dependencies.
     this.pos = pos;
@@ -64,6 +70,12 @@ public class PositionCommand extends Command {
             case IntakeDown:
                 m_intakeSubsystem.setPosition(Position.IntakeDown.getEncoderPosition());
                 break;
+            /*case ClimbUp:
+                m_climbSubsystem.setPosition(Position.ClimbUp.getEncoderPosition());
+                break;
+            case ClimbDown:
+                m_climbSubsystem.setPosition(Position.ClimbDown.getEncoderPosition());
+                break;*/
               default:
                 break;
       }

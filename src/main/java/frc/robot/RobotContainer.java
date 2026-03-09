@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -21,18 +22,22 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.commands.AlignToAngle;
+import frc.robot.commands.AlignToAprilTag;
 import frc.robot.commands.AlignToClimb;
 import frc.robot.commands.EnableShooterCommand;
 import frc.robot.commands.PositionCommand;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.vision.LimelightVision;
+import frc.robot.subsystems.vision.VisionInterface;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.hardware.Pigeon2;
 
 public class RobotContainer {
     //Smart dashboard configuration
@@ -61,19 +66,48 @@ public class RobotContainer {
 
     private ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
 
+    private VisionSubsystem m_visionSubsystem = new VisionSubsystem(new LimelightVision());
+
     private SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
 
     private final EnableShooterCommand enableShooter = new EnableShooterCommand(m_shooterSubsystem);
 
+    //private ClimbSubsystem m_climbSubsystem = new ClimbSubsystem();
+
+    Pigeon2 pigeon = new Pigeon2(0);
+
 
     //public final AlignToAngle alignToAngle = new AlignToAngle(m_swerveSubsystem, -Math.PI/2.0);
-    //public final AlignToClimb alignToClimb = new AlignToClimb(m_swerveSubsystem, 0, 0);
+    //public final AlignToClimb alignToClimb = new AlignToClimb(m_swerveSubsystem, 0, 0); pigeon.getYaw().getValueAsDouble()%360.0)+Math.PI/2
 
     public RobotContainer() {
-        configureBindings();
+        //Setup the namedCommands for auto
 
+        NamedCommands.registerCommand("lower_intake", 
+            new SequentialCommandGroup(
+                new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeDown),
+                new InstantCommand(()->m_intakeSubsystem.spinRollers(true), m_intakeSubsystem)));
+        
+        NamedCommands.registerCommand("raise_intake",
+            new SequentialCommandGroup(
+                new InstantCommand(()->m_intakeSubsystem.spinRollers(false), m_intakeSubsystem),
+                new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeUp)));
+        
+        NamedCommands.registerCommand("align_to_apriltag", new AlignToAprilTag(m_swerveSubsystem, m_visionSubsystem));
+
+        //NamedCommands.registerCommand("target_hood", ____
+
+        //NamedCommands.registerCommand("shoot_flywheel", ____
+
+        //NamedCommands.registerCommand("mount_climb", ____
+
+        //NamedCommands.registerCommand("unmount_climb", ____
+
+        
         //Setup smartdashboard
         autoChooser.addOption("FRC Auto 1", "FRCAuto"); //Name is the name visible on S.D. object is what is returned by getSelected()
+
+        configureBindings();
     }
 
     private void configureBindings() {
@@ -112,14 +146,7 @@ public class RobotContainer {
 
         drivetrain.registerTelemetry(logger::telemeterize);
 
-        //controller.L2().whileTrue(alignToAngle); //Not in use right now
-
-        //Manual Rollers
-        controller.triangle() //enable sysid
-            .onTrue(new RunCommand(()->drivetrain.sysIDEnable(true), drivetrain));
-
-        controller.square() //disable sysid
-            .onTrue(new RunCommand(()->drivetrain.sysIDEnable(false), drivetrain));
+        //controller.triangle().whileTrue(alignToAngle); //Not in use right now, for testing not game
 
         //Intake
         controller.povUp().onTrue( //raise intake
@@ -165,7 +192,19 @@ public class RobotContainer {
                             new InstantCommand(()->m_shooterSubsystem.enableKicker(0), m_shooterSubsystem),
                             new InstantCommand(()->m_intakeSubsystem.spinConveyor(0), m_intakeSubsystem)));
 
-        //Option to climb (not implimented)
+       
+        /*controller.options() //Activate Climb Sequence
+                    .onTrue(
+                        new SequentialCommandGroup(
+                            new AlignToAngle(m_swerveSubsystem, Math.PI),
+                            new AlignToClimb(m_swerveSubsystem, Constants.ClimbConstants.kAlignmentTx, Constants.ClimbConstants.kAlignmentTy),
+                            new AlignToAngle(m_swerveSubsystem, 0),
+                            new InstantCommand(()->m_climbSubsystem.setLeftServo(Constants.ClimbConstants.kServoAngle), m_climbSubsystem),
+                            new InstantCommand(()->m_climbSubsystem.setRightServo(Constants.ClimbConstants.kServoAngle), m_climbSubsystem),
+                            new WaitCommand(1),
+                            new PositionCommand(m_intakeSubsystem, m_climbSubsystem, PositionCommand.Position.ClimbUp)
+                        )
+                    );*/
 
         //Start to unclimb (not implimented)
     }   

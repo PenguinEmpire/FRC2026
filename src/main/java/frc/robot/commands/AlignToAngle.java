@@ -29,7 +29,7 @@ public class AlignToAngle extends Command {
    */
   public AlignToAngle(SwerveSubsystem subsystem, double target) {
     m_SwerveSubsystem = subsystem;
-    targetAngle = (pigeon.getYaw().getValueAsDouble()%360.0)+Math.PI/2;
+    targetAngle = target;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }

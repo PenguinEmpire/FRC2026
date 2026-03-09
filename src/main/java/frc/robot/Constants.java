@@ -61,6 +61,12 @@ public final class Constants {
     public static final int kServoRightID = 0;
     public static final int kServoMiddleID = 0;
     public static final int kServoGuideID = 0;
+
+    public static final double kAlignmentTx = 0;
+    public static final double kAlignmentTy = 0;
+
+    public static final double kServoAngle = 0;
+
   }
 
   public static class VisionConstants {
