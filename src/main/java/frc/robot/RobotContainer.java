@@ -25,6 +25,7 @@ import frc.robot.commands.AlignToClimb;
 import frc.robot.commands.EnableShooterCommand;
 import frc.robot.commands.PositionCommand;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -33,6 +34,7 @@ import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.vision.LimelightVision;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.hardware.Pigeon2;
 
 public class RobotContainer {
     //Smart dashboard configuration
@@ -65,9 +67,13 @@ public class RobotContainer {
 
     private final EnableShooterCommand enableShooter = new EnableShooterCommand(m_shooterSubsystem);
 
+    //private ClimbSubsystem m_climbSubsystem = new ClimbSubsystem();
+
+    Pigeon2 pigeon = new Pigeon2(0);
+
 
     //public final AlignToAngle alignToAngle = new AlignToAngle(m_swerveSubsystem, -Math.PI/2.0);
-    //public final AlignToClimb alignToClimb = new AlignToClimb(m_swerveSubsystem, 0, 0);
+    //public final AlignToClimb alignToClimb = new AlignToClimb(m_swerveSubsystem, 0, 0); pigeon.getYaw().getValueAsDouble()%360.0)+Math.PI/2
 
     public RobotContainer() {
         configureBindings();
@@ -112,14 +118,7 @@ public class RobotContainer {
 
         drivetrain.registerTelemetry(logger::telemeterize);
 
-        //controller.L2().whileTrue(alignToAngle); //Not in use right now
-
-        //Manual Rollers
-        controller.triangle() //enable sysid
-            .onTrue(new RunCommand(()->drivetrain.sysIDEnable(true), drivetrain));
-
-        controller.square() //disable sysid
-            .onTrue(new RunCommand(()->drivetrain.sysIDEnable(false), drivetrain));
+        //controller.triangle().whileTrue(alignToAngle); //Not in use right now, for testing not game
 
         //Intake
         controller.povUp().onTrue( //raise intake
@@ -164,7 +163,19 @@ public class RobotContainer {
                             new InstantCommand(()->m_shooterSubsystem.enableKicker(0), m_shooterSubsystem),
                             new InstantCommand(()->m_intakeSubsystem.spinConveyor(0), m_intakeSubsystem)));
 
-        //Option to climb (not implimented)
+       
+        /*controller.options() //Activate Climb Sequence
+                    .onTrue(
+                        new SequentialCommandGroup(
+                            new AlignToAngle(m_swerveSubsystem, Math.PI),
+                            new AlignToClimb(m_swerveSubsystem, Constants.ClimbConstants.kAlignmentTx, Constants.ClimbConstants.kAlignmentTy),
+                            new AlignToAngle(m_swerveSubsystem, 0),
+                            new InstantCommand(()->m_climbSubsystem.setLeftServo(Constants.ClimbConstants.kServoAngle), m_climbSubsystem),
+                            new InstantCommand(()->m_climbSubsystem.setRightServo(Constants.ClimbConstants.kServoAngle), m_climbSubsystem),
+                            new WaitCommand(1),
+                            new PositionCommand(m_intakeSubsystem, m_climbSubsystem, PositionCommand.Position.ClimbUp)
+                        )
+                    );*/
 
         //Start to unclimb (not implimented)
     }   

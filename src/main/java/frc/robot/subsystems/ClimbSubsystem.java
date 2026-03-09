@@ -106,12 +106,12 @@ public class ClimbSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run during simulation
   }
   
-  public void setLowerServosPosition(double newTargetPosition) {
+  public void setLeftServo(double newTargetPosition) {
       m_ServoLeftMotor.set(newTargetPosition);
       m_ServoRightMotor.set(newTargetPosition);
   }
 
-  public void setUpperServoPosition(double newTargetPosition) {
+  public void setRightServo(double newTargetPosition) {
       m_ServoMiddleMotor.set(newTargetPosition);
   }
 

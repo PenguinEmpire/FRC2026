@@ -42,6 +42,7 @@ public final class Constants {
     public static final int kJointMotorID = 25;
     public static final double kShooterVelocity = -0.85; //Change to the output velocity of the shooter when known
     public static final double kShooterKickerVelocity = 0.9;
+    public static final double kTargetShooterRPM = -0.85;
   }
 
   public static class IntakeConstants {
@@ -60,6 +61,12 @@ public final class Constants {
     public static final int kServoRightID = 0;
     public static final int kServoMiddleID = 0;
     public static final int kServoGuideID = 0;
+
+    public static final double kAlignmentTx = 0;
+    public static final double kAlignmentTy = 0;
+
+    public static final double kServoAngle = 0;
+
   }
 
   public static class VisionConstants {
