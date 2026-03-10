@@ -146,10 +146,12 @@ public class ShooterSubsystem extends SubsystemBase {
 
     double error = getShooterSpeed() - targetShooterVelocity;
 
-    double pidSpeed = flywheelPID.calculate(error, 0);
+    double pidSpeed = flywheelPID.calculate(error, 0); //double pidSpeed = flywheelPID.calculate(getShooterSpeed(), targetShooterVelocity);
 
-    m_leftShooterMotor.set(shoooterLimiter.calculate(pidSpeed));
-    m_rightShooterMotor.set(shoooterLimiter.calculate(pidSpeed));
+    double output = shoooterLimiter.calculate(pidSpeed);
+
+    m_leftShooterMotor.set(output);
+    m_rightShooterMotor.set(output);
 
     //System.out.println(getShooterSpeed());
 
