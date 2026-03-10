@@ -14,6 +14,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.math.controller.BangBangController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -34,9 +35,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private final SparkClosedLoopController pidController;
 
-  private PIDController manuPID = new PIDController(0.01, 0, 0);
+  private PIDController manuPID = new PIDController(0.007, 0, 0);
 
-  private PIDController flywheelPID = new PIDController(0.01, 0, 0);
+  private PIDController flywheelPID = new PIDController(0.00035, 0, 0);
 
   private VisionSubsystem m_VisionSubsystem = new VisionSubsystem(new LimelightVision());
 
@@ -44,7 +45,7 @@ public class ShooterSubsystem extends SubsystemBase {
     double kI = SmartDashboard.getNumber("ShooterJointI", 0);
     double kD = SmartDashboard.getNumber("ShooterJointD", 0);
 
-    SlewRateLimiter shoooterLimiter = new SlewRateLimiter(2);
+    SlewRateLimiter shoooterLimiter = new SlewRateLimiter(1);
 
     double targetShooterVelocity = 0;
 
@@ -57,6 +58,7 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("ShooterJointI", 0);
     SmartDashboard.putNumber("ShooterJointD", 0);
     SparkMaxConfig motorConfig = new SparkMaxConfig();
+    SparkMaxConfig flywheelConfig = new SparkMaxConfig();
         motorConfig
             .inverted(true)
             .idleMode(IdleMode.kBrake)
@@ -115,7 +117,15 @@ public class ShooterSubsystem extends SubsystemBase {
   private double getTargetAngle() {
     if (m_VisionSubsystem.HasTarget()) {
       double ty = m_VisionSubsystem.GetYAngle();
-      return ty*ty+ty+1; //Whatever the line of best fit is
+      double target = 0.0254911*ty*ty+2.90326*ty+19.15338;
+      if (target > 0) {
+        return 0; //Whatever the line of best fit is
+      }
+      if (target < -270) {
+        return -270;
+      }
+
+      return target;
     } else {
       return 0; //Whatever the default position is
     }
@@ -138,10 +148,12 @@ public class ShooterSubsystem extends SubsystemBase {
 
     double pidSpeed = flywheelPID.calculate(error, 0);
 
-    /*m_leftShooterMotor.set(pidSpeed);
-    m_rightShooterMotor.set(pidSpeed);*/
+    m_leftShooterMotor.set(shoooterLimiter.calculate(pidSpeed));
+    m_rightShooterMotor.set(shoooterLimiter.calculate(pidSpeed));
 
-    //m_jointMotor.set(manuPID.calculate(getPosition(), getTargetAngle()));
+    //System.out.println(getShooterSpeed());
+
+    m_jointMotor.set(manuPID.calculate(getPosition(), getTargetAngle()));
 
     //SmartDashboard.putNumber("HoodTargetPosition", getTargetAngle());
     SmartDashboard.putNumber("HoodCurrentPosition", m_jointMotor.getEncoder().getPosition());
@@ -174,8 +186,8 @@ public class ShooterSubsystem extends SubsystemBase {
      calc = shoooterLimiter.calculate(0);
      targetShooterVelocity = 0;
     }
-    m_leftShooterMotor.set(calc);
-    m_rightShooterMotor.set(calc);
+    //m_leftShooterMotor.set(calc);
+    //m_rightShooterMotor.set(calc);
   }
 
   public void enableKicker(double speed) {

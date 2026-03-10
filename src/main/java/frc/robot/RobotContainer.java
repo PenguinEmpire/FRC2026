@@ -171,7 +171,7 @@ public class RobotContainer {
             .onTrue(
                 new SequentialCommandGroup(
                     enableShooter,
-                    new WaitCommand(2),
+                    new WaitCommand(1.5),
                     new InstantCommand(()->m_intakeSubsystem.spinConveyor(Constants.IntakeConstants.kConveyorMotorPower), m_intakeSubsystem),
                     new InstantCommand(()->m_shooterSubsystem.enableKicker(Constants.ShooterConstants.kShooterKickerVelocity), m_intakeSubsystem)))
 
