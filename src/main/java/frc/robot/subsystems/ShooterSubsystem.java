@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.vision.LimelightVision;  
 
@@ -194,5 +195,16 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void enableKicker(double speed) {
     m_middleShooterMotor.set(speed);
+  }
+
+  public void runFeedForwardTest() {
+    double v = 0;
+    while (v<=0.9) {
+      m_leftShooterMotor.set(v);
+      m_rightShooterMotor.set(v);
+      new WaitCommand(1);
+      System.out.println("("+getShooterSpeed()+", " + v);
+      v+=0.01;
+    }
   }
 }

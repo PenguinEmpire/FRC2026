@@ -173,7 +173,9 @@ public class RobotContainer {
 
         drivetrain.registerTelemetry(logger::telemeterize);
 
-        //controller.triangle().whileTrue(alignToAngle); //Not in use right now, for testing not game
+        controller.triangle().onTrue(
+            new InstantCommand(()->m_shooterSubsystem.runFeedForwardTest(), m_shooterSubsystem)
+        ); //Not in use right now, for testing not game
 
         //Intake
         controller.povUp().onTrue( //raise intake
