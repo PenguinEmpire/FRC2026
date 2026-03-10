@@ -95,13 +95,40 @@ public class RobotContainer {
         
         NamedCommands.registerCommand("align_to_apriltag", new AlignToAprilTag(m_swerveSubsystem, m_visionSubsystem));
 
-        //NamedCommands.registerCommand("target_hood", ____
+        //NamedCommands.registerCommand("target_hood", ____ //I dont think we need this command since hood alignment is automatic
 
-        //NamedCommands.registerCommand("shoot_flywheel", ____
+        NamedCommands.registerCommand("enable_flywheel", new SequentialCommandGroup(
+                    enableShooter,
+                    new WaitCommand(1.5),
+                    new InstantCommand(()->m_intakeSubsystem.spinConveyor(Constants.IntakeConstants.kConveyorMotorPower), m_intakeSubsystem),
+                    new InstantCommand(()->m_shooterSubsystem.enableKicker(Constants.ShooterConstants.kShooterKickerVelocity), m_intakeSubsystem)));
 
-        //NamedCommands.registerCommand("mount_climb", ____
+        NamedCommands.registerCommand("disable_flywheel", new SequentialCommandGroup(
+                    new InstantCommand(()->m_shooterSubsystem.enableShooter(false), m_shooterSubsystem),
+                    new InstantCommand(()->m_shooterSubsystem.enableKicker(0), m_shooterSubsystem),
+                    new InstantCommand(()->m_intakeSubsystem.spinConveyor(0), m_intakeSubsystem)));
 
-        //NamedCommands.registerCommand("unmount_climb", ____
+        NamedCommands.registerCommand("mount_climb", new SequentialCommandGroup(
+                            new AlignToAngle(m_swerveSubsystem, Math.PI),
+                            new AlignToClimb(m_swerveSubsystem, Constants.ClimbConstants.kAlignmentTx, Constants.ClimbConstants.kAlignmentTy),
+                            new AlignToAngle(m_swerveSubsystem, 0)
+                            /*new InstantCommand(()->m_climbSubsystem.setLeftServo(Constants.ClimbConstants.kServoAngle), m_climbSubsystem),
+                            new InstantCommand(()->m_climbSubsystem.setRightServo(Constants.ClimbConstants.kServoAngle), m_climbSubsystem),
+                            new WaitCommand(1),
+                            new PositionCommand(m_intakeSubsystem, m_climbSubsystem, PositionCommand.Position.ClimbUp)*/
+                        )
+                    );
+
+        NamedCommands.registerCommand("unmount_climb", new SequentialCommandGroup(
+                            new AlignToAngle(m_swerveSubsystem, Math.PI),
+                            new AlignToClimb(m_swerveSubsystem, Constants.ClimbConstants.kAlignmentTx, Constants.ClimbConstants.kAlignmentTy),
+                            new AlignToAngle(m_swerveSubsystem, 0)
+                            /*new InstantCommand(()->m_climbSubsystem.setLeftServo(Constants.ClimbConstants.kServoAngle), m_climbSubsystem),
+                            new InstantCommand(()->m_climbSubsystem.setRightServo(Constants.ClimbConstants.kServoAngle), m_climbSubsystem),
+                            new WaitCommand(1),
+                            new PositionCommand(m_intakeSubsystem, m_climbSubsystem, PositionCommand.Position.ClimbUp)*/
+                        )
+                    );
 
         
         //Setup smartdashboard
