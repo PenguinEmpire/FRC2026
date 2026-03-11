@@ -140,8 +140,7 @@ public class IntakeSubsystem extends SubsystemBase {
     
     //System.out.println(-manuPID.calculate(targetPosition, getPosition()));
 
-    m_jointMotor.set(-manuPID.calculate(targetPosition, getPosition()));
-
+    //m_jointMotor.set(-(manuPID.calculate(targetPosition, getPosition())));
     SmartDashboard.putNumber("IntakeTargetPosition", targetPosition);
     SmartDashboard.putNumber("IntakeCurrentPosition", getPosition());
     //SmartDashboard.putNumber("IntakeTargetPosition", getPosition());

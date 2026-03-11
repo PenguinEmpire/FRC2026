@@ -16,6 +16,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.controller.BangBangController;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.PS5Controller;
@@ -34,11 +35,13 @@ public class ShooterSubsystem extends SubsystemBase {
   private SparkMax m_jointMotor = new SparkMax(Constants.ShooterConstants.kJointMotorID, MotorType.kBrushless);
   private PS5Controller joystick = new PS5Controller(0);
 
+  private SimpleMotorFeedforward flywheelFeedForward = new SimpleMotorFeedforward(0.0147, 0.000182507);
+
   private final SparkClosedLoopController pidController;
 
-  private PIDController manuPID = new PIDController(0.007, 0, 0);
+  private PIDController manuPID = new PIDController(0.006, 0, 0);
 
-  private PIDController flywheelPID = new PIDController(0.00035, 0, 0);
+  private PIDController flywheelPID = new PIDController(0.0005, 0, 0); //0.00035
 
   private VisionSubsystem m_VisionSubsystem = new VisionSubsystem(new LimelightVision());
 
@@ -147,14 +150,14 @@ public class ShooterSubsystem extends SubsystemBase {
 
     double error = getShooterSpeed() - targetShooterVelocity;
 
-    double pidSpeed = flywheelPID.calculate(error, 0); //double pidSpeed = flywheelPID.calculate(getShooterSpeed(), targetShooterVelocity);
+    double pidSpeed = flywheelFeedForward.calculate(targetShooterVelocity) + flywheelPID.calculate(getShooterSpeed(), targetShooterVelocity); //double pidSpeed = flywheelPID.calculate(getShooterSpeed(), targetShooterVelocity);
 
     double output = shoooterLimiter.calculate(pidSpeed);
 
     m_leftShooterMotor.set(output);
     m_rightShooterMotor.set(output);
 
-    //System.out.println(getShooterSpeed());
+    System.out.println(getShooterSpeed());
 
     m_jointMotor.set(manuPID.calculate(getPosition(), getTargetAngle()));
 
@@ -199,12 +202,16 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void runFeedForwardTest() {
     double v = 0;
-    while (v<=0.9) {
+    while (v<=0.25) {
       m_leftShooterMotor.set(v);
       m_rightShooterMotor.set(v);
-      new WaitCommand(1);
+      try {Thread.sleep(5000);
+      } catch (InterruptedException e) {
+        System.out.println(e);
+      }
       System.out.println("("+getShooterSpeed()+", " + v);
-      v+=0.01;
+      v+=0.0001;
     }
   }
 }
+

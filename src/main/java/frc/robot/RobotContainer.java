@@ -97,11 +97,11 @@ public class RobotContainer {
 
         //NamedCommands.registerCommand("target_hood", ____ //I dont think we need this command since hood alignment is automatic
 
-        NamedCommands.registerCommand("enable_flywheel", new SequentialCommandGroup(
+        /*NamedCommands.registerCommand("enable_flywheel", new SequentialCommandGroup(
                     enableShooter,
                     new WaitCommand(1.5),
                     new InstantCommand(()->m_intakeSubsystem.spinConveyor(Constants.IntakeConstants.kConveyorMotorPower), m_intakeSubsystem),
-                    new InstantCommand(()->m_shooterSubsystem.enableKicker(Constants.ShooterConstants.kShooterKickerVelocity), m_intakeSubsystem)));
+                    new InstantCommand(()->m_shooterSubsystem.enableKicker(Constants.ShooterConstants.kShooterKickerVelocity), m_intakeSubsystem)));*/
 
         NamedCommands.registerCommand("disable_flywheel", new SequentialCommandGroup(
                     new InstantCommand(()->m_shooterSubsystem.enableShooter(false), m_shooterSubsystem),
@@ -173,9 +173,7 @@ public class RobotContainer {
 
         drivetrain.registerTelemetry(logger::telemeterize);
 
-        controller.triangle().onTrue(
-            new InstantCommand(()->m_shooterSubsystem.runFeedForwardTest(), m_shooterSubsystem)
-        ); //Not in use right now, for testing not game
+        //controller.triangle().onTrue(new InstantCommand(()->m_shooterSubsystem.runFeedForwardTest(), m_shooterSubsystem)); //Not in use right now, for testing not game
 
         //Intake
         controller.povUp().onTrue( //raise intake
@@ -185,8 +183,11 @@ public class RobotContainer {
 
         controller.povDown().onTrue( //lower intake
             new SequentialCommandGroup(
-                new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeDown),
-                new InstantCommand(()->m_intakeSubsystem.spinRollers(true), m_intakeSubsystem)));
+                new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeDown)));
+
+        controller.square()
+            .whileTrue(new InstantCommand(()->m_intakeSubsystem.spinRollers(true), m_intakeSubsystem))
+            .onFalse(new InstantCommand(()->m_intakeSubsystem.spinRollers(false), m_intakeSubsystem));
 
         controller.povLeft() //manual move hood down
             .whileTrue(new RunCommand(()->m_shooterSubsystem.moveHood(0.1), m_shooterSubsystem)) //raise
