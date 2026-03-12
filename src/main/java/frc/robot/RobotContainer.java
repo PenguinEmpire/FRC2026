@@ -94,7 +94,7 @@ public class RobotContainer {
                 new InstantCommand(()->m_intakeSubsystem.spinRollers(false), m_intakeSubsystem),
                 new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeUp)));
         
-        NamedCommands.registerCommand("align_to_apriltag", new AlignToAprilTag(m_swerveSubsystem, m_visionSubsystem));
+        NamedCommands.registerCommand("align_to_apriltag", new AlignToAprilTag(m_swerveSubsystem, m_visionSubsystem).repeatedly().until(()->Math.abs((5*(Math.PI/180))-m_visionSubsystem.GetXAngle())>0.026));
 
         //NamedCommands.registerCommand("target_hood", ____ //I dont think we need this command since hood alignment is automatic
 

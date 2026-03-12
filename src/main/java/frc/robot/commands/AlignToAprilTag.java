@@ -43,16 +43,13 @@ public class AlignToAprilTag extends Command {
   @Override
   public void execute() {
     if (m_VisionSubsystem.HasTarget()) {
-    double RadTx = m_VisionSubsystem.GetXAngle()*Math.PI/180.0;
-    while (Math.abs((5*(Math.PI/180))-RadTx)>0.026) {
-        double pidSpeed = rotPID.calculate(RadTx, 0);
+      double RadTx = m_VisionSubsystem.GetXAngle()*Math.PI/180.0;
+      double pidSpeed = rotPID.calculate(RadTx, 0);
 
-        pidSpeed+=Math.copySign(kS, pidSpeed); //replace kS with angularVelocity if wanting to take physics approach
+      pidSpeed+=Math.copySign(kS, pidSpeed); //replace kS with angularVelocity if wanting to take physics approach
 
-        m_subsystem.setRotationalRate(pidSpeed);
+      m_subsystem.setRotationalRate(pidSpeed);
       }
-      new WaitCommand(0.01);
-    }
   }
 
   // Called once the command ends or is interrupted.
