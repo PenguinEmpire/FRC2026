@@ -39,17 +39,19 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private final SparkClosedLoopController pidController;
 
-  private PIDController manuPID = new PIDController(0.006, 0, 0);
+  private PIDController manuPID = new PIDController(0.007, 0, 0);
 
-  private PIDController flywheelPID = new PIDController(0.0005, 0, 0); //0.00035
+  private PIDController flywheelPID = new PIDController(0.0006, 0, 0.0001); //0.00035 needs to be tuned
 
   private VisionSubsystem m_VisionSubsystem = new VisionSubsystem(new LimelightVision());
+
+  private boolean limiting = false;
 
     double kP = SmartDashboard.getNumber("ShooterJointP", 0);
     double kI = SmartDashboard.getNumber("ShooterJointI", 0);
     double kD = SmartDashboard.getNumber("ShooterJointD", 0);
 
-    SlewRateLimiter shoooterLimiter = new SlewRateLimiter(1);
+    SlewRateLimiter shoooterLimiter = new SlewRateLimiter(0.1);
 
     double targetShooterVelocity = 0;
 
@@ -151,8 +153,12 @@ public class ShooterSubsystem extends SubsystemBase {
     double error = getShooterSpeed() - targetShooterVelocity;
 
     double pidSpeed = flywheelFeedForward.calculate(targetShooterVelocity) + flywheelPID.calculate(getShooterSpeed(), targetShooterVelocity); //double pidSpeed = flywheelPID.calculate(getShooterSpeed(), targetShooterVelocity);
-
-    double output = shoooterLimiter.calculate(pidSpeed);
+    double output;
+    if (limiting) {
+      output = shoooterLimiter.calculate(pidSpeed); //With limiter
+    } else {
+      output = pidSpeed;
+    }
 
     m_leftShooterMotor.set(output);
     m_rightShooterMotor.set(output);
@@ -188,8 +194,10 @@ public class ShooterSubsystem extends SubsystemBase {
     if (active) {
       calc = shoooterLimiter.calculate(Constants.ShooterConstants.kShooterVelocity);
       targetShooterVelocity = Constants.ShooterConstants.kTargetShooterRPM;
+      limiting = false;
     } else {
      calc = shoooterLimiter.calculate(0);
+    limiting = true;
      targetShooterVelocity = 0;
     }
     //m_leftShooterMotor.set(calc);

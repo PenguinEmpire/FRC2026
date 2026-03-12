@@ -19,6 +19,7 @@ public class PositionCommand extends Command {
         // Intake Positions
         IntakeUp(0.0),  // Fold intake inside frame
         IntakeDown(41.13992691040039), //figure this value out, originally 0.985
+        IntakeBounce(21.991132736206055),
 
         ClimbUp(0.0),
 
@@ -69,6 +70,9 @@ public class PositionCommand extends Command {
                 break;
             case IntakeDown:
                 m_intakeSubsystem.setPosition(Position.IntakeDown.getEncoderPosition());
+                break;
+            case IntakeBounce:
+                m_intakeSubsystem.setPosition(Position.IntakeBounce.getEncoderPosition());
                 break;
             /*case ClimbUp:
                 m_climbSubsystem.setPosition(Position.ClimbUp.getEncoderPosition());

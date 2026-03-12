@@ -19,7 +19,7 @@ public class AlignToAprilTag extends Command {
 
   private final VisionSubsystem m_VisionSubsystem;
 
-  private PIDController rotPID = new PIDController(0.025,0,0.001);
+  private PIDController rotPID = new PIDController(0.026,0.001,0.0001);
 
   private double kS = Constants.SwerveConstants.rotationalkS;
 
@@ -42,9 +42,9 @@ public class AlignToAprilTag extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if (m_VisionSubsystem.HasTarget()) {
     double RadTx = m_VisionSubsystem.GetXAngle()*Math.PI/180.0;
-    while (Math.abs(RadTx)>0.1) {
-      if (m_VisionSubsystem.HasTarget()) {
+    while (Math.abs((5*(Math.PI/180))-RadTx)>0.026) {
         double pidSpeed = rotPID.calculate(RadTx, 0);
 
         pidSpeed+=Math.copySign(kS, pidSpeed); //replace kS with angularVelocity if wanting to take physics approach
@@ -63,6 +63,6 @@ public class AlignToAprilTag extends Command {
   @Override
   public boolean isFinished() {
     double RadTx = m_VisionSubsystem.GetXAngle()*Math.PI/180.0;
-    return Math.abs(RadTx)>0.1;
+    return Math.abs((5*(Math.PI/180))-RadTx)<0.026;
   }
 }
