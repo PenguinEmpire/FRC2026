@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
@@ -15,6 +16,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj.Servo;
@@ -25,7 +27,7 @@ import frc.robot.Constants;
 
 public class ClimbSubsystem extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
-  private SparkMax m_ClimbMotor1 = new SparkMax(Constants.ClimbConstants.kClimbMotor1ID, MotorType.kBrushless);
+  private TalonFX m_ClimbMotor1 = new TalonFX(Constants.ClimbConstants.kClimbMotor1ID);
   //private Servo m_ServoLeftMotor = new Servo(Constants.ClimbConstants.kServoLeftID);
   //private Servo m_ServoRightMotor = new Servo(Constants.ClimbConstants.kServoRightID);
   
@@ -35,38 +37,11 @@ public class ClimbSubsystem extends SubsystemBase {
 
   private PS5Controller joystick = new PS5Controller(0);
 
-  private final SparkClosedLoopController pidController;
-
-    private final TrapezoidProfile m_profile =
-      new TrapezoidProfile(new TrapezoidProfile.Constraints(SmartDashboard.getNumber("ShooterJointMaxVelocity", 20), SmartDashboard.getNumber("ShooterJointMaxAcceleration", 7.5)));
-    private TrapezoidProfile.State m_goal = new TrapezoidProfile.State();
-    private TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State();
+    private final PIDController pid = new PIDController(0,0,0);
 
     private double kDt = SmartDashboard.getNumber("ShooterkDT", 0.2);
 
   public ClimbSubsystem() {
-    SparkMaxConfig motorConfig = new SparkMaxConfig();
-        motorConfig
-            .inverted(false)
-            .idleMode(IdleMode.kBrake)
-            .closedLoop
-                .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-                .pid(SmartDashboard.getNumber("ShooterJointP", 0), SmartDashboard.getNumber("ShooterJointI", 0), SmartDashboard.getNumber("ShooterJointD", 0))
-                .positionWrappingEnabled(true)
-                .positionWrappingMinInput(0)
-                .positionWrappingMaxInput(2 * Math.PI)
-                .outputRange(-1, 1);
-
-        motorConfig.encoder.positionConversionFactor(2 * Math.PI);
-        // Apply the initial configuration
-        m_ClimbMotor1.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
-        /*SparkMaxConfig leftConfig = new SparkMaxConfig();
-        leftConfig.follow(Constants.ClimbConstants.kClimbMotor1ID, true);
-
-        m_ClimbMotor2.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);*/
-
-        pidController = m_ClimbMotor1.getClosedLoopController();
   }
 
   /**
@@ -96,10 +71,6 @@ public class ClimbSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    m_setpoint = m_profile.calculate(kDt, m_setpoint, m_goal);
-    if (!joystick.getTriangleButton() && !joystick.getSquareButton()) {
-       pidController.setSetpoint(m_setpoint.position, SparkBase.ControlType.kPosition);
-    }
   }
 
   @Override
@@ -122,14 +93,10 @@ public class ClimbSubsystem extends SubsystemBase {
 
   
   public void setPosition(double newTargetPosition) {
-      m_goal = new TrapezoidProfile.State(newTargetPosition, 0);
   }
 
   public double getPosition() {
-      RelativeEncoder relativeEncoder = m_ClimbMotor1.getEncoder();
-
-       
-      return relativeEncoder.getPosition();
+      return m_ClimbMotor1.getPosition().getValueAsDouble();
   }
 
   public void manualMove(double speed) {
