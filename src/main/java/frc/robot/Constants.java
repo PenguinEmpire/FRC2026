@@ -55,7 +55,7 @@ public final class Constants {
   }
 
   public static class ClimbConstants {
-    public static final int kClimbMotor1ID = 0;//Change with actual motor IDs and change name (add more once # of motors is known)
+    public static final int kClimbMotor1ID = 17;//Change with actual motor IDs and change name (add more once # of motors is known)
     public static final int kClimbMotor2ID = 0;
     public static final int kServoLeftID = 0;
     public static final int kServoRightID = 0;
