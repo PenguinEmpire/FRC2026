@@ -163,7 +163,7 @@ public class ShooterSubsystem extends SubsystemBase {
     m_leftShooterMotor.set(output);
     m_rightShooterMotor.set(output);
 
-    System.out.println(getShooterSpeed());
+    //System.out.println(getShooterSpeed());
 
     m_jointMotor.set(manuPID.calculate(getPosition(), getTargetAngle()));
 

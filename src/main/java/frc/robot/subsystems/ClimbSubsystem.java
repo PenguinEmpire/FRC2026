@@ -26,11 +26,12 @@ import frc.robot.Constants;
 public class ClimbSubsystem extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
   private SparkMax m_ClimbMotor1 = new SparkMax(Constants.ClimbConstants.kClimbMotor1ID, MotorType.kBrushless);
-  private SparkMax m_ClimbMotor2 = new SparkMax(Constants.ClimbConstants.kClimbMotor2ID, MotorType.kBrushless);
-  private Servo m_ServoLeftMotor = new Servo(Constants.ClimbConstants.kServoLeftID);
-  private Servo m_ServoRightMotor = new Servo(Constants.ClimbConstants.kServoRightID);
-  private Servo m_ServoMiddleMotor = new Servo(Constants.ClimbConstants.kServoMiddleID);
-  private Servo m_ServoGuideMotor = new Servo(Constants.ClimbConstants.kServoGuideID);
+  //private Servo m_ServoLeftMotor = new Servo(Constants.ClimbConstants.kServoLeftID);
+  //private Servo m_ServoRightMotor = new Servo(Constants.ClimbConstants.kServoRightID);
+  
+  
+  //private Servo m_ServoMiddleMotor = new Servo(Constants.ClimbConstants.kServoMiddleID);
+  //private Servo m_ServoGuideMotor = new Servo(Constants.ClimbConstants.kServoGuideID);
 
   private PS5Controller joystick = new PS5Controller(0);
 
@@ -60,10 +61,10 @@ public class ClimbSubsystem extends SubsystemBase {
         // Apply the initial configuration
         m_ClimbMotor1.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        SparkMaxConfig leftConfig = new SparkMaxConfig();
+        /*SparkMaxConfig leftConfig = new SparkMaxConfig();
         leftConfig.follow(Constants.ClimbConstants.kClimbMotor1ID, true);
 
-        m_ClimbMotor2.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        m_ClimbMotor2.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);*/
 
         pidController = m_ClimbMotor1.getClosedLoopController();
   }
@@ -106,18 +107,18 @@ public class ClimbSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run during simulation
   }
   
-  public void setLeftServo(double newTargetPosition) {
+  /*public void setServos(double newTargetPosition) {
       m_ServoLeftMotor.set(newTargetPosition);
       m_ServoRightMotor.set(newTargetPosition);
-  }
+  }*/
 
-  public void setRightServo(double newTargetPosition) {
+  /*public void setRightServo(double newTargetPosition) {
       m_ServoMiddleMotor.set(newTargetPosition);
-  }
+  }*/
 
-  public void setGuideServoPosition(double newTargetPosition) {
+  /*public void setGuideServoPosition(double newTargetPosition) {
       m_ServoGuideMotor.set(newTargetPosition);
-  }
+  }*/
 
   
   public void setPosition(double newTargetPosition) {

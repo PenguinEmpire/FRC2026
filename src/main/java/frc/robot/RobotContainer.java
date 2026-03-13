@@ -94,7 +94,7 @@ public class RobotContainer {
                 new InstantCommand(()->m_intakeSubsystem.spinRollers(false), m_intakeSubsystem),
                 new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeUp)));
         
-        NamedCommands.registerCommand("align_to_apriltag", new AlignToAprilTag(m_swerveSubsystem, m_visionSubsystem).repeatedly().until(()->Math.abs((5*(Math.PI/180))-m_visionSubsystem.GetXAngle())>0.026));
+        NamedCommands.registerCommand("align_to_apriltag", new AlignToAprilTag(m_swerveSubsystem, m_visionSubsystem, drivetrain));
 
         //NamedCommands.registerCommand("target_hood", ____ //I dont think we need this command since hood alignment is automatic
 
@@ -138,7 +138,8 @@ public class RobotContainer {
         autoChooser.addOption("RotationAuto", "RotationAuto"); 
         autoChooser.addOption("IntakeAuto", "IntakeAuto"); 
         autoChooser.addOption("ShooterAuto", "ShooterAuto"); 
-        autoChooser.addOption("AprilTagAuto", "AprilTagAuto"); 
+        autoChooser.addOption("AprilTagAuto", "AprilTagAuto");
+        autoChooser.addOption("PreloadMidAuto", "PreloadMidAuto");
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -195,6 +196,9 @@ public class RobotContainer {
             .whileTrue(new InstantCommand(()->m_intakeSubsystem.spinRollers(true), m_intakeSubsystem))
             .onFalse(new InstantCommand(()->m_intakeSubsystem.spinRollers(false), m_intakeSubsystem));
 
+        /*controller.L2().whileTrue(new InstantCommand(()->m_climbSubsystem.manualMove(0.1)))
+                        .onFalse(new InstantCommand(()->m_climbSubsystem.manualMove(0)));*/
+
         controller.povLeft() //manual move hood down
             .whileTrue(new RunCommand(()->m_shooterSubsystem.moveHood(0.1), m_shooterSubsystem)) //raise
             .onFalse(new RunCommand(()->m_shooterSubsystem.moveHood(0), m_shooterSubsystem));
@@ -209,13 +213,13 @@ public class RobotContainer {
                     enableShooter,
                     new WaitCommand(1.5),
                     new InstantCommand(()->m_intakeSubsystem.spinConveyor(Constants.IntakeConstants.kConveyorMotorPower), m_intakeSubsystem),
-                    new InstantCommand(()->m_shooterSubsystem.enableKicker(Constants.ShooterConstants.kShooterKickerVelocity), m_intakeSubsystem)))
+                    new InstantCommand(()->m_shooterSubsystem.enableKicker(Constants.ShooterConstants.kShooterKickerVelocity), m_intakeSubsystem),
 
-                    /*new SequentialCommandGroup(
-                        new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeDown),
-                        new InstantCommand(()->new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeBounce)),
-                        new WaitCommand(0.5)
-                    ).repeatedly()*/
+                    new SequentialCommandGroup(
+                        new RunCommand(()->m_intakeSubsystem.setPosition(PositionCommand.Position.IntakeBounce.getEncoderPosition())).until(()->m_intakeSubsystem.getPosition()<30),
+                        new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeDown)
+                        )
+                    .repeatedly()))
 
             .onFalse(
                 new SequentialCommandGroup(
