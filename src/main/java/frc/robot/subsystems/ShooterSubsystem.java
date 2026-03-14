@@ -162,7 +162,7 @@ public class ShooterSubsystem extends SubsystemBase {
     m_rightShooterMotor.set(output);
 
     //System.out.println(getShooterSpeed());
-    if (m_VisionSubsystem.HasTarget() && (m_VisionSubsystem.getCurrentID() == 10 || m_VisionSubsystem.getCurrentID() == 26)) {
+    if (m_VisionSubsystem.HasTarget() && (m_VisionSubsystem.getCurrentID() == 10 || m_VisionSubsystem.getCurrentID() == 26) && currentHoodVoltage ==0) {
       m_jointMotor.set(manuPID.calculate(getPosition(), getTargetAngle()));
     } else {
       m_jointMotor.set(currentHoodVoltage);
