@@ -213,13 +213,13 @@ public class RobotContainer {
         /*controller.L2().whileTrue(new InstantCommand(()->m_climbSubsystem.manualMove(0.1)))
                         .onFalse(new InstantCommand(()->m_climbSubsystem.manualMove(0)));*/
 
-        /*controller.povLeft() //manual climb down
-            .whileTrue(new RunCommand(()->m_climbSubsystem.manualMove(0.1), m_climbSubsystem)) //raise
-            .onFalse(new RunCommand(()->m_climbSubsystem.manualMove(0), m_climbSubsystem));
+        controller.povLeft() //manual move hood down
+            .whileTrue(new RunCommand(()->m_shooterSubsystem.moveHood(-0.1), m_shooterSubsystem)) //raise
+            .onFalse(new RunCommand(()->m_shooterSubsystem.moveHood(0), m_shooterSubsystem));
 
-        controller.povRight() //manual climb up
-            .whileTrue(new RunCommand(()->m_climbSubsystem.manualMove(-0.1), m_climbSubsystem)) //lower
-            .onFalse(new RunCommand(()->m_climbSubsystem.manualMove(0), m_climbSubsystem));*/
+        controller.povRight() //manual move hood up
+            .whileTrue(new RunCommand(()->m_shooterSubsystem.moveHood(0.1), m_shooterSubsystem)) //lower
+            .onFalse(new RunCommand(()->m_shooterSubsystem.moveHood(0), m_shooterSubsystem));
 
         controller.R2() //activate shooter/indexer/conveyor
             .onTrue(
