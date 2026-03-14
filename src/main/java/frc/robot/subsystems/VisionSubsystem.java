@@ -16,7 +16,7 @@ import frc.robot.subsystems.vision.VisionInterface;
 import frc.robot.Constants;
 
 public class VisionSubsystem extends SubsystemBase {
-  private int[] ValidIds = {1, 2, 3, 4, 10};
+  private int[] ValidIds = {10, 26};
   private double currentID = -1;
 
   public double Fiducial3DOffsetX = 0;
@@ -108,6 +108,7 @@ public class VisionSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("VisionID", currentID);
     SmartDashboard.putNumber("tx", GetXAngle());
     SmartDashboard.putNumber("ty", GetYAngle());
+    SmartDashboard.putBoolean("Within Shooter Range", GetXAngle()>=-10);
 
     updateOffsets();
   }

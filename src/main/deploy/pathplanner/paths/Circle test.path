@@ -20,7 +20,7 @@
         "y": 5.892808586762076
       },
       "prevControl": {
-        "x": 3.4440608228980323,
+        "x": 3.4440608228980327,
         "y": 6.752754919499106
       },
       "nextControl": null,
@@ -45,7 +45,7 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "TestPaths",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

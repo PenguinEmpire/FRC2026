@@ -58,7 +58,7 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Test Paths",
+  "folder": "PreloadPaths",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

@@ -73,7 +73,7 @@ public class RobotContainer {
 
     private final EnableShooterCommand enableShooter = new EnableShooterCommand(m_shooterSubsystem);
 
-    private ClimbSubsystem m_climbSubsystem = new ClimbSubsystem();
+    //private ClimbSubsystem m_climbSubsystem = new ClimbSubsystem();
 
     Pigeon2 pigeon = new Pigeon2(0);
 
@@ -85,14 +85,15 @@ public class RobotContainer {
         //Setup the namedCommands for auto
 
         NamedCommands.registerCommand("lower_intake", 
-            new SequentialCommandGroup(
-                new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeDown),
-                new InstantCommand(()->m_intakeSubsystem.spinRollers(true), m_intakeSubsystem)));
+                new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeDown));
         
         NamedCommands.registerCommand("raise_intake",
-            new SequentialCommandGroup(
-                new InstantCommand(()->m_intakeSubsystem.spinRollers(false), m_intakeSubsystem),
-                new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeUp)));
+                new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeUp));
+
+         NamedCommands.registerCommand("enable_intake",
+                new InstantCommand(()->m_intakeSubsystem.spinRollers(true), m_intakeSubsystem));
+
+         NamedCommands.registerCommand("disable_intake",new InstantCommand(()->m_intakeSubsystem.spinRollers(false), m_intakeSubsystem));
         
         NamedCommands.registerCommand("align_to_apriltag", new AlignToAprilTag(m_swerveSubsystem, m_visionSubsystem, drivetrain));
 
@@ -103,6 +104,16 @@ public class RobotContainer {
                     new WaitCommand(1.5),
                     new InstantCommand(()->m_intakeSubsystem.spinConveyor(Constants.IntakeConstants.kConveyorMotorPower), m_intakeSubsystem),
                     new InstantCommand(()->m_shooterSubsystem.enableKicker(Constants.ShooterConstants.kShooterKickerVelocity), m_intakeSubsystem)));
+
+         NamedCommands.registerCommand("enable_intake_bounce",
+            new SequentialCommandGroup(
+                        new RunCommand(()->m_intakeSubsystem.setPosition(PositionCommand.Position.IntakeBounce.getEncoderPosition())).until(()->m_intakeSubsystem.getPosition()<30),
+                        new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeDown)
+                        )
+                    .repeatedly());
+
+        NamedCommands.registerCommand("disable_intake_bounce",
+                        new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeDown));
 
         NamedCommands.registerCommand("disable_flywheel", new SequentialCommandGroup(
                     new InstantCommand(()->m_shooterSubsystem.enableShooter(false), m_shooterSubsystem),
@@ -140,6 +151,9 @@ public class RobotContainer {
         autoChooser.addOption("ShooterAuto", "ShooterAuto"); 
         autoChooser.addOption("AprilTagAuto", "AprilTagAuto");
         autoChooser.addOption("PreloadMidAuto", "PreloadMidAuto");
+        autoChooser.addOption("LeftNeutralAuto", "LeftNeutralAuto");
+
+        SmartDashboard.putBoolean("Within Shooter Range", false);
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -199,13 +213,13 @@ public class RobotContainer {
         /*controller.L2().whileTrue(new InstantCommand(()->m_climbSubsystem.manualMove(0.1)))
                         .onFalse(new InstantCommand(()->m_climbSubsystem.manualMove(0)));*/
 
-        controller.povLeft() //manual climb down
+        /*controller.povLeft() //manual climb down
             .whileTrue(new RunCommand(()->m_climbSubsystem.manualMove(0.1), m_climbSubsystem)) //raise
             .onFalse(new RunCommand(()->m_climbSubsystem.manualMove(0), m_climbSubsystem));
 
         controller.povRight() //manual climb up
             .whileTrue(new RunCommand(()->m_climbSubsystem.manualMove(-0.1), m_climbSubsystem)) //lower
-            .onFalse(new RunCommand(()->m_climbSubsystem.manualMove(0), m_climbSubsystem));
+            .onFalse(new RunCommand(()->m_climbSubsystem.manualMove(0), m_climbSubsystem));*/
 
         controller.R2() //activate shooter/indexer/conveyor
             .onTrue(

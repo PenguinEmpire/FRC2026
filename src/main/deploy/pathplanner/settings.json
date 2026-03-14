@@ -3,10 +3,13 @@
   "robotLength": 0.8509,
   "holonomicMode": true,
   "pathFolders": [
-    "Test Paths"
+    "NeutralPaths",
+    "PreloadPaths",
+    "TestPaths"
   ],
   "autoFolders": [
-    "Test Autos"
+    "Neutral Zone Auto",
+    "PreloadAuto"
   ],
   "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,

@@ -121,7 +121,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   private double getTargetAngle() {
-    if (m_VisionSubsystem.HasTarget()) {
+    if (m_VisionSubsystem.HasTarget() && (m_VisionSubsystem.getCurrentID() == 10 || m_VisionSubsystem.getCurrentID() == 26)) {
       double ty = m_VisionSubsystem.GetYAngle();
       double target = 0.0254911*ty*ty+2.90326*ty+19.15338;
       if (target > 0) {
