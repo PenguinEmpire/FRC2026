@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.386153846153846,
-        "y": 7.35309481216458
+        "x": 3.590704545454545,
+        "y": 7.395022727272727
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.402379248658318,
-        "y": 6.6716279069767435
+        "x": 3.4361022727272723,
+        "y": 6.663238636363636
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.386153846153846,
-        "y": 4.594776386404293
+        "x": 3.405181818181818,
+        "y": 4.467886363636364
       },
       "prevControl": {
-        "x": 3.402379248658318,
-        "y": 5.470948121645796
+        "x": 3.4214072206862904,
+        "y": 5.344058098877866
       },
       "nextControl": null,
       "isLocked": false,
@@ -39,7 +39,19 @@
       "command": null
     },
     {
+      "name": "search_for_apriltag_left",
+      "waypointRelativePos": 1.0,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
       "name": "align_to_apriltag",
+      "waypointRelativePos": 1.0,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "disable_flywheel",
       "waypointRelativePos": 1.0,
       "endWaypointRelativePos": null,
       "command": null

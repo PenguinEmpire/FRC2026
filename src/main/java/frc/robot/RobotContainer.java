@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -27,6 +28,7 @@ import frc.robot.commands.AlignToAprilTag;
 import frc.robot.commands.AlignToClimb;
 import frc.robot.commands.EnableShooterCommand;
 import frc.robot.commands.PositionCommand;
+import frc.robot.commands.SearchForAprilTag;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -97,6 +99,11 @@ public class RobotContainer {
         
         NamedCommands.registerCommand("align_to_apriltag", new AlignToAprilTag(m_swerveSubsystem, m_visionSubsystem, drivetrain));
 
+        NamedCommands.registerCommand("search_for_apriltag_left", new SearchForAprilTag(m_swerveSubsystem, m_visionSubsystem, drivetrain, 0.5));
+
+        
+        NamedCommands.registerCommand("search_for_apriltag_right", new SearchForAprilTag(m_swerveSubsystem, m_visionSubsystem, drivetrain, -0.5));
+
         //NamedCommands.registerCommand("target_hood", ____ //I dont think we need this command since hood alignment is automatic
 
         NamedCommands.registerCommand("enable_flywheel", new SequentialCommandGroup(
@@ -151,6 +158,8 @@ public class RobotContainer {
         autoChooser.addOption("ShooterAuto", "ShooterAuto"); 
         autoChooser.addOption("AprilTagAuto", "AprilTagAuto");
         autoChooser.addOption("PreloadMidAuto", "PreloadMidAuto");
+        autoChooser.addOption("PreloadRightAuto", "PreloadRightAuto");
+        autoChooser.addOption("PreloadLeftAuto", "PreloadLeftAuto");
         autoChooser.addOption("LeftNeutralAuto", "LeftNeutralAuto");
 
         SmartDashboard.putBoolean("Within Shooter Range", false);
@@ -214,23 +223,22 @@ public class RobotContainer {
                         .onFalse(new InstantCommand(()->m_climbSubsystem.manualMove(0)));*/
 
         controller.povLeft() //manual move hood down
-            .whileTrue(new RunCommand(()->m_shooterSubsystem.moveHood(-0.1), m_shooterSubsystem)) //raise
+            .whileTrue(new RunCommand(()->m_shooterSubsystem.moveHood(0.1), m_shooterSubsystem)) //raise
             .onFalse(new RunCommand(()->m_shooterSubsystem.moveHood(0), m_shooterSubsystem));
 
         controller.povRight() //manual move hood up
-            .whileTrue(new RunCommand(()->m_shooterSubsystem.moveHood(0.1), m_shooterSubsystem)) //lower
+            .whileTrue(new RunCommand(()->m_shooterSubsystem.moveHood(-0.1), m_shooterSubsystem)) //lower
             .onFalse(new RunCommand(()->m_shooterSubsystem.moveHood(0), m_shooterSubsystem));
 
         controller.R2() //activate shooter/indexer/conveyor
             .onTrue(
                 new SequentialCommandGroup(
                     enableShooter,
-                    new WaitCommand(1.5),
                     new InstantCommand(()->m_intakeSubsystem.spinConveyor(Constants.IntakeConstants.kConveyorMotorPower), m_intakeSubsystem),
                     new InstantCommand(()->m_shooterSubsystem.enableKicker(Constants.ShooterConstants.kShooterKickerVelocity), m_intakeSubsystem),
 
                     new SequentialCommandGroup(
-                        new RunCommand(()->m_intakeSubsystem.setPosition(PositionCommand.Position.IntakeBounce.getEncoderPosition())).until(()->m_intakeSubsystem.getPosition()<30),
+                        new RunCommand(()->m_intakeSubsystem.setPosition(PositionCommand.Position.IntakeUp.getEncoderPosition())).until(()->m_intakeSubsystem.getPosition()<30),
                         new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeDown)
                         )
                     .repeatedly()))
@@ -239,7 +247,9 @@ public class RobotContainer {
                 new SequentialCommandGroup(
                     new InstantCommand(()->m_shooterSubsystem.enableShooter(false), m_shooterSubsystem),
                     new InstantCommand(()->m_shooterSubsystem.enableKicker(0), m_shooterSubsystem),
-                    new InstantCommand(()->m_intakeSubsystem.spinConveyor(0), m_intakeSubsystem)));
+                    new InstantCommand(()->m_intakeSubsystem.spinConveyor(0), m_intakeSubsystem),
+                    new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeDown))
+                    );
 
         controller.square() //reverse indexer/conveyor
                     .onTrue(
@@ -276,11 +286,32 @@ public class RobotContainer {
         // Simple drive forward auton
         final var idle = new SwerveRequest.Idle();
 
-        return new PathPlannerAuto(autoChooser.getSelected());
-        //return Commands.sequence(
+        
+  /*  return Commands.sequence(
+            drivetrain.runOnce(() -> drivetrain.seedFieldCentric(Rotation2d.kZero)),
+            drivetrain.applyRequest(() ->
+                drive.withVelocityX(-0.25)
+                    .withVelocityY(0)
+                    .withRotationalRate(0)
+            ),
+            new WaitCommand(0.1),
+            drivetrain.applyRequest(() -> idle),
+            new AlignToAprilTag(m_swerveSubsystem, m_visionSubsystem, drivetrain),
+            new SequentialCommandGroup(
+                    new EnableShooterCommand(m_shooterSubsystem),
+                    new WaitCommand(1.5),
+                    new InstantCommand(()->m_intakeSubsystem.spinConveyor(Constants.IntakeConstants.kConveyorMotorPower), m_intakeSubsystem),
+                    new InstantCommand(()->m_shooterSubsystem.enableKicker(Constants.ShooterConstants.kShooterKickerVelocity), m_intakeSubsystem)),
+            new WaitCommand(5),
+           new SequentialCommandGroup(
+                    new InstantCommand(()->m_shooterSubsystem.enableShooter(false), m_shooterSubsystem),
+                    new InstantCommand(()->m_shooterSubsystem.enableKicker(0), m_shooterSubsystem),
+                    new InstantCommand(()->m_intakeSubsystem.spinConveyor(0), m_intakeSubsystem)));
+            /*
+        return Commands.sequence(
             // Reset our field centric heading to match the robot
             // facing away from our alliance station wall (0 deg).
-            /*drivetrain.runOnce(() -> drivetrain.seedFieldCentric(Rotation2d.kZero)),
+            drivetrain.runOnce(() -> drivetrain.seedFieldCentric(Rotation2d.kZero)),
             // Then slowly drive forward (away from us) for 5 seconds.
             drivetrain.applyRequest(() ->
                 drive.withVelocityX(0.5)
@@ -290,7 +321,9 @@ public class RobotContainer {
             .withTimeout(5.0),
             // Finally idle for the rest of auton
             drivetrain.applyRequest(() -> idle)
-            */
-        //);
+            
+            );
+*/
+        return new PathPlannerAuto(autoChooser.getSelected()); 
     }
 }
