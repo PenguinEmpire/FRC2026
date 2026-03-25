@@ -7,6 +7,9 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.wpilibj.PS5Controller;
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.InterfaceExperiment.Joysticks.AimingJoystick;
@@ -23,6 +26,8 @@ public class SwerveSubsystem extends SubsystemBase {
   private boolean overrideX = false;
   private boolean overrideY = false;
   private boolean overrideR = false;
+
+  PowerDistribution e = new PowerDistribution(1, ModuleType.kRev);
 
   Pigeon2 pigeon = new Pigeon2(0);
 
@@ -76,6 +81,8 @@ public class SwerveSubsystem extends SubsystemBase {
     if (joystick.getRotationalRate()>1) {
       resetRotationalRate();
     }
+
+    SmartDashboard.putNumber("PDHCurrent", e.getTotalCurrent());
   } 
 
   public double getVelocityX() {

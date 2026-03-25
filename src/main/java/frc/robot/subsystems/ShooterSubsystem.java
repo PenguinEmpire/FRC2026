@@ -45,7 +45,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private VisionSubsystem m_VisionSubsystem = new VisionSubsystem(new LimelightVision());
 
-  private boolean limiting = false;
+  private boolean limiting = true;
 
     double kP = SmartDashboard.getNumber("ShooterJointP", 0);
     double kI = SmartDashboard.getNumber("ShooterJointI", 0);
@@ -161,8 +161,16 @@ public class ShooterSubsystem extends SubsystemBase {
     m_leftShooterMotor.set(output);
     m_rightShooterMotor.set(output);
 
+    SmartDashboard.putNumber("FlywheelCurrent", m_leftShooterMotor.getOutputCurrent());
+
+    SmartDashboard.putNumber("KickerCurrent", m_middleShooterMotor.getOutputCurrent());
+
+    SmartDashboard.putNumber("FlywheelVelocity", m_leftShooterMotor.getEncoder().getVelocity());
+
+    SmartDashboard.putNumber("KickerVelocity", m_middleShooterMotor.getEncoder().getVelocity());
+
     //System.out.println(getShooterSpeed());
-    if (m_VisionSubsystem.HasTarget() && (m_VisionSubsystem.getCurrentID() == 10 || m_VisionSubsystem.getCurrentID() == 26) && currentHoodVoltage ==0) {
+    if (m_VisionSubsystem.HasTarget() && (m_VisionSubsystem.getCurrentID() == 10 || m_VisionSubsystem.getCurrentID() == 26 || m_VisionSubsystem.getCurrentID() == 5) && currentHoodVoltage ==0) {
       m_jointMotor.set(manuPID.calculate(getPosition(), getTargetAngle()));
     } else {
       m_jointMotor.set(currentHoodVoltage);
@@ -197,10 +205,10 @@ public class ShooterSubsystem extends SubsystemBase {
     if (active) {
       calc = shoooterLimiter.calculate(Constants.ShooterConstants.kShooterVelocity);
       targetShooterVelocity = Constants.ShooterConstants.kTargetShooterRPM;
-      limiting = false;
+      //limiting = false;
     } else {
      calc = shoooterLimiter.calculate(0);
-    limiting = true;
+    //limiting = true;
      targetShooterVelocity = 0;
     }
     //m_leftShooterMotor.set(calc);
@@ -225,4 +233,3 @@ public class ShooterSubsystem extends SubsystemBase {
     }
   }
 }
-

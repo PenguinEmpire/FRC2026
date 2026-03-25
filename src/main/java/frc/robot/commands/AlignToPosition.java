@@ -12,7 +12,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /** An example command that uses an example subsystem. */
-public class AlignToClimb extends Command {
+public class AlignToPosition extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
   private final SwerveSubsystem m_SwerveSubsystem;
 
@@ -29,7 +29,7 @@ public class AlignToClimb extends Command {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public AlignToClimb(SwerveSubsystem subsystem, double targetTx, double targetTy) {
+  public AlignToPosition(SwerveSubsystem subsystem, double targetTx, double targetTy) {
     m_SwerveSubsystem = subsystem;
     targetAngleX = targetTx;
     targetAngleY = targetTy;

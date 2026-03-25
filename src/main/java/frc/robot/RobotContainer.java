@@ -25,7 +25,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.commands.AlignToAngle;
 import frc.robot.commands.AlignToAprilTag;
-import frc.robot.commands.AlignToClimb;
+import frc.robot.commands.AlignToPosition;
 import frc.robot.commands.EnableShooterCommand;
 import frc.robot.commands.PositionCommand;
 import frc.robot.commands.SearchForAprilTag;
@@ -129,7 +129,7 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("mount_climb", new SequentialCommandGroup(
                             new AlignToAngle(m_swerveSubsystem, Math.PI),
-                            new AlignToClimb(m_swerveSubsystem, Constants.ClimbConstants.kAlignmentTx, Constants.ClimbConstants.kAlignmentTy),
+                            new AlignToPosition(m_swerveSubsystem, Constants.ClimbConstants.kAlignmentTx, Constants.ClimbConstants.kAlignmentTy),
                             new AlignToAngle(m_swerveSubsystem, 0)
                             /*new InstantCommand(()->m_climbSubsystem.setLeftServo(Constants.ClimbConstants.kServoAngle), m_climbSubsystem),
                             new InstantCommand(()->m_climbSubsystem.setRightServo(Constants.ClimbConstants.kServoAngle), m_climbSubsystem),
@@ -140,7 +140,7 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("unmount_climb", new SequentialCommandGroup(
                             new AlignToAngle(m_swerveSubsystem, Math.PI),
-                            new AlignToClimb(m_swerveSubsystem, Constants.ClimbConstants.kAlignmentTx, Constants.ClimbConstants.kAlignmentTy),
+                            new AlignToPosition(m_swerveSubsystem, Constants.ClimbConstants.kAlignmentTx, Constants.ClimbConstants.kAlignmentTy),
                             new AlignToAngle(m_swerveSubsystem, 0)
                             /*new InstantCommand(()->m_climbSubsystem.setLeftServo(Constants.ClimbConstants.kServoAngle), m_climbSubsystem),
                             new InstantCommand(()->m_climbSubsystem.setRightServo(Constants.ClimbConstants.kServoAngle), m_climbSubsystem),
@@ -233,7 +233,7 @@ public class RobotContainer {
         controller.R2() //activate shooter/indexer/conveyor
             .onTrue(
                 new SequentialCommandGroup(
-                    enableShooter,
+                    //enableShooter,
                     new InstantCommand(()->m_intakeSubsystem.spinConveyor(Constants.IntakeConstants.kConveyorMotorPower), m_intakeSubsystem),
                     new InstantCommand(()->m_shooterSubsystem.enableKicker(Constants.ShooterConstants.kShooterKickerVelocity), m_intakeSubsystem),
 
@@ -245,7 +245,7 @@ public class RobotContainer {
 
             .onFalse(
                 new SequentialCommandGroup(
-                    new InstantCommand(()->m_shooterSubsystem.enableShooter(false), m_shooterSubsystem),
+                    //new InstantCommand(()->m_shooterSubsystem.enableShooter(false), m_shooterSubsystem),
                     new InstantCommand(()->m_shooterSubsystem.enableKicker(0), m_shooterSubsystem),
                     new InstantCommand(()->m_intakeSubsystem.spinConveyor(0), m_intakeSubsystem),
                     new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeDown))
@@ -263,23 +263,17 @@ public class RobotContainer {
                             new InstantCommand(()->m_intakeSubsystem.spinConveyor(0), m_intakeSubsystem)));
 
        
-        /*controller.options() //Activate Climb Sequence
+        controller.options()
                     .onTrue(
-                        new SequentialCommandGroup(
-                            new AlignToAngle(m_swerveSubsystem, Math.PI),
-                            new AlignToClimb(m_swerveSubsystem, Constants.ClimbConstants.kAlignmentTx, Constants.ClimbConstants.kAlignmentTy),
-                            new AlignToAngle(m_swerveSubsystem, 0),
-                            new InstantCommand(()->m_climbSubsystem.setLeftServo(Constants.ClimbConstants.kServoAngle), m_climbSubsystem),
-                            new InstantCommand(()->m_climbSubsystem.setRightServo(Constants.ClimbConstants.kServoAngle), m_climbSubsystem),
-                            new WaitCommand(1),
-                            new PositionCommand(m_intakeSubsystem, m_climbSubsystem, PositionCommand.Position.ClimbUp)
-                        )
-                    );*/
+                        enableShooter
+                    );
 
         //Start to unclimb (not implimented)
 
 
-        //controller.touchpad() for a potential reset button
+        controller.touchpad().onTrue(
+            new AlignToPosition(m_swerveSubsystem, 0.0, 0.0)
+        );
     }   
 
     public Command getAutonomousCommand() {

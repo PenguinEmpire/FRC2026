@@ -5,21 +5,9 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "lower_intake"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "LeftN1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "enable_intake"
           }
         },
         {
@@ -29,51 +17,21 @@
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "disable_intake"
+            "pathName": "LeftN3.1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "LeftN3.2"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "LeftN4"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "LeftN5"
+            "pathName": "Left4.1"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "align_to_apriltag"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "enable_flywheel"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 5.0
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "disable_flywheel"
           }
         }
       ]
