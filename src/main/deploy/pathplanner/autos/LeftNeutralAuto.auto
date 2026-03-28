@@ -5,15 +5,39 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "enable_flywheel"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "lower_intake"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "LeftN1"
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "enable_intake"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "LeftN2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "disable_intake"
           }
         },
         {
@@ -32,6 +56,36 @@
           "type": "named",
           "data": {
             "name": "align_to_apriltag"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "enable_shooter"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "enable_intake_bounce"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 10.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "disable_shooter"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "disable_intake_bounce"
           }
         }
       ]

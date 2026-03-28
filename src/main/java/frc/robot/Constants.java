@@ -50,7 +50,7 @@ public final class Constants {
     public static final int kIntakeJointMotorID = 22;
     public static final int kConveyorMotorID = 24;
     
-    public static final double kRollerMotorPower = -0.6;
+    public static final double kRollerMotorPower = -0.8;
     public static final double kConveyorMotorPower = 0.6;
   }
 

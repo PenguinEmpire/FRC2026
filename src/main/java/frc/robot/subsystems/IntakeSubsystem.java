@@ -39,7 +39,7 @@ public class IntakeSubsystem extends SubsystemBase {
   double kI = SmartDashboard.getNumber("IntakeJointI", 0);
   double kD = SmartDashboard.getNumber("IntakeJointD", 0);
 
-  DigitalInput sensor = new DigitalInput(8);
+  DigitalInput sensor = new DigitalInput(7);
 
   private final SparkMax m_RollerMotor = new SparkMax(Constants.IntakeConstants.kIntakeRollerMotorID, MotorType.kBrushless);
 
@@ -161,7 +161,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
   if (sensor.get()) {
     spinRollers(false);
+
   }
+
+  System.out.println(sensor.get());
 
 
   }
@@ -170,7 +173,7 @@ public class IntakeSubsystem extends SubsystemBase {
       m_jointMotor.set(speed);
   }
   public void spinRollers(boolean active) {
-    if (active) {
+    if (active && !sensor.get() ) {
       m_RollerMotor.set(Constants.IntakeConstants.kRollerMotorPower);
     } else {
       m_RollerMotor.set(0);

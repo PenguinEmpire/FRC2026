@@ -106,9 +106,10 @@ public class RobotContainer {
 
         //NamedCommands.registerCommand("target_hood", ____ //I dont think we need this command since hood alignment is automatic
 
-        NamedCommands.registerCommand("enable_flywheel", new SequentialCommandGroup(
-                    new EnableShooterCommand(m_shooterSubsystem),
-                    new WaitCommand(1.5),
+        NamedCommands.registerCommand("enable_flywheel",
+                    new EnableShooterCommand(m_shooterSubsystem));
+
+        NamedCommands.registerCommand("enable_shooter", new SequentialCommandGroup(
                     new InstantCommand(()->m_intakeSubsystem.spinConveyor(Constants.IntakeConstants.kConveyorMotorPower), m_intakeSubsystem),
                     new InstantCommand(()->m_shooterSubsystem.enableKicker(Constants.ShooterConstants.kShooterKickerVelocity), m_intakeSubsystem)));
 
@@ -122,8 +123,10 @@ public class RobotContainer {
         NamedCommands.registerCommand("disable_intake_bounce",
                         new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeDown));
 
-        NamedCommands.registerCommand("disable_flywheel", new SequentialCommandGroup(
-                    new InstantCommand(()->m_shooterSubsystem.enableShooter(false), m_shooterSubsystem),
+        NamedCommands.registerCommand("disable_flywheel", 
+                    new InstantCommand(()->m_shooterSubsystem.enableShooter(false), m_shooterSubsystem));
+
+        NamedCommands.registerCommand("disable_shooter", new SequentialCommandGroup(
                     new InstantCommand(()->m_shooterSubsystem.enableKicker(0), m_shooterSubsystem),
                     new InstantCommand(()->m_intakeSubsystem.spinConveyor(0), m_intakeSubsystem)));
 

@@ -76,6 +76,8 @@ public class AlignToAprilTag extends Command {
                     .withVelocityY(0)
                     .withRotationalRate(0)
         );
+
+        System.out.println("ALIGNED");
     runCommand = false;
   }
 
