@@ -4,6 +4,7 @@
   "holonomicMode": true,
   "pathFolders": [
     "NeutralPaths",
+    "New Folder",
     "PreloadPaths",
     "TestPaths"
   ],

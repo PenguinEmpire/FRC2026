@@ -17,12 +17,6 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "LeftN1"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "enable_intake"
@@ -31,13 +25,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LeftN2"
+            "pathName": "LeftN1"
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "disable_intake"
+            "pathName": "LeftN2"
           }
         },
         {
@@ -50,6 +44,12 @@
           "type": "path",
           "data": {
             "pathName": "Left4.1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "disable_intake"
           }
         },
         {

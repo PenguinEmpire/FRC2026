@@ -39,11 +39,13 @@ public class IntakeSubsystem extends SubsystemBase {
   double kI = SmartDashboard.getNumber("IntakeJointI", 0);
   double kD = SmartDashboard.getNumber("IntakeJointD", 0);
 
-  DigitalInput sensor = new DigitalInput(7);
+  //DigitalInput sensor
 
   private final SparkMax m_RollerMotor = new SparkMax(Constants.IntakeConstants.kIntakeRollerMotorID, MotorType.kBrushless);
 
-  PIDController manuPID  = new PIDController(0.01, kI, kD);
+  PIDController manuPIDUp  = new PIDController(0.01, kI, kD);
+
+  PIDController manuPIDDown  = new PIDController(0.011, kI, kD);
 
   /** Creates a new ExampleSubsystem. */
   public IntakeSubsystem() {
@@ -54,10 +56,21 @@ public class IntakeSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("IntakeJointI", 0.0);
     SmartDashboard.putNumber("IntakeJointD", 0.0);
 
+    //sensor = new DigitalInput(7);
+
+    SparkMaxConfig rollerMotorConfig = new SparkMaxConfig();
+        rollerMotorConfig
+                .smartCurrentLimit(40);
+
+    m_RollerMotor.configure(rollerMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+
+    m_conveyorMotor.configure(rollerMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    
     SparkMaxConfig motorConfig = new SparkMaxConfig();
         motorConfig
             .inverted(true)
-            .idleMode(IdleMode.kCoast)
+            .idleMode(IdleMode.kBrake)
             .closedLoop
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
                 .pid(0.01, kI, kD)
@@ -139,8 +152,11 @@ public class IntakeSubsystem extends SubsystemBase {
     
     
     //System.out.println(-manuPID.calculate(targetPosition, getPosition()));
-
-    m_jointMotor.set(-(manuPID.calculate(targetPosition, getPosition())));
+    if (targetPosition==0) {
+      m_jointMotor.set(-(manuPIDUp.calculate(targetPosition, getPosition())));
+    } else {
+      m_jointMotor.set(-(manuPIDDown.calculate(targetPosition, getPosition())));
+    }
     SmartDashboard.putNumber("IntakeTargetPosition", targetPosition);
     SmartDashboard.putNumber("IntakeCurrentPosition", getPosition());
     //SmartDashboard.putNumber("IntakeTargetPosition", getPosition());
@@ -157,14 +173,14 @@ public class IntakeSubsystem extends SubsystemBase {
 
   SmartDashboard.putNumber("RollerVelocity", m_RollerMotor.getEncoder().getVelocity());
 
-  SmartDashboard.putBoolean("HopperFull", sensor.get());
+  //SmartDashboard.putBoolean("HopperFull", sensor.get());
 
-  if (sensor.get()) {
+  /*if (!sensor.get()) {
     spinRollers(false);
 
-  }
+  }*/
 
-  System.out.println(sensor.get());
+  //System.out.println(sensor.get());
 
 
   }
@@ -173,14 +189,19 @@ public class IntakeSubsystem extends SubsystemBase {
       m_jointMotor.set(speed);
   }
   public void spinRollers(boolean active) {
-    if (active && !sensor.get() ) {
+    if (active) {
+      spinConveyor(0.2);
       m_RollerMotor.set(Constants.IntakeConstants.kRollerMotorPower);
+      System.out.println("Rollers Active");
     } else {
+      spinConveyor(0);
       m_RollerMotor.set(0);
+      System.out.println("Rollers Disabled");
     }
   }
 
   public void spinConveyor(double speed) {
     m_conveyorMotor.set(speed);
+    System.out.println("Conveyor speed set to " + speed);
   }
 }

@@ -10,6 +10,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.PS5Controller;
@@ -78,6 +79,8 @@ public class RobotContainer {
     //private ClimbSubsystem m_climbSubsystem = new ClimbSubsystem();
 
     Pigeon2 pigeon = new Pigeon2(0);
+
+        //private TestSubsystems test = new TestSubsystems();
 
 
     //public final AlignToAngle alignToAngle = new AlignToAngle(m_swerveSubsystem, -Math.PI/2.0);
@@ -164,6 +167,7 @@ public class RobotContainer {
         autoChooser.addOption("PreloadRightAuto", "PreloadRightAuto");
         autoChooser.addOption("PreloadLeftAuto", "PreloadLeftAuto");
         autoChooser.addOption("LeftNeutralAuto", "LeftNeutralAuto");
+        autoChooser.addOption("RightNeutralAuto", "LeftNeutralAuto");
 
         SmartDashboard.putBoolean("Within Shooter Range", false);
 
@@ -271,6 +275,11 @@ public class RobotContainer {
                         enableShooter
                     );
 
+        controller.create()
+                    .onTrue(
+                        new InstantCommand(()->m_shooterSubsystem.enableShooter(false))
+                    );
+
         //Start to unclimb (not implimented)
 
 
@@ -282,45 +291,16 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         // Simple drive forward auton
         final var idle = new SwerveRequest.Idle();
+        if (autoChooser.getSelected()=="RightNeutralAuto") { //Include autos that need to be mirrored
+            return new PathPlannerAuto(autoChooser.getSelected(), true); 
+        }
 
-        
-  /*  return Commands.sequence(
-            drivetrain.runOnce(() -> drivetrain.seedFieldCentric(Rotation2d.kZero)),
-            drivetrain.applyRequest(() ->
-                drive.withVelocityX(-0.25)
-                    .withVelocityY(0)
-                    .withRotationalRate(0)
-            ),
-            new WaitCommand(0.1),
-            drivetrain.applyRequest(() -> idle),
-            new AlignToAprilTag(m_swerveSubsystem, m_visionSubsystem, drivetrain),
-            new SequentialCommandGroup(
-                    new EnableShooterCommand(m_shooterSubsystem),
-                    new WaitCommand(1.5),
-                    new InstantCommand(()->m_intakeSubsystem.spinConveyor(Constants.IntakeConstants.kConveyorMotorPower), m_intakeSubsystem),
-                    new InstantCommand(()->m_shooterSubsystem.enableKicker(Constants.ShooterConstants.kShooterKickerVelocity), m_intakeSubsystem)),
-            new WaitCommand(5),
-           new SequentialCommandGroup(
-                    new InstantCommand(()->m_shooterSubsystem.enableShooter(false), m_shooterSubsystem),
-                    new InstantCommand(()->m_shooterSubsystem.enableKicker(0), m_shooterSubsystem),
-                    new InstantCommand(()->m_intakeSubsystem.spinConveyor(0), m_intakeSubsystem)));
-            /*
-        return Commands.sequence(
-            // Reset our field centric heading to match the robot
-            // facing away from our alliance station wall (0 deg).
-            drivetrain.runOnce(() -> drivetrain.seedFieldCentric(Rotation2d.kZero)),
-            // Then slowly drive forward (away from us) for 5 seconds.
-            drivetrain.applyRequest(() ->
-                drive.withVelocityX(0.5)
-                    .withVelocityY(0)
-                    .withRotationalRate(0)
-            )
-            .withTimeout(5.0),
-            // Finally idle for the rest of auton
-            drivetrain.applyRequest(() -> idle)
-            
-            );
-*/
         return new PathPlannerAuto(autoChooser.getSelected()); 
+    }
+
+     public Command getTestCommand() {
+        // Simple drive forward auton
+        final var idle = new SwerveRequest.Idle();
+        return new PathPlannerAuto("testsequence");
     }
 }

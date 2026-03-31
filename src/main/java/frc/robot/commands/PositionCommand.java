@@ -40,6 +40,8 @@ public class PositionCommand extends Command {
     //Declare subsystems
     private final Position pos;
 
+    double targetPosition;
+
 
 
   /**
@@ -66,12 +68,15 @@ public class PositionCommand extends Command {
     switch (pos) {
             case IntakeUp:
                 //exampleSubsystem.setPosition(Position.Example1.getEncoderPosition());
+                targetPosition = Position.IntakeUp.getEncoderPosition();
                 m_intakeSubsystem.setPosition(Position.IntakeUp.getEncoderPosition());
                 break;
             case IntakeDown:
+                targetPosition = Position.IntakeDown.getEncoderPosition();
                 m_intakeSubsystem.setPosition(Position.IntakeDown.getEncoderPosition());
                 break;
             case IntakeBounce:
+                targetPosition = Position.IntakeBounce.getEncoderPosition();
                 m_intakeSubsystem.setPosition(Position.IntakeBounce.getEncoderPosition());
                 break;
             /*case ClimbUp:
@@ -93,6 +98,7 @@ public class PositionCommand extends Command {
   @Override
   public boolean isFinished() {
     //Return if the subsystems have reached target within tolerance (use a method inside the subsystem)
+    System.out.println("Intake reached position: " + targetPosition);
     return m_intakeSubsystem.reachedPosition();
   }
 }

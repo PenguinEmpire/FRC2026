@@ -41,7 +41,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private PIDController manuPID = new PIDController(0.007, 0, 0);
 
-  private PIDController flywheelPID = new PIDController(0.0006, 0, 0.0001); //0.00035 needs to be tuned
+  private PIDController flywheelPID = new PIDController(0.00055, 0, 0.0001); //0.00035 needs to be tuned
 
   private VisionSubsystem m_VisionSubsystem = new VisionSubsystem(new LimelightVision());
 
@@ -67,6 +67,14 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("ShooterJointD", 0);
     SparkMaxConfig motorConfig = new SparkMaxConfig();
     SparkMaxConfig flywheelConfig = new SparkMaxConfig();
+    flywheelConfig.smartCurrentLimit(30);
+
+    m_leftShooterMotor.configure(flywheelConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_middleShooterMotor.configure(flywheelConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_rightShooterMotor.configure(flywheelConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+
+
         motorConfig
             .inverted(true)
             .idleMode(IdleMode.kBrake)
@@ -217,6 +225,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void enableKicker(double speed) {
     m_middleShooterMotor.set(speed);
+    System.out.println("Kicker set to speed " + speed);
   }
 
   public void runFeedForwardTest() {
