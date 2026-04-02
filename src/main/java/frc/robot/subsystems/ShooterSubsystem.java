@@ -57,6 +57,16 @@ public class ShooterSubsystem extends SubsystemBase {
 
     double currentHoodVoltage = 0;
 
+    boolean searchArray(double[] array, double value) {
+      for (int i=0; i<array.length; i++) {
+        if (array[i] == value) {
+          return true;
+        }
+      }
+
+      return false;
+    }    
+
   /** Creates a new ExampleSubsystem. */
   public ShooterSubsystem() {
     SmartDashboard.putNumber("ShooterkDT", 0.2);
@@ -178,7 +188,7 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("KickerVelocity", m_middleShooterMotor.getEncoder().getVelocity());
 
     //System.out.println(getShooterSpeed());
-    if (m_VisionSubsystem.HasTarget() && (m_VisionSubsystem.getCurrentID() == 10 || m_VisionSubsystem.getCurrentID() == 26 || m_VisionSubsystem.getCurrentID() == 5 || m_VisionSubsystem.getCurrentID() == 2) && currentHoodVoltage ==0) {
+    if (m_VisionSubsystem.HasTarget() && searchArray(Constants.ShooterConstants.kHubIds, m_VisionSubsystem.getCurrentID()) && currentHoodVoltage ==0) {
       m_jointMotor.set(manuPID.calculate(getPosition(), getTargetAngle()));
     } else {
       m_jointMotor.set(currentHoodVoltage);

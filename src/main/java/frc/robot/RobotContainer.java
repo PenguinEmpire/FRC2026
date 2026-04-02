@@ -160,12 +160,6 @@ public class RobotContainer {
 
         
         //Setup smartdashboard
-        autoChooser.addOption("CircleAuto", "CircleAuto"); //Name is the name visible on S.D. object is what is returned by getSelected()
-        autoChooser.addOption("LineAuto", "LineAuto"); 
-        autoChooser.addOption("RotationAuto", "RotationAuto"); 
-        autoChooser.addOption("IntakeAuto", "IntakeAuto"); 
-        autoChooser.addOption("ShooterAuto", "ShooterAuto"); 
-        autoChooser.addOption("AprilTagAuto", "AprilTagAuto");
         autoChooser.addOption("PreloadMidAuto", "PreloadMidAuto");
         autoChooser.addOption("PreloadRightAuto", "PreloadRightAuto");
         autoChooser.addOption("PreloadLeftAuto", "PreloadLeftAuto");

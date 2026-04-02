@@ -42,7 +42,9 @@ public final class Constants {
     public static final int kJointMotorID = 25;
     public static final double kShooterVelocity = -0.75; //Change to the output velocity of the shooter when known
     public static final double kShooterKickerVelocity = -0.3;
-    public static final double kTargetShooterRPM = -3600;  
+    public static final double kTargetShooterRPM = -3600; 
+    
+    public static final double[] kHubIds = {1,2,3,4,5};
   }
 
   public static class IntakeConstants {
@@ -84,14 +86,20 @@ public final class Constants {
     public static final SpacialPosition kAprilTagID10Offset = new SpacialPosition(-0.597, 0, 0); //-0.597
         public static final SpacialPosition kAprilTagID5Offset = new SpacialPosition(-0.597, 0, 0);
     public static final SpacialPosition kAprilTagID26Offset = new SpacialPosition(-0.597, 0, 0); //-0.597
-    public static final Map<Double, SpacialPosition> kAprilTagOffsets = Map.of(
+
+
+    public static final SpacialPosition kHubAprilTagOffset = new SpacialPosition(-0.597, 0, 0); //-0.597
+    public static final Map<Double, SpacialPosition> kAprilTagOffsets = Map.of( //1, 6, 7, 12, 17, 22, 23, 28
             -1.0, kUndefinedOffset,
-            1.0, kAprilTagID1Offset,
-            2.0, kAprilTagID2Offset,
-            3.0, kAprilTagID3Offset,
-            5.0, kAprilTagID5Offset,
-            10.0, kAprilTagID10Offset,
-            26.0, kAprilTagID26Offset
+            1.0, kUndefinedOffset,
+            6.0, kUndefinedOffset,
+            7.0, kUndefinedOffset,
+            12.0, kUndefinedOffset,
+            17.0, kUndefinedOffset,
+            22.0, kUndefinedOffset, 
+            23.0, kUndefinedOffset,
+            28.0, kUndefinedOffset,
+            10.0, kHubAprilTagOffset
         );
 
     public static final double kAprilTagID10Height = 0.0;

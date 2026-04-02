@@ -16,7 +16,7 @@ import frc.robot.subsystems.vision.VisionInterface;
 import frc.robot.Constants;
 
 public class VisionSubsystem extends SubsystemBase {
-  private int[] ValidIds = {5, 10, 26, 2};
+  private int[] ValidIds = {1, 6, 7, 12, 17, 22, 23, 28, 10, 26};
   private double currentID = -1;
 
   public double Fiducial3DOffsetX = 0;
@@ -24,6 +24,16 @@ public class VisionSubsystem extends SubsystemBase {
   public double Fiducial3DOffsetZ = 0;
 
   private VisionInterface limelightVision;
+
+  boolean searchArray(double[] array, double value) {
+    for (int i=0; i<array.length; i++) {
+      if (array[i] == value) {
+        return true;
+      }
+    }
+
+    return false;
+  }   
 
   /** Creates a new ExampleSubsystem. */
   public VisionSubsystem(VisionInterface limeInterface) {
@@ -92,12 +102,11 @@ public class VisionSubsystem extends SubsystemBase {
 
   public void updateOffsets() {
     if (TargetID()!=currentID) {
-      if (HasTarget()) {
-        currentID = Double.valueOf(TargetID());
+      if (searchArray(Constants.ShooterConstants.kHubIds, TargetID())) {
+        ChangeFiducial3DOffset(Constants.AprilTagConstants.kHubAprilTagOffset);
       } else {
-        currentID = -1;
+        ChangeFiducial3DOffset(Constants.AprilTagConstants.kUndefinedOffset);
       }
-      ChangeFiducial3DOffset(Constants.AprilTagConstants.kAprilTagOffsets.get(currentID));
     }
   }
 
