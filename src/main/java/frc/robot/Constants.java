@@ -79,7 +79,7 @@ public final class Constants {
     public static final SpacialPosition kUndefinedOffset = new SpacialPosition(0, 0, 0);
 
     public static final SpacialPosition kAprilTagID1Offset = new SpacialPosition(0, 0, 0); //The position relative to april tag the vision will be targeting: {x, y, z}
-    public static final SpacialPosition kAprilTagID2Offset = new SpacialPosition(0, 0, 0);
+    public static final SpacialPosition kAprilTagID2Offset = new SpacialPosition(-0.597, 0, 0);
     public static final SpacialPosition kAprilTagID3Offset = new SpacialPosition(0, 0, 0);
     public static final SpacialPosition kAprilTagID10Offset = new SpacialPosition(-0.597, 0, 0); //-0.597
         public static final SpacialPosition kAprilTagID5Offset = new SpacialPosition(-0.597, 0, 0);

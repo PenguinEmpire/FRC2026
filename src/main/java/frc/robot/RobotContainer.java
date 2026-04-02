@@ -89,8 +89,11 @@ public class RobotContainer {
     public RobotContainer() {
         //Setup the namedCommands for auto
 
-        NamedCommands.registerCommand("lower_intake", 
-                new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeDown));
+        NamedCommands.registerCommand("lower_intake", new SequentialCommandGroup(
+                new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeDown)
+                /*new RunCommand(()->m_intakeSubsystem.setPosition(PositionCommand.Position.IntakeBounce.getEncoderPosition())).until(()->m_intakeSubsystem.getPosition()<30),
+                new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeDown*/
+                ));
         
         NamedCommands.registerCommand("raise_intake",
                 new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeUp));
@@ -166,10 +169,11 @@ public class RobotContainer {
         autoChooser.addOption("PreloadMidAuto", "PreloadMidAuto");
         autoChooser.addOption("PreloadRightAuto", "PreloadRightAuto");
         autoChooser.addOption("PreloadLeftAuto", "PreloadLeftAuto");
-        autoChooser.addOption("LeftNeutralAuto", "LeftNeutralAuto");
-        autoChooser.addOption("RightNeutralAuto", "LeftNeutralAuto");
+        autoChooser.addOption("NeutralAuto", "LeftNeutralAuto");
 
         SmartDashboard.putBoolean("Within Shooter Range", false);
+
+        SmartDashboard.putBoolean("Is Right Auto", false);
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -220,7 +224,11 @@ public class RobotContainer {
 
         controller.povDown().onTrue( //lower intake
             new SequentialCommandGroup(
-                new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeDown)));
+                new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeDown)
+                /*new RunCommand(()->m_intakeSubsystem.setPosition(PositionCommand.Position.IntakeBounce.getEncoderPosition())).until(()->m_intakeSubsystem.getPosition()<30),
+                new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeDown)*/
+                        
+        ));
 
         controller.L2() //Enable intake
             .whileTrue(new InstantCommand(()->m_intakeSubsystem.spinRollers(true), m_intakeSubsystem))
@@ -242,13 +250,13 @@ public class RobotContainer {
                 new SequentialCommandGroup(
                     //enableShooter,
                     new InstantCommand(()->m_intakeSubsystem.spinConveyor(Constants.IntakeConstants.kConveyorMotorPower), m_intakeSubsystem),
-                    new InstantCommand(()->m_shooterSubsystem.enableKicker(Constants.ShooterConstants.kShooterKickerVelocity), m_intakeSubsystem),
+                    new InstantCommand(()->m_shooterSubsystem.enableKicker(Constants.ShooterConstants.kShooterKickerVelocity), m_intakeSubsystem)
 
-                    new SequentialCommandGroup(
-                        new RunCommand(()->m_intakeSubsystem.setPosition(PositionCommand.Position.IntakeUp.getEncoderPosition())).until(()->m_intakeSubsystem.getPosition()<30),
+                    /*new SequentialCommandGroup(
+                        new RunCommand(()->m_intakeSubsystem.setPosition(PositionCommand.Position.IntakeBounce.getEncoderPosition())).until(()->m_intakeSubsystem.getPosition()<30),
                         new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeDown)
                         )
-                    .repeatedly()))
+                    .repeatedly())*/))
 
             .onFalse(
                 new SequentialCommandGroup(
@@ -291,7 +299,7 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         // Simple drive forward auton
         final var idle = new SwerveRequest.Idle();
-        if (autoChooser.getSelected()=="RightNeutralAuto") { //Include autos that need to be mirrored
+        if (SmartDashboard.getBoolean("Is Right Auto", false)) { //Include autos that need to be mirrored
             return new PathPlannerAuto(autoChooser.getSelected(), true); 
         }
 

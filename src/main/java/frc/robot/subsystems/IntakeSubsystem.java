@@ -43,9 +43,9 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private final SparkMax m_RollerMotor = new SparkMax(Constants.IntakeConstants.kIntakeRollerMotorID, MotorType.kBrushless);
 
-  PIDController manuPIDUp  = new PIDController(0.01, kI, kD);
+  PIDController manuPIDUp  = new PIDController(0.0125, kI, kD);
 
-  PIDController manuPIDDown  = new PIDController(0.011, kI, kD);
+  PIDController manuPIDDown  = new PIDController(0.005, kI, kD);
 
   /** Creates a new ExampleSubsystem. */
   public IntakeSubsystem() {
@@ -152,11 +152,15 @@ public class IntakeSubsystem extends SubsystemBase {
     
     
     //System.out.println(-manuPID.calculate(targetPosition, getPosition()));
+     
+    
     if (targetPosition==0) {
       m_jointMotor.set(-(manuPIDUp.calculate(targetPosition, getPosition())));
     } else {
       m_jointMotor.set(-(manuPIDDown.calculate(targetPosition, getPosition())));
     }
+
+    
     SmartDashboard.putNumber("IntakeTargetPosition", targetPosition);
     SmartDashboard.putNumber("IntakeCurrentPosition", getPosition());
     //SmartDashboard.putNumber("IntakeTargetPosition", getPosition());
@@ -190,11 +194,11 @@ public class IntakeSubsystem extends SubsystemBase {
   }
   public void spinRollers(boolean active) {
     if (active) {
-      spinConveyor(0.2);
+      //spinConveyor(0.2);
       m_RollerMotor.set(Constants.IntakeConstants.kRollerMotorPower);
       System.out.println("Rollers Active");
     } else {
-      spinConveyor(0);
+      //spinConveyor(0);
       m_RollerMotor.set(0);
       System.out.println("Rollers Disabled");
     }
