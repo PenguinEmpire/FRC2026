@@ -16,7 +16,7 @@ import frc.robot.subsystems.vision.VisionInterface;
 import frc.robot.Constants;
 
 public class VisionSubsystem extends SubsystemBase {
-  private int[] ValidIds = {1, 6, 7, 12, 17, 22, 23, 28, 10, 26};
+  private int[] ValidIds = {1, 6, 7, 12, 17, 22, 23, 28, 10, 26, 5, 18, 2, 21};
   private double currentID = -1;
 
   public double Fiducial3DOffsetX = 0;

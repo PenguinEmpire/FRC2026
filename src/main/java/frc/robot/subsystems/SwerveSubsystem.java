@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.InterfaceExperiment.Joysticks.AimingJoystick;
 import frc.robot.InterfaceExperiment.Joysticks.JoystickInterface;
 import frc.robot.InterfaceExperiment.Joysticks.PS5Joystick;
@@ -26,12 +27,17 @@ public class SwerveSubsystem extends SubsystemBase {
   private boolean overrideX = false;
   private boolean overrideY = false;
   private boolean overrideR = false;
+  private double speedConstant = 1;
 
   PowerDistribution e = new PowerDistribution(1, ModuleType.kRev);
 
   Pigeon2 pigeon = new Pigeon2(0);
 
-  public SwerveSubsystem() {}
+  public SwerveSubsystem() {
+    if (Constants.SwerveConstants.safeMode) {
+     speedConstant = 0.25;
+    }
+  }
 
   /**
    * Example command factory method.
@@ -86,15 +92,15 @@ public class SwerveSubsystem extends SubsystemBase {
   } 
 
   public double getVelocityX() {
-    return velocityX;
+    return velocityX*speedConstant;
   }
 
   public double getVelocityY() {
-    return velocityY;
+    return velocityY*speedConstant;
   }
 
   public double getRotationalRate() {
-    return rotationalRate;
+    return rotationalRate*speedConstant;
   }
 
 

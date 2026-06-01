@@ -18,7 +18,7 @@ public class PositionCommand extends Command {
   public enum Position {
         // Intake Positions
         IntakeUp(0.0),  // Fold intake inside frame
-        IntakeDown(43.53355026245117), //figure this value out, originally 0.985
+        IntakeDown(41.2), //figure this value out, originally 0.985
         IntakeBounce(21.991132736206055),
 
         ClimbUp(0.0),
@@ -92,13 +92,14 @@ public class PositionCommand extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    System.out.println("Intake reached position: " + targetPosition);
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     //Return if the subsystems have reached target within tolerance (use a method inside the subsystem)
-    System.out.println("Intake reached position: " + targetPosition);
     return m_intakeSubsystem.reachedPosition();
   }
 }

@@ -30,6 +30,7 @@ public final class Constants {
     public static final double kMaxAngularSpeed = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
     public static final double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
     public static final double AlignmentSpeedConstant = 0.5;
+    public static final boolean safeMode = true;
 
     public static final double rotationalkS = 0.47123; //0.47123
   }
@@ -42,9 +43,9 @@ public final class Constants {
     public static final int kJointMotorID = 25;
     public static final double kShooterVelocity = -0.75; //Change to the output velocity of the shooter when known
     public static final double kShooterKickerVelocity = -0.3;
-    public static final double kTargetShooterRPM = -3600; 
+    public static final double kTargetShooterRPM = -3700; //-3700
     
-    public static final double[] kHubIds = {1,2,3,4,5};
+    public static final double[] kHubIds = {10, 26, 5, 18, 2, 21};
   }
 
   public static class IntakeConstants {

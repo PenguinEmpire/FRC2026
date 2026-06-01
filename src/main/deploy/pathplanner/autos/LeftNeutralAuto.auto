@@ -11,6 +11,12 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "LeftN1"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "lower_intake"
@@ -20,12 +26,6 @@
           "type": "named",
           "data": {
             "name": "enable_intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "LeftN1"
           }
         },
         {

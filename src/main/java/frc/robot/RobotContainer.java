@@ -99,9 +99,9 @@ public class RobotContainer {
                 new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeUp));
 
          NamedCommands.registerCommand("enable_intake",
-                new InstantCommand(()->m_intakeSubsystem.spinRollers(true), m_intakeSubsystem));
+                new InstantCommand(()->m_intakeSubsystem.spinRollers(Constants.IntakeConstants.kRollerMotorPower), m_intakeSubsystem));
 
-         NamedCommands.registerCommand("disable_intake",new InstantCommand(()->m_intakeSubsystem.spinRollers(false), m_intakeSubsystem));
+         NamedCommands.registerCommand("disable_intake",new InstantCommand(()->m_intakeSubsystem.spinRollers(0.25), m_intakeSubsystem));
         
         NamedCommands.registerCommand("align_to_apriltag", new AlignToAprilTag(m_swerveSubsystem, m_visionSubsystem, drivetrain));
 
@@ -211,22 +211,23 @@ public class RobotContainer {
         drivetrain.registerTelemetry(logger::telemeterize);
 
         //Intake
-        controller.povUp().onTrue( //raise intake
+        /*controller.povUp().onTrue( //raise intake
             new SequentialCommandGroup(
-                new InstantCommand(()->m_intakeSubsystem.spinRollers(false), m_intakeSubsystem),
+                new InstantCommand(()->m_intakeSubsystem.spinRollers(0), m_intakeSubsystem),
                 new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeUp)));
 
         controller.povDown().onTrue( //lower intake
             new SequentialCommandGroup(
-                new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeDown)
+                new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeDown),
+                new InstantCommand(()->m_intakeSubsystem.spinRollers(0.25)))
                 /*new RunCommand(()->m_intakeSubsystem.setPosition(PositionCommand.Position.IntakeBounce.getEncoderPosition())).until(()->m_intakeSubsystem.getPosition()<30),
                 new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeDown)*/
                         
-        ));
+        //);
 
         controller.L2() //Enable intake
-            .whileTrue(new InstantCommand(()->m_intakeSubsystem.spinRollers(true), m_intakeSubsystem))
-            .onFalse(new InstantCommand(()->m_intakeSubsystem.spinRollers(false), m_intakeSubsystem));
+            .whileTrue(new InstantCommand(()->m_intakeSubsystem.spinRollers(Constants.IntakeConstants.kRollerMotorPower), m_intakeSubsystem))
+            .onFalse(new InstantCommand(()->m_intakeSubsystem.spinRollers(0.25), m_intakeSubsystem));
 
         /*controller.L2().whileTrue(new InstantCommand(()->m_climbSubsystem.manualMove(0.1)))
                         .onFalse(new InstantCommand(()->m_climbSubsystem.manualMove(0)));*/

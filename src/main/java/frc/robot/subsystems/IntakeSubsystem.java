@@ -140,7 +140,8 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public boolean reachedPosition() {
-    return Math.abs(targetPosition - getPosition()) <= 1;
+    return Math.abs(targetPosition - getPosition()) <= 5
+    ;
   }
 
   @Override
@@ -154,11 +155,11 @@ public class IntakeSubsystem extends SubsystemBase {
     //System.out.println(-manuPID.calculate(targetPosition, getPosition()));
      
     
-    if (targetPosition==0) {
+    /*if (targetPosition==0) {
       m_jointMotor.set(-(manuPIDUp.calculate(targetPosition, getPosition())));
     } else {
       m_jointMotor.set(-(manuPIDDown.calculate(targetPosition, getPosition())));
-    }
+    }*/
 
     
     SmartDashboard.putNumber("IntakeTargetPosition", targetPosition);
@@ -192,16 +193,16 @@ public class IntakeSubsystem extends SubsystemBase {
   public void ManualMove(double speed) {
       m_jointMotor.set(speed);
   }
-  public void spinRollers(boolean active) {
-    if (active) {
+  public void spinRollers(double speed) {
+    if (speed>0) {
       //spinConveyor(0.2);
-      m_RollerMotor.set(Constants.IntakeConstants.kRollerMotorPower);
       System.out.println("Rollers Active");
     } else {
       //spinConveyor(0);
-      m_RollerMotor.set(0);
       System.out.println("Rollers Disabled");
     }
+
+    m_RollerMotor.set(0); //speed
   }
 
   public void spinConveyor(double speed) {
