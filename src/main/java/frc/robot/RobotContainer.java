@@ -51,6 +51,10 @@ public class RobotContainer {
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = Constants.SwerveConstants.kMaxAngularSpeed; // 3/4 of a rotation per second max angular velocity
 
+    private double linearSpeedChangeConstant = 1;
+    private double angularSpeedChangeConstant = 1;
+
+
     //Setting up bindings for necessary control of the swerve drive platform
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
@@ -180,9 +184,9 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(m_swerveSubsystem.getVelocityX()) // Drive forward with negative Y (forward)
-                    .withVelocityY(m_swerveSubsystem.getVelocityY()) // Drive left with negative X (left) //m_swerveSubsystem.getVelocityY()
-                    .withRotationalRate(m_swerveSubsystem.getRotationalRate()) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(m_swerveSubsystem.getVelocityX()*linearSpeedChangeConstant) // Drive forward with negative Y (forward)
+                    .withVelocityY(m_swerveSubsystem.getVelocityY()*linearSpeedChangeConstant) // Drive left with negative X (left) //m_swerveSubsystem.getVelocityY()
+                    .withRotationalRate(m_swerveSubsystem.getRotationalRate()*angularSpeedChangeConstant) // Drive counterclockwise with negative X (left)
             )
         );
 
@@ -289,6 +293,24 @@ public class RobotContainer {
         controller.touchpad().onTrue(
             new AlignToPosition(m_swerveSubsystem, 0.0, 0.0)
         );
+
+        controller.L3()
+                    .onTrue(
+                        new InstantCommand(()->linearSpeedChangeConstant+=0.1)
+                    );
+
+        controller.R3()
+                    .onTrue(
+                        new InstantCommand(()->linearSpeedChangeConstant-=0.1)
+                    );
+        controller.R3().and(controller.triangle())
+                    .onTrue(
+                        new InstantCommand(()->angularSpeedChangeConstant-=0.1)
+                    );   
+         controller.L3().and(controller.triangle())
+                    .onTrue(
+                        new InstantCommand(()->angularSpeedChangeConstant+=0.1)
+                    );               
     }   
 
     public Command getAutonomousCommand() {

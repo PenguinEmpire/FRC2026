@@ -30,7 +30,7 @@ public final class Constants {
     public static final double kMaxAngularSpeed = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
     public static final double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
     public static final double AlignmentSpeedConstant = 0.5;
-    public static final boolean safeMode = true;
+    public static final boolean safeMode = false;
 
     public static final double rotationalkS = 0.47123; //0.47123
   }
