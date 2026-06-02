@@ -10,6 +10,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.PS5Controller;
@@ -79,6 +80,8 @@ public class RobotContainer {
 
     Pigeon2 pigeon = new Pigeon2(0);
 
+        //private TestSubsystems test = new TestSubsystems();
+
 
     //public final AlignToAngle alignToAngle = new AlignToAngle(m_swerveSubsystem, -Math.PI/2.0);
     //public final AlignToClimb alignToClimb = new AlignToClimb(m_swerveSubsystem, 0, 0); pigeon.getYaw().getValueAsDouble()%360.0)+Math.PI/2
@@ -86,16 +89,19 @@ public class RobotContainer {
     public RobotContainer() {
         //Setup the namedCommands for auto
 
-        NamedCommands.registerCommand("lower_intake", 
-                new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeDown));
+        NamedCommands.registerCommand("lower_intake", new SequentialCommandGroup(
+                new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeDown)
+                /*new RunCommand(()->m_intakeSubsystem.setPosition(PositionCommand.Position.IntakeBounce.getEncoderPosition())).until(()->m_intakeSubsystem.getPosition()<30),
+                new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeDown*/
+                ));
         
         NamedCommands.registerCommand("raise_intake",
                 new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeUp));
 
          NamedCommands.registerCommand("enable_intake",
-                new InstantCommand(()->m_intakeSubsystem.spinRollers(true), m_intakeSubsystem));
+                new InstantCommand(()->m_intakeSubsystem.spinRollers(Constants.IntakeConstants.kRollerMotorPower), m_intakeSubsystem));
 
-         NamedCommands.registerCommand("disable_intake",new InstantCommand(()->m_intakeSubsystem.spinRollers(false), m_intakeSubsystem));
+         NamedCommands.registerCommand("disable_intake",new InstantCommand(()->m_intakeSubsystem.spinRollers(0.25), m_intakeSubsystem));
         
         NamedCommands.registerCommand("align_to_apriltag", new AlignToAprilTag(m_swerveSubsystem, m_visionSubsystem, drivetrain));
 
@@ -106,9 +112,10 @@ public class RobotContainer {
 
         //NamedCommands.registerCommand("target_hood", ____ //I dont think we need this command since hood alignment is automatic
 
-        NamedCommands.registerCommand("enable_flywheel", new SequentialCommandGroup(
-                    new EnableShooterCommand(m_shooterSubsystem),
-                    new WaitCommand(1.5),
+        NamedCommands.registerCommand("enable_flywheel",
+                    new EnableShooterCommand(m_shooterSubsystem));
+
+        NamedCommands.registerCommand("enable_shooter", new SequentialCommandGroup(
                     new InstantCommand(()->m_intakeSubsystem.spinConveyor(Constants.IntakeConstants.kConveyorMotorPower), m_intakeSubsystem),
                     new InstantCommand(()->m_shooterSubsystem.enableKicker(Constants.ShooterConstants.kShooterKickerVelocity), m_intakeSubsystem)));
 
@@ -122,8 +129,10 @@ public class RobotContainer {
         NamedCommands.registerCommand("disable_intake_bounce",
                         new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeDown));
 
-        NamedCommands.registerCommand("disable_flywheel", new SequentialCommandGroup(
-                    new InstantCommand(()->m_shooterSubsystem.enableShooter(false), m_shooterSubsystem),
+        NamedCommands.registerCommand("disable_flywheel", 
+                    new InstantCommand(()->m_shooterSubsystem.enableShooter(false), m_shooterSubsystem));
+
+        NamedCommands.registerCommand("disable_shooter", new SequentialCommandGroup(
                     new InstantCommand(()->m_shooterSubsystem.enableKicker(0), m_shooterSubsystem),
                     new InstantCommand(()->m_intakeSubsystem.spinConveyor(0), m_intakeSubsystem)));
 
@@ -151,18 +160,14 @@ public class RobotContainer {
 
         
         //Setup smartdashboard
-        autoChooser.addOption("CircleAuto", "CircleAuto"); //Name is the name visible on S.D. object is what is returned by getSelected()
-        autoChooser.addOption("LineAuto", "LineAuto"); 
-        autoChooser.addOption("RotationAuto", "RotationAuto"); 
-        autoChooser.addOption("IntakeAuto", "IntakeAuto"); 
-        autoChooser.addOption("ShooterAuto", "ShooterAuto"); 
-        autoChooser.addOption("AprilTagAuto", "AprilTagAuto");
         autoChooser.addOption("PreloadMidAuto", "PreloadMidAuto");
         autoChooser.addOption("PreloadRightAuto", "PreloadRightAuto");
         autoChooser.addOption("PreloadLeftAuto", "PreloadLeftAuto");
-        autoChooser.addOption("LeftNeutralAuto", "LeftNeutralAuto");
+        autoChooser.addOption("NeutralAuto", "LeftNeutralAuto");
 
         SmartDashboard.putBoolean("Within Shooter Range", false);
+
+        SmartDashboard.putBoolean("Is Right Auto", false);
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -206,18 +211,23 @@ public class RobotContainer {
         drivetrain.registerTelemetry(logger::telemeterize);
 
         //Intake
-        controller.povUp().onTrue( //raise intake
+        /*controller.povUp().onTrue( //raise intake
             new SequentialCommandGroup(
-                new InstantCommand(()->m_intakeSubsystem.spinRollers(false), m_intakeSubsystem),
+                new InstantCommand(()->m_intakeSubsystem.spinRollers(0), m_intakeSubsystem),
                 new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeUp)));
 
         controller.povDown().onTrue( //lower intake
             new SequentialCommandGroup(
-                new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeDown)));
+                new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeDown),
+                new InstantCommand(()->m_intakeSubsystem.spinRollers(0.25)))
+                /*new RunCommand(()->m_intakeSubsystem.setPosition(PositionCommand.Position.IntakeBounce.getEncoderPosition())).until(()->m_intakeSubsystem.getPosition()<30),
+                new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeDown)*/
+                        
+        //);
 
         controller.L2() //Enable intake
-            .whileTrue(new InstantCommand(()->m_intakeSubsystem.spinRollers(true), m_intakeSubsystem))
-            .onFalse(new InstantCommand(()->m_intakeSubsystem.spinRollers(false), m_intakeSubsystem));
+            .whileTrue(new InstantCommand(()->m_intakeSubsystem.spinRollers(Constants.IntakeConstants.kRollerMotorPower), m_intakeSubsystem))
+            .onFalse(new InstantCommand(()->m_intakeSubsystem.spinRollers(0.25), m_intakeSubsystem));
 
         /*controller.L2().whileTrue(new InstantCommand(()->m_climbSubsystem.manualMove(0.1)))
                         .onFalse(new InstantCommand(()->m_climbSubsystem.manualMove(0)));*/
@@ -235,13 +245,13 @@ public class RobotContainer {
                 new SequentialCommandGroup(
                     //enableShooter,
                     new InstantCommand(()->m_intakeSubsystem.spinConveyor(Constants.IntakeConstants.kConveyorMotorPower), m_intakeSubsystem),
-                    new InstantCommand(()->m_shooterSubsystem.enableKicker(Constants.ShooterConstants.kShooterKickerVelocity), m_intakeSubsystem),
+                    new InstantCommand(()->m_shooterSubsystem.enableKicker(Constants.ShooterConstants.kShooterKickerVelocity), m_intakeSubsystem)
 
-                    new SequentialCommandGroup(
-                        new RunCommand(()->m_intakeSubsystem.setPosition(PositionCommand.Position.IntakeUp.getEncoderPosition())).until(()->m_intakeSubsystem.getPosition()<30),
+                    /*new SequentialCommandGroup(
+                        new RunCommand(()->m_intakeSubsystem.setPosition(PositionCommand.Position.IntakeBounce.getEncoderPosition())).until(()->m_intakeSubsystem.getPosition()<30),
                         new PositionCommand(m_intakeSubsystem, PositionCommand.Position.IntakeDown)
                         )
-                    .repeatedly()))
+                    .repeatedly())*/))
 
             .onFalse(
                 new SequentialCommandGroup(
@@ -268,6 +278,11 @@ public class RobotContainer {
                         enableShooter
                     );
 
+        controller.create()
+                    .onTrue(
+                        new InstantCommand(()->m_shooterSubsystem.enableShooter(false))
+                    );
+
         //Start to unclimb (not implimented)
 
 
@@ -279,45 +294,16 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         // Simple drive forward auton
         final var idle = new SwerveRequest.Idle();
+        if (SmartDashboard.getBoolean("Is Right Auto", false)) { //Include autos that need to be mirrored
+            return new PathPlannerAuto(autoChooser.getSelected(), true); 
+        }
 
-        
-  /*  return Commands.sequence(
-            drivetrain.runOnce(() -> drivetrain.seedFieldCentric(Rotation2d.kZero)),
-            drivetrain.applyRequest(() ->
-                drive.withVelocityX(-0.25)
-                    .withVelocityY(0)
-                    .withRotationalRate(0)
-            ),
-            new WaitCommand(0.1),
-            drivetrain.applyRequest(() -> idle),
-            new AlignToAprilTag(m_swerveSubsystem, m_visionSubsystem, drivetrain),
-            new SequentialCommandGroup(
-                    new EnableShooterCommand(m_shooterSubsystem),
-                    new WaitCommand(1.5),
-                    new InstantCommand(()->m_intakeSubsystem.spinConveyor(Constants.IntakeConstants.kConveyorMotorPower), m_intakeSubsystem),
-                    new InstantCommand(()->m_shooterSubsystem.enableKicker(Constants.ShooterConstants.kShooterKickerVelocity), m_intakeSubsystem)),
-            new WaitCommand(5),
-           new SequentialCommandGroup(
-                    new InstantCommand(()->m_shooterSubsystem.enableShooter(false), m_shooterSubsystem),
-                    new InstantCommand(()->m_shooterSubsystem.enableKicker(0), m_shooterSubsystem),
-                    new InstantCommand(()->m_intakeSubsystem.spinConveyor(0), m_intakeSubsystem)));
-            /*
-        return Commands.sequence(
-            // Reset our field centric heading to match the robot
-            // facing away from our alliance station wall (0 deg).
-            drivetrain.runOnce(() -> drivetrain.seedFieldCentric(Rotation2d.kZero)),
-            // Then slowly drive forward (away from us) for 5 seconds.
-            drivetrain.applyRequest(() ->
-                drive.withVelocityX(0.5)
-                    .withVelocityY(0)
-                    .withRotationalRate(0)
-            )
-            .withTimeout(5.0),
-            // Finally idle for the rest of auton
-            drivetrain.applyRequest(() -> idle)
-            
-            );
-*/
         return new PathPlannerAuto(autoChooser.getSelected()); 
+    }
+
+     public Command getTestCommand() {
+        // Simple drive forward auton
+        final var idle = new SwerveRequest.Idle();
+        return new PathPlannerAuto("testsequence");
     }
 }

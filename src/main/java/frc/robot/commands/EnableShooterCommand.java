@@ -42,8 +42,9 @@ public class EnableShooterCommand extends Command {
   @Override
   public boolean isFinished() {
     if (Math.abs(m_subsystem.getShooterSpeed()) >= Math.abs(-3500)) {
+      System.out.println("Shooter reached speed");
       return true;
       }
-      return false;
+      return true;
   }
 }

@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Rotation Test"
+            "pathName": "MirrorTest"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "PreloadAuto",
+  "folder": null,
   "choreoAuto": false
 }

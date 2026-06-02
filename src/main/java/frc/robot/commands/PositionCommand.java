@@ -18,7 +18,7 @@ public class PositionCommand extends Command {
   public enum Position {
         // Intake Positions
         IntakeUp(0.0),  // Fold intake inside frame
-        IntakeDown(41.13992691040039), //figure this value out, originally 0.985
+        IntakeDown(41.2), //figure this value out, originally 0.985
         IntakeBounce(21.991132736206055),
 
         ClimbUp(0.0),
@@ -39,6 +39,8 @@ public class PositionCommand extends Command {
 
     //Declare subsystems
     private final Position pos;
+
+    double targetPosition;
 
 
 
@@ -66,12 +68,15 @@ public class PositionCommand extends Command {
     switch (pos) {
             case IntakeUp:
                 //exampleSubsystem.setPosition(Position.Example1.getEncoderPosition());
+                targetPosition = Position.IntakeUp.getEncoderPosition();
                 m_intakeSubsystem.setPosition(Position.IntakeUp.getEncoderPosition());
                 break;
             case IntakeDown:
+                targetPosition = Position.IntakeDown.getEncoderPosition();
                 m_intakeSubsystem.setPosition(Position.IntakeDown.getEncoderPosition());
                 break;
             case IntakeBounce:
+                targetPosition = Position.IntakeBounce.getEncoderPosition();
                 m_intakeSubsystem.setPosition(Position.IntakeBounce.getEncoderPosition());
                 break;
             /*case ClimbUp:
@@ -87,7 +92,9 @@ public class PositionCommand extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    System.out.println("Intake reached position: " + targetPosition);
+  }
 
   // Returns true when the command should end.
   @Override

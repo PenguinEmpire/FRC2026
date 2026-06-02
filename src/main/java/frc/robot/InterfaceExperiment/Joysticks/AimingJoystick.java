@@ -24,7 +24,7 @@ public class AimingJoystick implements JoystickInterface{
         if (m_VisionSubsystem.HasTarget() && joystick.getR1()) {
             return Constants.SwerveConstants.AlignmentSpeedConstant; //Put this in cons
         }else if (joystick.getL2()) { 
-            return 0.35;
+            return 0.5;
         } else {
             return 1.0;
         }

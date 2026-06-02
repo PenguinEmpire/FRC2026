@@ -5,9 +5,27 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "enable_flywheel"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "LeftN1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "lower_intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "enable_intake"
           }
         },
         {
@@ -31,7 +49,31 @@
         {
           "type": "named",
           "data": {
+            "name": "disable_intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "align_to_apriltag"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "enable_shooter"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 10.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "disable_shooter"
           }
         }
       ]

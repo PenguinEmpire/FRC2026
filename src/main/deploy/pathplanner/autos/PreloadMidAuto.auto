@@ -5,6 +5,18 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "enable_flywheel"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 8.0
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "BasicPreloadMidPath"
@@ -19,7 +31,7 @@
         {
           "type": "named",
           "data": {
-            "name": "enable_flywheel"
+            "name": "enable_shooter"
           }
         },
         {
@@ -31,7 +43,7 @@
         {
           "type": "named",
           "data": {
-            "name": "disable_flywheel"
+            "name": "disable_shooter"
           }
         }
       ]

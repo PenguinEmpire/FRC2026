@@ -30,6 +30,7 @@ public final class Constants {
     public static final double kMaxAngularSpeed = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
     public static final double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
     public static final double AlignmentSpeedConstant = 0.5;
+    public static final boolean safeMode = true;
 
     public static final double rotationalkS = 0.47123; //0.47123
   }
@@ -41,8 +42,10 @@ public final class Constants {
 
     public static final int kJointMotorID = 25;
     public static final double kShooterVelocity = -0.75; //Change to the output velocity of the shooter when known
-    public static final double kShooterKickerVelocity = 0.3;
-    public static final double kTargetShooterRPM = -3400;  
+    public static final double kShooterKickerVelocity = -0.3;
+    public static final double kTargetShooterRPM = -3700; //-3700
+    
+    public static final double[] kHubIds = {10, 26, 5, 18, 2, 21};
   }
 
   public static class IntakeConstants {
@@ -50,7 +53,7 @@ public final class Constants {
     public static final int kIntakeJointMotorID = 22;
     public static final int kConveyorMotorID = 24;
     
-    public static final double kRollerMotorPower = -0.6;
+    public static final double kRollerMotorPower = 0.75;
     public static final double kConveyorMotorPower = 0.6;
   }
 
@@ -79,19 +82,25 @@ public final class Constants {
     public static final SpacialPosition kUndefinedOffset = new SpacialPosition(0, 0, 0);
 
     public static final SpacialPosition kAprilTagID1Offset = new SpacialPosition(0, 0, 0); //The position relative to april tag the vision will be targeting: {x, y, z}
-    public static final SpacialPosition kAprilTagID2Offset = new SpacialPosition(0, 0, 0);
+    public static final SpacialPosition kAprilTagID2Offset = new SpacialPosition(-0.597, 0, 0);
     public static final SpacialPosition kAprilTagID3Offset = new SpacialPosition(0, 0, 0);
     public static final SpacialPosition kAprilTagID10Offset = new SpacialPosition(-0.597, 0, 0); //-0.597
         public static final SpacialPosition kAprilTagID5Offset = new SpacialPosition(-0.597, 0, 0);
     public static final SpacialPosition kAprilTagID26Offset = new SpacialPosition(-0.597, 0, 0); //-0.597
-    public static final Map<Double, SpacialPosition> kAprilTagOffsets = Map.of(
+
+
+    public static final SpacialPosition kHubAprilTagOffset = new SpacialPosition(-0.597, 0, 0); //-0.597
+    public static final Map<Double, SpacialPosition> kAprilTagOffsets = Map.of( //1, 6, 7, 12, 17, 22, 23, 28
             -1.0, kUndefinedOffset,
-            1.0, kAprilTagID1Offset,
-            2.0, kAprilTagID2Offset,
-            3.0, kAprilTagID3Offset,
-            5.0, kAprilTagID5Offset,
-            10.0, kAprilTagID10Offset,
-            26.0, kAprilTagID26Offset
+            1.0, kUndefinedOffset,
+            6.0, kUndefinedOffset,
+            7.0, kUndefinedOffset,
+            12.0, kUndefinedOffset,
+            17.0, kUndefinedOffset,
+            22.0, kUndefinedOffset, 
+            23.0, kUndefinedOffset,
+            28.0, kUndefinedOffset,
+            10.0, kHubAprilTagOffset
         );
 
     public static final double kAprilTagID10Height = 0.0;
