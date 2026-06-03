@@ -294,24 +294,38 @@ public class RobotContainer {
             new AlignToPosition(m_swerveSubsystem, 0.0, 0.0)
         );
 
-        controller.L3()
-                    .onTrue(
-                        new InstantCommand(()->linearSpeedChangeConstant+=0.1)
-                    );
-
         controller.R3()
                     .onTrue(
-                        new InstantCommand(()->linearSpeedChangeConstant-=0.1)
+                        new InstantCommand(()->linearSpeedChangeConstant=getNewConstant(linearSpeedChangeConstant, true))
                     );
-        controller.R3().and(controller.triangle())
+
+        controller.L3()
                     .onTrue(
-                        new InstantCommand(()->angularSpeedChangeConstant-=0.1)
+                        new InstantCommand(()->linearSpeedChangeConstant=getNewConstant(linearSpeedChangeConstant, false))
+                    );
+        controller.L3().and(controller.triangle())
+                    .onTrue(
+                        new InstantCommand(()->angularSpeedChangeConstant=getNewConstant(angularSpeedChangeConstant, false))
                     );   
-         controller.L3().and(controller.triangle())
+         controller.R3().and(controller.triangle())
                     .onTrue(
-                        new InstantCommand(()->angularSpeedChangeConstant+=0.1)
+                        new InstantCommand(()->angularSpeedChangeConstant=getNewConstant(angularSpeedChangeConstant, true))
                     );               
     }   
+
+    private double getNewConstant(double constant, boolean add) {
+        if (add) {
+            if (constant+0.1<2) {
+                return constant+0.1;
+            }
+                return 2;
+        } else {
+            if (constant-0.1>0) {
+                return constant-0.1;
+            }
+            return 0;
+        }
+    }
 
     public Command getAutonomousCommand() {
         // Simple drive forward auton
