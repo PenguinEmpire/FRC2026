@@ -51,7 +51,7 @@ public class AlignToPosition extends Command {
     double speedy = pidy.calculate(Math.toRadians(m_VisionSubsystem.GetYAngle()) ,Math.toRadians(targetAngleY));
     
     m_SwerveSubsystem.setVelocityX(speedx);
-    m_SwerveSubsystem.setVelocityX(speedy);
+    m_SwerveSubsystem.setVelocityY(speedy);
   }
 
   // Called once the command ends or is interrupted.
